@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------
-//					LAB 1
+//					Tema1
 //
 //	Fisiere de interes: Transform2d.cpp main.cpp
 //
@@ -81,6 +81,51 @@ void WorldDrawer2d::init(){
 	cs2->translate(-10,-10);
 	cs2->rotateSelf(-0.5);
 	cs2->objectTranslate(o2,0,5);
+
+	//(cerc verde = 8 triunghiuri)
+	std::vector<Point2d> points3;
+	std::vector<int> topology3;
+	points3.push_back(Point2d(0, 0));
+	points3.push_back(Point2d(1, 0));
+	points3.push_back(Point2d(sqrt(2.)/2, sqrt(2.)/2));
+	points3.push_back(Point2d(0, 1));
+	points3.push_back(Point2d(-sqrt(2.)/2, sqrt(2.)/2));
+	points3.push_back(Point2d(-1, 0));
+	points3.push_back(Point2d(-sqrt(2.)/2, -sqrt(2.)/2));
+	points3.push_back(Point2d(0, -1));
+	points3.push_back(Point2d(sqrt(2.)/2, -sqrt(2.)/2));
+	topology3.push_back(0);
+	topology3.push_back(1);
+	topology3.push_back(2);
+	topology3.push_back(2);
+	topology3.push_back(3);
+	topology3.push_back(0);
+	topology3.push_back(0);
+	topology3.push_back(3);
+	topology3.push_back(4);
+	topology3.push_back(4);
+	topology3.push_back(5);
+	topology3.push_back(0);
+	topology3.push_back(0);
+	topology3.push_back(5);
+	topology3.push_back(6);
+	topology3.push_back(6);
+	topology3.push_back(7);
+	topology3.push_back(0);
+	topology3.push_back(0);
+	topology3.push_back(7);
+	topology3.push_back(8);
+	topology3.push_back(8);
+	topology3.push_back(1);
+	topology3.push_back(0);
+	o3 = new Object2d(points3, topology3);
+	o3->setcolor(0.1,0.1,1);
+	o3->scale(3, 3);
+	//cs 2
+	cs2->objectAdd(o3);
+	cs2->translate(0,-10);
+	cs2->rotateSelf(-0.5);
+	cs2->objectTranslate(o3,0,1);
 
 }
 void WorldDrawer2d::onIdle(){	//per frame
