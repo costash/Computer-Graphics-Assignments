@@ -76,12 +76,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Circle2d.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Support2d.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="WorldDrawer2d_gl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Circle2d.h" />
     <ClInclude Include="HeadersAndDefines.h" />
     <ClInclude Include="Support2d.h" />
     <ClInclude Include="Transform2d.h" />

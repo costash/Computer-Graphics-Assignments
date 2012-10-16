@@ -34,7 +34,7 @@ class Point2d{
 class Object2d{
 	public:
 		Object2d(std::vector<Point2d> points, std::vector<int> topology);
-		~Object2d();
+		virtual ~Object2d();
 
 		void rotateSelf(float angleRad);						//rotatie a obiectului relativ la centrul sau
 		void translate(float x, float y);						//translatie

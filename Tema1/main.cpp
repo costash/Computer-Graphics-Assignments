@@ -27,12 +27,14 @@
 //----------------------------------------------------------------------------------------------
 
 #include "WorldDrawer2d.h"
+#include "Circle2d.h"
 bool WorldDrawer2d::animation=true;
 
 
 //used global vars
 CoordinateSystem2d *cs1, *cs2,*cs3;
 Object2d *o1, *o2, *o3;
+Circle2d *circle1, *circle2;
 
 
 //add
@@ -126,6 +128,19 @@ void WorldDrawer2d::init(){
 	cs2->translate(0,-2);
 	cs2->rotateSelf(-0.5);
 	cs2->objectTranslate(o3,0,1);
+
+	//cerc test maro
+	circle1 = new Circle2d(2);
+	circle1->setcolor(0.5, 0.4, 0.4);
+	cs2->objectAdd(circle1);
+	cs2->translate(0, +2);
+
+	//cerc unitate
+	circle2 = new Circle2d();
+	circle2->setcolor(0.1, 0.2, 0.2);
+	//circle2->translate(2, 3);
+	cs2->objectAdd(circle2);
+	cs2->objectTranslate(circle2, -3, 4);
 
 }
 void WorldDrawer2d::onIdle(){	//per frame
