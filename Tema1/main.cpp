@@ -123,7 +123,7 @@ void WorldDrawer2d::init(){
 	o3->scale(3, 3);
 	//cs 2
 	cs2->objectAdd(o3);
-	cs2->translate(0,-10);
+	cs2->translate(0,-2);
 	cs2->rotateSelf(-0.5);
 	cs2->objectTranslate(o3,0,1);
 

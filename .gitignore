@@ -1,0 +1,28 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Debug folder
+*/Debug/*
+
+# Inteli Sense files
+*.ncb
+*.opensdf
+*.sdf
+*/ipch/*
+
+# Visual Studio files
+*.suo
+*.suo.old
+
+# Upgrade report files
+*/_UpgradeReport_Files/*
