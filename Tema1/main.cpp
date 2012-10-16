@@ -184,7 +184,7 @@ void WorldDrawer2d::onKey(unsigned char key){
 
 
 int main(int argc, char** argv){
-	WorldDrawer2d wd2d(argc,argv,600,600,200,100,std::string("Lab 1"));
+	WorldDrawer2d wd2d(argc,argv,600,600,200,100,std::string("Tema 1"));
 	wd2d.init();
 	wd2d.run();
 	return 0;

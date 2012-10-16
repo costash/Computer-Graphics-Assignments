@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="Circle2d.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rectangle2d.cpp" />
     <ClCompile Include="Support2d.cpp" />
     <ClCompile Include="Transform2d.cpp" />
     <ClCompile Include="WorldDrawer2d_gl.cpp" />
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="Circle2d.h" />
     <ClInclude Include="HeadersAndDefines.h" />
+    <ClInclude Include="Rectangle2d.h" />
     <ClInclude Include="Support2d.h" />
     <ClInclude Include="Transform2d.h" />
     <ClInclude Include="WorldDrawer2d.h" />
