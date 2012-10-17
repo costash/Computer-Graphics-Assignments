@@ -1,4 +1,5 @@
 #pragma once
+#define  _USE_MATH_DEFINES		// enables M_PI macro
 #include <cmath>
 #include <iostream>
 #include <vector>

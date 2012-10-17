@@ -28,6 +28,7 @@
 
 #include "WorldDrawer2d.h"
 #include "Circle2d.h"
+#include "Rectangle2d.h"
 #include <iostream>
 bool WorldDrawer2d::animation=true;
 
@@ -65,79 +66,22 @@ void WorldDrawer2d::init(){
 	cs1->rotateSelf(0.5);
 
 	//(patrat albastru = 2 triunghiuri)	
-	std::vector<Point2d> points2;
-	std::vector<int> topology2;
-	points2.push_back(Point2d(1,0));
-	points2.push_back(Point2d(-1,0));
-	points2.push_back(Point2d(-1,1));
-	points2.push_back(Point2d(1,1));
-	topology2.push_back(0);
-	topology2.push_back(1);
-	topology2.push_back(2);
-	topology2.push_back(2);
-	topology2.push_back(3);
-	topology2.push_back(0);
-	o2 = new Object2d(points2,topology2);
+	o2 = new Rectangle2d(2, 1);
 	o2->setcolor(0,0,1);
+	o2->translate(0, 1);
 	//cs 2
 	cs2->objectAdd(o2);
 	cs2->translate(-10,-10);
 	cs2->rotateSelf(-0.5);
 	cs2->objectTranslate(o2,0,5);
-	
-	std::cerr << "centrul patratului" << cs2->objects.at(0)->axiscenter;
-
-	//(cerc verde = 8 triunghiuri)
-	std::vector<Point2d> points3;
-	std::vector<int> topology3;
-	points3.push_back(Point2d(0, 0));
-	points3.push_back(Point2d(1, 0));
-	points3.push_back(Point2d(sqrt(2.)/2, sqrt(2.)/2));
-	points3.push_back(Point2d(0, 1));
-	points3.push_back(Point2d(-sqrt(2.)/2, sqrt(2.)/2));
-	points3.push_back(Point2d(-1, 0));
-	points3.push_back(Point2d(-sqrt(2.)/2, -sqrt(2.)/2));
-	points3.push_back(Point2d(0, -1));
-	points3.push_back(Point2d(sqrt(2.)/2, -sqrt(2.)/2));
-	topology3.push_back(0);
-	topology3.push_back(1);
-	topology3.push_back(2);
-	topology3.push_back(2);
-	topology3.push_back(3);
-	topology3.push_back(0);
-	topology3.push_back(0);
-	topology3.push_back(3);
-	topology3.push_back(4);
-	topology3.push_back(4);
-	topology3.push_back(5);
-	topology3.push_back(0);
-	topology3.push_back(0);
-	topology3.push_back(5);
-	topology3.push_back(6);
-	topology3.push_back(6);
-	topology3.push_back(7);
-	topology3.push_back(0);
-	topology3.push_back(0);
-	topology3.push_back(7);
-	topology3.push_back(8);
-	topology3.push_back(8);
-	topology3.push_back(1);
-	topology3.push_back(0);
-	o3 = new Object2d(points3, topology3);
-	o3->setcolor(0.1,0.1,1);
-	o3->scale(3, 3);
-	//cs 2
-	cs2->objectAdd(o3);
-	cs2->translate(0,-2);
-	cs2->rotateSelf(-0.5);
-	cs2->objectTranslate(o3,0,1);
 
 	//cerc test maro
 	circle1 = new Circle2d(10);
 	circle1->scale(1.5);
+	circle1->scale(0.15);
 	circle1->setcolor(0.5, 0.4, 0.4);
 	cs2->objectAdd(circle1);
-	cs2->translate(0, +2);
+	cs2->translate(0, 2);
 
 	//cerc unitate
 	circle2 = new Circle2d();
@@ -146,8 +90,14 @@ void WorldDrawer2d::init(){
 	cs2->objectAdd(circle2);
 	cs2->objectTranslate(circle2, -3, 4);
 
+	//dreptunghi în centru
+	Object2d *rect1 = new Rectangle2d(2, 4);
+	rect1->setcolor(1, 1, 0);
+	cs2->objectAdd(rect1);
+	cs2->objectTranslate(rect1, 14, 0);
 }
 void WorldDrawer2d::onIdle(){	//per frame
+	Sleep(25);
 	static int iteration=1;
 	static bool o1dir=true;
 	static bool o2dir=true;
