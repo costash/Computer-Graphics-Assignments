@@ -37,7 +37,25 @@ bool WorldDrawer2d::animation=true;
 CoordinateSystem2d *cs1, *cs2,*cs3;
 Object2d *o1, *o2, *o3;
 Circle2d *circle1, *circle2;
+Object2d *out_border, *in_border;
+Object2d *out_net1, *in_net1, *out_net2, *in_net2;
+Object2d *net_line1, *net_line2, *board_center_line;
 
+// Constants
+const float out_length = 22.5f;
+const float out_height = 28.f;
+const float out_small_length = 22.f;
+const float out_small_heigth = 27.5f;
+const float net_outer_length = 8.f;
+const float net_outer_heigth = 5.f;
+const float net_inner_length = 7.5f;
+const float net_inner_height = 4.5f;
+const float net_translate_y = 14.f;
+const float net_line_length = 7.5f;
+const float net_line_height = 0.25f;
+const float net_line_translate_y = 13.875f;
+const float center_line_height = 0.25f;
+const float center_line_length = 22.f;
 
 //add
 void WorldDrawer2d::init(){
@@ -48,7 +66,7 @@ void WorldDrawer2d::init(){
 	cs_used.push_back(cs1);
 	cs_used.push_back(cs2);
 	cs_used.push_back(cs3);
-
+	/*
 	//(triunghi rosu)
 	std::vector<Point2d> points;
 	std::vector<int> topology;
@@ -95,9 +113,72 @@ void WorldDrawer2d::init(){
 	rect1->setcolor(1, 1, 0);
 	cs2->objectAdd(rect1);
 	cs2->objectTranslate(rect1, 14, 0);
+	*/
+	// Mingea rosie
+	Object2d *ball = new Circle2d(0.5);
+	ball->setcolor(1, 0, 0);
+	cs1->objectAdd(ball);
+
+
+	initBoard();
 }
+
+void WorldDrawer2d::initBoard()
+{
+	// Dreptunghi alb la mijlocul terenului
+	board_center_line = new Rectangle2d(center_line_length, center_line_height);
+	board_center_line->setcolor(1, 1, 1);
+	cs1->objectAdd(board_center_line);
+
+	// Dreptunghi alb linia portii de sus
+	net_line1 = new Rectangle2d(net_line_length, net_line_height);
+	net_line1->setcolor(1, 1, 1);
+	net_line1->translate(0, net_line_translate_y);
+	cs1->objectAdd(net_line1);
+
+	// Dreptunghi alb linia portii de jos
+	net_line2 = new Rectangle2d(net_line_length, net_line_height);
+	net_line2->setcolor(1, 1, 1);
+	net_line2->translate(0, -net_line_translate_y);
+	cs1->objectAdd(net_line2);
+
+	// Dreptunghi portocaliu la interior, teren de joc
+	in_border = new Rectangle2d(out_small_length, out_small_heigth);
+	in_border->setcolor(1, 0.5, 0);
+	cs1->objectAdd(in_border);
+
+	// Dreptunghi portocaliu interiorul portii de sus
+	in_net1 = new Rectangle2d(net_inner_length, net_inner_height);
+	in_net1->setcolor(1, 0.5, 0);
+	in_net1->translate(0, net_translate_y);
+	cs1->objectAdd(in_net1);
+
+	// Dreptunghi rosu exterior portii de sus
+	out_net1 = new Rectangle2d(net_outer_length, net_outer_heigth);
+	out_net1->setcolor(1, 0, 0);
+	out_net1->translate(0, net_translate_y);
+	cs1->objectAdd(out_net1);
+
+	// Dreptunghi portocaliu interiorul portii de jos
+	in_net2 = new Rectangle2d(net_inner_length, net_inner_height);
+	in_net2->setcolor(1, 0.5, 0);
+	in_net2->translate(0, -net_translate_y);
+	cs1->objectAdd(in_net2);
+
+	// Dreptunghi rosu exterior portii de sus
+	out_net2 = new Rectangle2d(net_outer_length, net_outer_heigth);
+	out_net2->setcolor(1, 0, 0);
+	out_net2->translate(0, -net_translate_y);
+	cs1->objectAdd(out_net2);
+
+	// Dreptunghi rosu la exterior, manta
+	out_border = new Rectangle2d(out_length, out_height);
+	out_border->setcolor(1, 0, 0);
+	cs1->objectAdd(out_border);
+}
+
 void WorldDrawer2d::onIdle(){	//per frame
-	Sleep(25);
+	//Sleep(25);
 	static int iteration=1;
 	static bool o1dir=true;
 	static bool o2dir=true;
@@ -108,11 +189,11 @@ void WorldDrawer2d::onIdle(){	//per frame
 		if (iteration%30 == 0)
 			dir *= -1;
 
-		o1->translate(dir, 0);
+		/*o1->translate(dir, 0);
 
 		o2->rotateSelf(0.1);
 		o2->rotateRelativeToPoint(cs2->axiscenter, 0.1);
-		o2->translate(0.5, 0.5);
+		o2->translate(0.5, 0.5);*/
 
 		iteration++;
 	}

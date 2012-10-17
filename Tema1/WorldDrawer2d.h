@@ -25,6 +25,9 @@ class WorldDrawer2d{
 		static void onIdle();
 		static void onKey(unsigned char key);
 
+	private:
+		static void WorldDrawer2d::initBoard();
+
 	public:
 		static bool animation;
 		static CoordinateSystem2d cs_basis;
