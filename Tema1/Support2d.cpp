@@ -38,7 +38,11 @@ void Point2d::scaleRelativeToPoint(Point2d p, float sx, float sy){
 	Transform2d::scaleRelativeToAnotherPoint(this, &p, sx, sy);
 }
 
-
+std::ostream& operator<<( std::ostream& os, const Point2d& p )
+{
+	os << "(" << p.x << "," << p.y << ")";
+	return os;
+}
 
 //-----------------------------------------------------------------------------------------------------
 //	Object2d

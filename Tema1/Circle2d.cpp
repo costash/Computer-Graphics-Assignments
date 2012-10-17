@@ -1,12 +1,17 @@
 #include "Circle2d.h"
 
-#define  _USE_MATH_DEFINES
+#define  _USE_MATH_DEFINES		// enables M_PI macro
 #include <math.h>
 
-const int NUM_TRIANGLES = 20;
-const float TWICE_PI = 2.0f * M_PI;
-const float DELTA = .001f;
+const int NUM_TRIANGLES = 20;		// Number of triangles used to draw a circle
+const float TWICE_PI = (float)(2.0f * M_PI);	// Math constant 2 * pi
+const float DELTA = .001f;			// Error precision of calculus
 
+//-----------------------------------------------------------------------------------------------------
+//	Circle2d class extending Object2d
+//-----------------------------------------------------------------------------------------------------
+
+// Creates a circle with radius 1 centered in the axis origin
 Circle2d::Circle2d()
 	: Object2d(std::vector<Point2d>(), std::vector<int>()),
 	radius(1)
@@ -14,6 +19,7 @@ Circle2d::Circle2d()
 	init();
 }
 
+// Creates a circle with radius <param>radius</param> centered in the axis origin
 Circle2d::Circle2d(float radius)
 	: Object2d(std::vector<Point2d>(), std::vector<int>()),
 	radius(radius)
@@ -21,11 +27,33 @@ Circle2d::Circle2d(float radius)
 	init();
 }
 
-
 Circle2d::~Circle2d()
 {
 }
 
+// Scale overriding
+void Circle2d::scale(float scaleFactor)
+{
+	for (unsigned int i = 1; i < this->points.size(); ++i)
+		this->points[i].scale(scaleFactor, scaleFactor);
+
+	radius *= scaleFactor;
+
+	this->computeAxis();
+}
+
+// Relative scale overriding
+void Circle2d::scaleRelativeToPoint(Point2d point, float scaleFactor)
+{
+	for (unsigned int i = 1; i < this->points.size(); ++i)
+		this->points[i].scaleRelativeToPoint(point, scaleFactor, scaleFactor);
+
+	radius *= scaleFactor;
+
+	this->computeAxis();
+}
+
+// Helper method for circle creation
 void Circle2d::init()
 {
 	this->points.push_back(Point2d(0, 0));

@@ -28,6 +28,7 @@
 
 #include "WorldDrawer2d.h"
 #include "Circle2d.h"
+#include <iostream>
 bool WorldDrawer2d::animation=true;
 
 
@@ -83,6 +84,8 @@ void WorldDrawer2d::init(){
 	cs2->translate(-10,-10);
 	cs2->rotateSelf(-0.5);
 	cs2->objectTranslate(o2,0,5);
+	
+	std::cerr << "centrul patratului" << cs2->objects.at(0)->axiscenter;
 
 	//(cerc verde = 8 triunghiuri)
 	std::vector<Point2d> points3;
@@ -130,7 +133,8 @@ void WorldDrawer2d::init(){
 	cs2->objectTranslate(o3,0,1);
 
 	//cerc test maro
-	circle1 = new Circle2d(2);
+	circle1 = new Circle2d(10);
+	circle1->scale(1.5);
 	circle1->setcolor(0.5, 0.4, 0.4);
 	cs2->objectAdd(circle1);
 	cs2->translate(0, +2);

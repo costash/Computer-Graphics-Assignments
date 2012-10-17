@@ -27,6 +27,8 @@ class Point2d{
 		float x,y;												// (x,y)
 };
 
+std::ostream& operator<<( std::ostream& os, const Point2d& p );
+
 
 //-----------------------------------------------------------------------------------------------------
 //	Object2d
@@ -39,8 +41,8 @@ class Object2d{
 		void rotateSelf(float angleRad);						//rotatie a obiectului relativ la centrul sau
 		void translate(float x, float y);						//translatie
 		void rotateRelativeToPoint(Point2d pct, float angleRad);//rotatie relativa la punctul p
-		void scale(float sx, float sy);							//scalare
-		void scaleRelativeToPoint(Point2d p, float sx, float sy);//scalare relativa la punctul p
+		virtual void scale(float sx, float sy);							//scalare
+		virtual void scaleRelativeToPoint(Point2d p, float sx, float sy);//scalare relativa la punctul p
 		void setcolor(float colorx, float colory, float colorz);//set culoare
 	public:
 		bool drawaxis;
@@ -48,7 +50,7 @@ class Object2d{
 		std::vector<Point2d> points;							//punctele obiectului
 		std::vector<int> topology;								//topologia punctelor obiectului
 		float colorx, colory, colorz;							//culoare
-	private:
+	protected:
 		void getCenter(float *x, float *y);	//functii helper
 		void computeAxis();					//
 };
