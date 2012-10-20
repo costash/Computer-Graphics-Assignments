@@ -26,7 +26,9 @@ class WorldDrawer2d{
 		static void onKey(unsigned char key);
 
 	private:
-		static void WorldDrawer2d::initBoard();
+		static void initBoard();
+		static void initTeam();
+		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
 
 	public:
 		static bool animation;

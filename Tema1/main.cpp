@@ -30,6 +30,14 @@
 #include "Circle2d.h"
 #include "Rectangle2d.h"
 #include <iostream>
+
+#include <ctime>
+#include <climits>
+
+#include <random>
+std::random_device random_device;
+std::mt19937 generator(random_device());
+
 bool WorldDrawer2d::animation=true;
 
 
@@ -40,8 +48,11 @@ Circle2d *circle1, *circle2;
 Object2d *out_border, *in_border;
 Object2d *out_net1, *in_net1, *out_net2, *in_net2;
 Object2d *net_line1, *net_line2, *board_center_line;
+std::vector<Object2d *> team1, team2, players;
 
 // Constants
+const int num_players = 6;
+
 const float out_length = 22.5f;
 const float out_height = 28.f;
 const float out_small_length = 22.f;
@@ -56,6 +67,18 @@ const float net_line_height = 0.25f;
 const float net_line_translate_y = 13.875f;
 const float center_line_height = 0.25f;
 const float center_line_length = 22.f;
+
+const float ball_radius = 0.5f;
+const float player_radius = 1.f;
+const float min_dist_between_player_center = 2.1f;
+const float min_player_x = -10.f;
+const float max_player_x = 10.f;
+const float min_player_y = -13.f;
+const float max_player_y = 13.f;
+
+
+// Func declaration
+static float getRandomFloat(float low, float high);
 
 //add
 void WorldDrawer2d::init(){
@@ -115,14 +138,75 @@ void WorldDrawer2d::init(){
 	cs2->objectTranslate(rect1, 14, 0);
 	*/
 	// Mingea rosie
-	Object2d *ball = new Circle2d(0.5);
+	Object2d *ball = new Circle2d(ball_radius);
 	ball->setcolor(1, 0, 0);
 	cs1->objectAdd(ball);
 
 
+	initTeam();
 	initBoard();
+	
 }
 
+void WorldDrawer2d::initTeam()
+{
+	for (unsigned int i = 0; i < num_players * 2; ++i)
+	{
+		
+		/*Object2d *player = new Circle2d(player_radius);*/
+		bool good = false;
+		while (!good)
+		{
+			Point2d random_point = getRandomPoint(min_player_x, max_player_x, min_player_y, max_player_y);
+			Circle2d *player = new Circle2d(player_radius);
+			player->translate(random_point.x, random_point.y);
+
+			bool bad_position = false;
+			for (unsigned int j = 0; j < players.size(); ++j)
+			{
+				if ( abs(player->axiscenter.x - players[j]->axiscenter.x) < min_dist_between_player_center &&
+					abs(player->axiscenter.y - players[j]->axiscenter.y) < min_dist_between_player_center)
+				{
+					bad_position = true;
+					delete(player);
+					break;
+				}
+			}
+			
+			if (!bad_position)
+			{
+				if (i < num_players)
+				{
+					player->setcolor(0, 1, 0);
+					team1.push_back(player);
+				}
+				else
+				{
+					player->setcolor(0, 0, 1);
+					team2.push_back(player);
+				}
+				players.push_back(player);
+				cs1->objectAdd(player);
+				good = true;
+			}
+		}
+	}
+}
+
+Point2d WorldDrawer2d::getRandomPoint(float lowx, float highx, float lowy, float highy)
+{
+	Point2d point(getRandomFloat(lowx, highx), getRandomFloat(lowy, highy));
+	return point;
+}
+
+static float getRandomFloat(float low, float high)
+{
+	//return low + (float)(std::rand() / ( (float)RAND_MAX / (high - low) ));
+	std::uniform_real_distribution<> distribution(low, high);
+	return (float)distribution(generator);
+}
+
+// Inits the game board
 void WorldDrawer2d::initBoard()
 {
 	// Dreptunghi alb la mijlocul terenului
@@ -219,6 +303,11 @@ void WorldDrawer2d::onKey(unsigned char key){
 
 
 int main(int argc, char** argv){
+
+	
+
+	std::srand((unsigned int)std::time(0));
+
 	WorldDrawer2d wd2d(argc,argv,600,600,200,100,std::string("Tema 1"));
 	wd2d.init();
 	wd2d.run();
