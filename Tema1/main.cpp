@@ -48,6 +48,8 @@ Circle2d *circle1, *circle2;
 Object2d *out_border, *in_border;
 Object2d *out_net1, *in_net1, *out_net2, *in_net2;
 Object2d *net_line1, *net_line2, *board_center_line;
+Object2d *ball;
+Object2d *goal_keeper;
 std::vector<Object2d *> team1, team2, players;
 
 // Constants
@@ -68,9 +70,9 @@ const float net_line_translate_y = 13.875f;
 const float center_line_height = 0.25f;
 const float center_line_length = 22.f;
 
-const float ball_radius = 0.5f;
+const float ball_radius = 0.7f;
 const float player_radius = 1.f;
-const float min_dist_between_player_center = 2.1f;
+const float min_dist_between_player_center = 3.f;
 const float min_player_x = -10.f;
 const float max_player_x = 10.f;
 const float min_player_y = -13.f;
@@ -137,28 +139,35 @@ void WorldDrawer2d::init(){
 	cs2->objectAdd(rect1);
 	cs2->objectTranslate(rect1, 14, 0);
 	*/
-	// Mingea rosie
-	Object2d *ball = new Circle2d(ball_radius);
-	ball->setcolor(1, 0, 0);
-	cs1->objectAdd(ball);
+	
 
-
-	initTeam();
 	initBoard();
+
+	initBall();
+	initTeams();
+	
 	
 }
 
-void WorldDrawer2d::initTeam()
+void WorldDrawer2d::initBall()
 {
+	ball = new Circle2d(ball_radius);
+	ball->setcolor(1, 0, 0);
+	cs1->objectAddFront(ball);
+}
+
+void WorldDrawer2d::initTeams()
+{
+	initGoalKeepers();
+
 	for (unsigned int i = 0; i < num_players * 2; ++i)
 	{
-		
-		/*Object2d *player = new Circle2d(player_radius);*/
+		// Generate random position for players to be separated by a minimum distance
 		bool good = false;
 		while (!good)
 		{
 			Point2d random_point = getRandomPoint(min_player_x, max_player_x, min_player_y, max_player_y);
-			Circle2d *player = new Circle2d(player_radius);
+			Object2d *player = new Circle2d(player_radius);
 			player->translate(random_point.x, random_point.y);
 
 			bool bad_position = false;
@@ -173,32 +182,55 @@ void WorldDrawer2d::initTeam()
 				}
 			}
 			
+			// Generated position is good
 			if (!bad_position)
 			{
 				if (i < num_players)
 				{
-					player->setcolor(0, 1, 0);
+					player->setcolor(0, 1, 0);	//green
 					team1.push_back(player);
 				}
 				else
 				{
-					player->setcolor(0, 0, 1);
+					player->setcolor(0, 0, 1);	//blue
 					team2.push_back(player);
 				}
 				players.push_back(player);
-				cs1->objectAdd(player);
+				cs1->objectAddFront(player);
 				good = true;
 			}
 		}
 	}
 }
 
+// Initialize goal keepers
+void WorldDrawer2d::initGoalKeepers()
+{
+	// Goal keeper for team 1
+	goal_keeper = new Circle2d(player_radius);
+	goal_keeper->translate(0, net_line_translate_y - 1);
+	goal_keeper->setcolor(0, 1, 0);		//green
+	cs1->objectAddFront(goal_keeper);
+	players.push_back(goal_keeper);
+	team1.push_back(goal_keeper);
+
+	// Goal keeper for team 2
+	goal_keeper = new Circle2d(player_radius);
+	goal_keeper->translate(0, -net_line_translate_y + 1);
+	goal_keeper->setcolor(0, 0, 1);		//blue
+	cs1->objectAddFront(goal_keeper);
+	players.push_back(goal_keeper);
+	team2.push_back(goal_keeper);
+}
+
+// Generate random Point2d in range
 Point2d WorldDrawer2d::getRandomPoint(float lowx, float highx, float lowy, float highy)
 {
 	Point2d point(getRandomFloat(lowx, highx), getRandomFloat(lowy, highy));
 	return point;
 }
 
+// Generate random float number in range
 static float getRandomFloat(float low, float high)
 {
 	//return low + (float)(std::rand() / ( (float)RAND_MAX / (high - low) ));

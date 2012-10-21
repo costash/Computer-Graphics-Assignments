@@ -167,6 +167,11 @@ CoordinateSystem2d::~CoordinateSystem2d(){
 void CoordinateSystem2d::objectAdd(Object2d *obj){
 	objects.push_back(obj);
 }
+void CoordinateSystem2d::objectAddFront(Object2d *obj)
+{
+	objects.push_front(obj);
+}
+
 void CoordinateSystem2d::objectRemove(Object2d *obj){
 	if(!obj) return;
 	for(unsigned int i=0;i<objects.size();i++){

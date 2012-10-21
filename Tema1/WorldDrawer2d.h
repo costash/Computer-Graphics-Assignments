@@ -20,14 +20,17 @@ class WorldDrawer2d{
 		static void keyboardCallbackFunction(unsigned char key, int x, int y);
 
 
-		//implemented in worldDrawer2d_logic .. for lab1
+		//implemented in worldDrawer2d_logic
 		static void init();
 		static void onIdle();
 		static void onKey(unsigned char key);
 
 	private:
+		//helpers for the game implemented in main
+		static void initBall();
+		static void initGoalKeepers();
 		static void initBoard();
-		static void initTeam();
+		static void initTeams();
 		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
 
 	public:

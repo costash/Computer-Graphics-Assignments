@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <deque>
 
 //forward declaration (Point2d are nevoie de Transform2d si Transform2d are nevoie de Point2d, dar Transform 2d
 //					   este pus in alt fisier pentru convenienta de implementare a labului, deci se foloseste
@@ -70,6 +71,7 @@ class CoordinateSystem2d{
 		//functii de adaugare si scoatere din lista de obiecte din sistemul de coordonate
 		//un obj poate fi in mai multe sist de coordonate dar amandoua vor efectua transformarile pe el.
 		void objectAdd(Object2d *obj);
+		void objectAddFront(Object2d *obj);
 		void objectRemove(Object2d *obj);
 
 		//translatie rotatie relativa la acest sistem de coordonate. 
@@ -87,5 +89,6 @@ class CoordinateSystem2d{
 	public:
 		bool draw_axis;
 		Point2d axiscenter,axisright, axisup;	//axe
-		std::vector<Object2d*> objects;			//obiecte
+		//std::vector<Object2d*> objects;			//obiecte
+		std::deque<Object2d*> objects;			//obiecte
 };
