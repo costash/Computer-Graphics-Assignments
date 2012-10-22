@@ -26,3 +26,7 @@
 
 # Upgrade report files
 */_UpgradeReport_Files/*
+
+# Performance report files
+*.psess
+*.vsp
