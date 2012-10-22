@@ -29,6 +29,7 @@
 #include "WorldDrawer2d.h"
 #include "Circle2d.h"
 #include "Rectangle2d.h"
+#include "Ball.h"
 #include <iostream>
 
 #include <ctime>
@@ -73,10 +74,10 @@ const float center_line_length = 22.f;
 const float ball_radius = 0.7f;
 const float player_radius = 1.f;
 const float min_dist_between_player_center = 3.f;
-const float min_player_x = -10.f;
-const float max_player_x = 10.f;
-const float min_player_y = -13.f;
-const float max_player_y = 13.f;
+const float min_player_x = -9.8f;
+const float max_player_x = 9.8f;
+const float min_player_y = -12.8f;
+const float max_player_y = 12.8f;
 
 
 // Func declaration
@@ -87,75 +88,27 @@ void WorldDrawer2d::init(){
 	//creeaza 2 sistem de coordonate client
 	cs1 = new CoordinateSystem2d();
 	cs2 = new CoordinateSystem2d();	
-	cs3 = new CoordinateSystem2d();
 	cs_used.push_back(cs1);
 	cs_used.push_back(cs2);
-	cs_used.push_back(cs3);
-	/*
-	//(triunghi rosu)
-	std::vector<Point2d> points;
-	std::vector<int> topology;
-	points.push_back(Point2d(1,0));
-	points.push_back(Point2d(-1,0));
-	points.push_back(Point2d(0,1));
-	topology.push_back(0);
-	topology.push_back(1);
-	topology.push_back(2);
-	o1 = new Object2d(points,topology);
-	o1->setcolor(1,0.8f,0.85f);
-	//cs 1
-	cs1->objectAdd(o1);
-	cs1->translate(-5,5);
-	cs1->rotateSelf(0.5);
-
-	//(patrat albastru = 2 triunghiuri)	
-	o2 = new Rectangle2d(2, 1);
-	o2->setcolor(0,0,1);
-	o2->translate(0, 1);
-	//cs 2
-	cs2->objectAdd(o2);
-	cs2->translate(-10,-10);
-	cs2->rotateSelf(-0.5);
-	cs2->objectTranslate(o2,0,5);
-
-	//cerc test maro
-	circle1 = new Circle2d(10);
-	circle1->scale(1.5);
-	circle1->scale(0.15);
-	circle1->setcolor(0.5, 0.4, 0.4);
-	cs2->objectAdd(circle1);
-	cs2->translate(0, 2);
-
-	//cerc unitate
-	circle2 = new Circle2d();
-	circle2->setcolor(0.1, 0.2, 0.2);
-	//circle2->translate(2, 3);
-	cs2->objectAdd(circle2);
-	cs2->objectTranslate(circle2, -3, 4);
-
-	//dreptunghi în centru
-	Object2d *rect1 = new Rectangle2d(2, 4);
-	rect1->setcolor(1, 1, 0);
-	cs2->objectAdd(rect1);
-	cs2->objectTranslate(rect1, 14, 0);
-	*/
 	
 
 	initBoard();
 
-	initBall();
 	initTeams();
-	
+	initBall();
 	
 }
 
+// Initializes the ball on the board
 void WorldDrawer2d::initBall()
 {
-	ball = new Circle2d(ball_radius);
-	ball->setcolor(1, 0, 0);
+	ball = new Ball(ball_radius);
+	ball->setcolor(1, 0, 0);	//red ball
+	ball->translate(2, 3);
 	cs1->objectAddFront(ball);
 }
 
+// Initializes the teams on the board
 void WorldDrawer2d::initTeams()
 {
 	initGoalKeepers();

@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Circle2d.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rectangle2d.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="WorldDrawer2d_gl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Ball.h" />
     <ClInclude Include="Circle2d.h" />
     <ClInclude Include="HeadersAndDefines.h" />
     <ClInclude Include="Rectangle2d.h" />

@@ -10,7 +10,7 @@ class Circle2d :
 public:
 	Circle2d();
 	Circle2d(float radius);
-	~Circle2d();
+	virtual ~Circle2d();
 
 	void scale(float scaleFactor);							// Overridden scale method from Object2d
 	void scaleRelativeToPoint(Point2d p, float scaleFactor);// Overridden relative scale method from Object2d

@@ -41,7 +41,7 @@ class Object2d{
 		virtual ~Object2d();
 
 		void rotateSelf(float angleRad);						//rotatie a obiectului relativ la centrul sau
-		void translate(float x, float y);						//translatie
+		virtual void translate(float x, float y);						//translatie
 		void rotateRelativeToPoint(Point2d pct, float angleRad);//rotatie relativa la punctul p
 		virtual void scale(float sx, float sy);							//scalare
 		virtual void scaleRelativeToPoint(Point2d p, float sx, float sy);//scalare relativa la punctul p
