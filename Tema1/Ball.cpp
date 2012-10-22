@@ -29,5 +29,8 @@ void Ball::init()
 void Ball::translate(float x, float y)
 {
 	Object2d::translate(x, y);
+	// Also move the previews center
+	previews_center.x = current_center.x;
+	previews_center.y = current_center.y;
 	current_center.translate(x, y);
 }

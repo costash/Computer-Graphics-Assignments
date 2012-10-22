@@ -82,6 +82,7 @@ const float max_player_y = 12.8f;
 
 // Func declaration
 static float getRandomFloat(float low, float high);
+static int getRandomInt(int low, int high);
 
 //add
 void WorldDrawer2d::init(){
@@ -104,8 +105,15 @@ void WorldDrawer2d::initBall()
 {
 	ball = new Ball(ball_radius);
 	ball->setcolor(1, 0, 0);	//red ball
-	ball->translate(2, 3);
 	cs1->objectAddFront(ball);
+
+	moveBallToRandomPlayer(ball);
+}
+
+void WorldDrawer2d::moveBallToRandomPlayer(Object2d *ball)
+{
+	int random_player = getRandomInt(0, players.size() - 1);
+	ball->translate(players[random_player]->axiscenter.x, players[random_player]->axiscenter.y);
 }
 
 // Initializes the teams on the board
@@ -189,6 +197,13 @@ static float getRandomFloat(float low, float high)
 	//return low + (float)(std::rand() / ( (float)RAND_MAX / (high - low) ));
 	std::uniform_real_distribution<> distribution(low, high);
 	return (float)distribution(generator);
+}
+
+// Generate random int number in range
+static int getRandomInt(int low, int high)
+{
+	std::uniform_int_distribution<> disrtibution(low, high);
+	return (int)disrtibution(generator);
 }
 
 // Inits the game board

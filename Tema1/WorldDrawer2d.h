@@ -1,6 +1,7 @@
 #pragma once
 #include "HeadersAndDefines.h"
 #include "Support2d.h"
+#include "Ball.h"
 
 
 //-----------------------------------------------------------------------------------------------------
@@ -31,6 +32,7 @@ class WorldDrawer2d{
 		static void initGoalKeepers();
 		static void initBoard();
 		static void initTeams();
+		static void WorldDrawer2d::moveBallToRandomPlayer(Object2d *ball);
 		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
 
 	public:
