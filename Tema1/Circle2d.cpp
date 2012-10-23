@@ -1,7 +1,7 @@
 #include "Circle2d.h"
 
 const int NUM_TRIANGLES = 20;		// Number of triangles used to draw a circle
-const float TWICE_PI = (float)(2.0f * M_PI);	// Math constant 2 * pi
+static const float TWICE_PI = (float)(2.0f * M_PI);	// Math constant 2 * pi
 const float DELTA = .001f;			// Error precision of calculus
 
 //-----------------------------------------------------------------------------------------------------
@@ -68,4 +68,14 @@ void Circle2d::init()
 			this->topology.push_back(1);
 	}
 	computeAxis();
+}
+
+void Circle2d::rotateRelativeToPoint(Point2d pct, float angleRad)
+{
+	Object2d::rotateRelativeToPoint(pct, angleRad);
+}
+
+Point2d& Circle2d::getCenter()
+{
+	return points[0];
 }

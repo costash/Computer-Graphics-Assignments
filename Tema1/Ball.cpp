@@ -24,6 +24,8 @@ void Ball::init()
 {
 	current_center = Point2d(0, 0);
 	previews_center = Point2d(0, 0);
+	at_player = &Circle2d(0);
+	posessed = false;
 }
 
 void Ball::translate(float x, float y)
@@ -33,4 +35,11 @@ void Ball::translate(float x, float y)
 	previews_center.x = current_center.x;
 	previews_center.y = current_center.y;
 	current_center.translate(x, y);
+}
+
+void Ball::rotateRelativeToPoint(Point2d pct, float angleRad)
+{
+	previews_center = current_center;
+	Circle2d::rotateRelativeToPoint(pct, angleRad);
+	current_center.rotateRelativeToPoint(pct, angleRad);
 }

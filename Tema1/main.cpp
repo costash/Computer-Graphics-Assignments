@@ -26,6 +26,8 @@
 //	Happy coding.
 //----------------------------------------------------------------------------------------------
 
+#define  _USE_MATH_DEFINES		// enables M_PI macro
+#include <cmath>
 #include "WorldDrawer2d.h"
 #include "Circle2d.h"
 #include "Rectangle2d.h"
@@ -49,11 +51,12 @@ Circle2d *circle1, *circle2;
 Object2d *out_border, *in_border;
 Object2d *out_net1, *in_net1, *out_net2, *in_net2;
 Object2d *net_line1, *net_line2, *board_center_line;
-Object2d *ball;
+Ball *ball;
 Object2d *goal_keeper;
 std::vector<Object2d *> team1, team2, players;
 
 // Constants
+static const float TWICE_PI = (float)(2.0f * M_PI);	// Math constant 2 * pi
 const int num_players = 6;
 
 const float out_length = 22.5f;
@@ -74,10 +77,10 @@ const float center_line_length = 22.f;
 const float ball_radius = 0.7f;
 const float player_radius = 1.f;
 const float min_dist_between_player_center = 3.f;
-const float min_player_x = -9.8f;
-const float max_player_x = 9.8f;
-const float min_player_y = -12.8f;
-const float max_player_y = 12.8f;
+const float min_player_x = -9.7f;
+const float max_player_x = 9.7f;
+const float min_player_y = -12.7f;
+const float max_player_y = 12.7f;
 
 
 // Func declaration
@@ -110,10 +113,36 @@ void WorldDrawer2d::initBall()
 	moveBallToRandomPlayer(ball);
 }
 
-void WorldDrawer2d::moveBallToRandomPlayer(Object2d *ball)
+void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 {
 	int random_player = getRandomInt(0, players.size() - 1);
-	ball->translate(players[random_player]->axiscenter.x, players[random_player]->axiscenter.y);
+	ball->translate(players[random_player]->getCenter().x, players[random_player]->getCenter().y);
+
+	printf("2pi = %f \n", TWICE_PI);
+	
+	ball->translate(player_radius, 0);
+	bool position_is_good = false;
+	while (!position_is_good)
+	{
+		float random_angle = getRandomFloat(0, TWICE_PI);
+		ball->rotateRelativeToPoint(players[random_player]->getCenter(), random_angle);
+		if (isCircleOnBoard(ball))
+		{
+			position_is_good = true;
+			ball->at_player = players[random_player];
+			ball->posessed = true;
+		}
+	}
+}
+
+// Checks if a Circle object is on board
+bool WorldDrawer2d::isCircleOnBoard(Circle2d *ball)
+{
+	Point2d center = ball->getCenter();
+	if ( abs(center.x) + ball->radius >= out_small_length - .1 ||
+		abs(center.y) + ball_radius >= net_translate_y - .1)
+		return false;
+	return true;
 }
 
 // Initializes the teams on the board
@@ -134,11 +163,11 @@ void WorldDrawer2d::initTeams()
 			bool bad_position = false;
 			for (unsigned int j = 0; j < players.size(); ++j)
 			{
-				if ( abs(player->axiscenter.x - players[j]->axiscenter.x) < min_dist_between_player_center &&
-					abs(player->axiscenter.y - players[j]->axiscenter.y) < min_dist_between_player_center)
+				if ( abs(player->getCenter().x - players[j]->getCenter().x) < min_dist_between_player_center &&
+					abs(player->getCenter().y - players[j]->getCenter().y) < min_dist_between_player_center)
 				{
 					bad_position = true;
-					delete(player);
+					delete player;
 					break;
 				}
 			}
@@ -262,22 +291,15 @@ void WorldDrawer2d::initBoard()
 }
 
 void WorldDrawer2d::onIdle(){	//per frame
-	//Sleep(25);
+	Sleep(500);
 	static int iteration=1;
-	static bool o1dir=true;
-	static bool o2dir=true;
-	static bool o3dir=true;
-	static bool o3dir2=true;
 	static int dir = 1;
-	if(animation){
+	if(animation && iteration < 3){
 		if (iteration%30 == 0)
 			dir *= -1;
 
-		/*o1->translate(dir, 0);
-
-		o2->rotateSelf(0.1);
-		o2->rotateRelativeToPoint(cs2->axiscenter, 0.1);
-		o2->translate(0.5, 0.5);*/
+		ball->translate(ball->current_center.x - ball->at_player->getCenter().x,
+			ball->current_center.y - ball->at_player->getCenter().y);
 
 		iteration++;
 	}

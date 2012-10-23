@@ -1,5 +1,4 @@
 #pragma once
-#include <cmath>
 
 //forward declaration (Point2d are nevoie de Transform2d si Transform2d are nevoie de Point2d, dar Transform 2d
 //					   este pus in alt fisier pentru convenienta de implementare a labului, deci se foloseste

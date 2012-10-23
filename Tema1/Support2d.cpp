@@ -64,7 +64,7 @@ Object2d::Object2d(std::vector<Point2d> points, std::vector<int> topology){
 Object2d::~Object2d(){
 }		
 //get center
-void Object2d::getCenter(float *x, float *y){
+void Object2d::getCenter(float * const x,  float * const y) const {
 	float centerx=0;
 	float centery=0;
 	if(topology.size()>0 && points.size()>0){
@@ -78,13 +78,21 @@ void Object2d::getCenter(float *x, float *y){
 		centerx=0;
 		centery=0;
 	}
-	(*x)=centerx;
-	(*y)=centery;
+	*x = centerx;
+	*y = centery;
+}
+
+Point2d& Object2d::getCenter ()
+{
+	getCenter(&center.x, &center.y);
+	return center;
 }
 //recompute axis
 void Object2d::computeAxis(){
 	float centerx, centery;
 	getCenter(&centerx, &centery);
+	center.x = centerx;
+	center.y = centery;
 	float oldux=axisup.x-axiscenter.x;
 	float olduy=axisup.y-axiscenter.y;
 	float oldrx=axisright.x-axiscenter.x;
@@ -125,6 +133,7 @@ void Object2d::rotateRelativeToPoint(Point2d pct, float angleRad){
 	axiscenter.rotateRelativeToPoint(pct,angleRad);
 	axisup.rotateRelativeToPoint(pct,angleRad);
 	axisright.rotateRelativeToPoint(pct, angleRad);
+	center.rotateRelativeToPoint(pct, angleRad);
 }
 void Object2d::scale(float sx, float sy){
 	//scale each pt

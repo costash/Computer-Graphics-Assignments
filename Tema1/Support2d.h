@@ -42,7 +42,7 @@ class Object2d{
 
 		void rotateSelf(float angleRad);						//rotatie a obiectului relativ la centrul sau
 		virtual void translate(float x, float y);						//translatie
-		void rotateRelativeToPoint(Point2d pct, float angleRad);//rotatie relativa la punctul p
+		virtual void rotateRelativeToPoint(Point2d pct, float angleRad);//rotatie relativa la punctul p
 		virtual void scale(float sx, float sy);							//scalare
 		virtual void scaleRelativeToPoint(Point2d p, float sx, float sy);//scalare relativa la punctul p
 		void setcolor(float colorx, float colory, float colorz);//set culoare
@@ -52,9 +52,11 @@ class Object2d{
 		std::vector<Point2d> points;							//punctele obiectului
 		std::vector<int> topology;								//topologia punctelor obiectului
 		float colorx, colory, colorz;							//culoare
+		virtual Point2d& getCenter();				//Centrul obiectului
 	protected:
-		void getCenter(float *x, float *y);	//functii helper
+		void Object2d::getCenter(float * const x,  float * const y) const;	//functii helper
 		void computeAxis();					//
+		Point2d center;
 };
 
 
