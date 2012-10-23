@@ -41,7 +41,7 @@
 std::random_device random_device;
 std::mt19937 generator(random_device());
 
-bool WorldDrawer2d::animation=true;
+bool WorldDrawer2d::animation=false;
 
 
 //used global vars
@@ -294,15 +294,34 @@ void WorldDrawer2d::onIdle(){	//per frame
 	Sleep(500);
 	static int iteration=1;
 	static int dir = 1;
-	if(animation && iteration < 3){
+	if(animation && iteration < 30){
 		if (iteration%30 == 0)
 			dir *= -1;
 
 		ball->translate(ball->current_center.x - ball->at_player->getCenter().x,
 			ball->current_center.y - ball->at_player->getCenter().y);
 
+		if (isBallPlayerColision())
+			animation = false;
+
 		iteration++;
 	}
+}
+
+bool WorldDrawer2d::isBallPlayerColision()
+{
+	for (unsigned int i = 0; i < players.size(); ++i)
+	{
+		float deltax = ball->getCenter().x - players[i]->getCenter().x;
+		float deltay = ball->getCenter().y - players[i]->getCenter().y;
+		if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius )
+		{
+			ball->at_player = players[i];
+			ball->posessed = true;
+			return true;
+		}
+	}
+	return false;
 }
 
 void WorldDrawer2d::onKey(unsigned char key){
