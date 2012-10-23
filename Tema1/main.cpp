@@ -75,12 +75,18 @@ const float center_line_height = 0.25f;
 const float center_line_length = 22.f;
 
 const float ball_radius = 0.7f;
+const float ball_delta_x = out_small_length / 2 - ball_radius - .1;
+const float ball_delta_y = net_line_translate_y - ball_radius - .1;
 const float player_radius = 1.f;
 const float min_dist_between_player_center = 3.f;
 const float min_player_x = -9.7f;
 const float max_player_x = 9.7f;
 const float min_player_y = -12.7f;
 const float max_player_y = 12.7f;
+
+const float speed = 0.1f;
+const float rotate_speed = 0.1f;
+const float rotation_step = 1.f;
 
 
 // Func declaration
@@ -140,7 +146,7 @@ bool WorldDrawer2d::isCircleOnBoard(Circle2d *ball)
 {
 	Point2d center = ball->getCenter();
 	if ( abs(center.x) + ball->radius >= out_small_length - .1 ||
-		abs(center.y) + ball_radius >= net_translate_y - .1)
+		abs(center.y) + ball_radius >= net_line_translate_y - .1)
 		return false;
 	return true;
 }
@@ -291,21 +297,88 @@ void WorldDrawer2d::initBoard()
 }
 
 void WorldDrawer2d::onIdle(){	//per frame
-	Sleep(500);
+	Sleep(33);
 	static int iteration=1;
 	static int dir = 1;
-	if(animation && iteration < 30){
+	if(animation){
 		if (iteration%30 == 0)
 			dir *= -1;
 
-		ball->translate(ball->current_center.x - ball->at_player->getCenter().x,
-			ball->current_center.y - ball->at_player->getCenter().y);
+		if (ball->posessed)
+		{
+			ball->translate(speed * (ball->current_center.x - ball->at_player->getCenter().x),
+				speed * (ball->current_center.y - ball->at_player->getCenter().y));
+			ball->posessed = false;
+		}
+		else
+		{
+			Point2d wallDirection = wallColisionDirection();
 
+			ball->translate(ball->current_center.x - ball->previews_center.x,
+				ball->current_center.y - ball->previews_center.y);
+
+			ball->translate(wallDirection.x, wallDirection.y);
+		}
 		if (isBallPlayerColision())
 			animation = false;
 
 		iteration++;
 	}
+}
+
+Point2d WorldDrawer2d::wallColisionDirection()
+{
+	Point2d current = ball->current_center;
+	Point2d previous = ball->previews_center;
+	Point2d direction(current.x - previous.x, current.y - previous.y);
+
+	if ( abs(current.x + direction.x) <= ball_delta_x
+		&& abs(current.y + direction.y) > ball_delta_y )
+	{
+		return Point2d(direction.x, -direction.y);
+	}
+	else if ( abs(current.x + direction.x) > ball_delta_x
+		&& abs(current.y + direction.y) <= ball_delta_y )
+	{
+		return Point2d(-direction.x, direction.y);
+	}
+	else if ( abs(current.x + direction.x) > ball_delta_x
+		&& abs(current.y + direction.y) > ball_delta_y )
+	{
+		return Point2d(-direction.x, -direction.y);
+	}
+
+	return Point2d(direction.x, direction.y);
+}
+
+bool WorldDrawer2d::isWallColision()
+{
+	Point2d current = ball->current_center;
+	Point2d previous = ball->previews_center;
+	Point2d direction(current.x - previous.x, current.y - previous.y);
+
+	if ( abs(current.x + direction.x) > ball_delta_x
+		|| abs(current.y + direction.y) > ball_delta_y )
+		return true;
+	return false;
+}
+
+bool WorldDrawer2d::isBallPlayerColision(Point2d point)
+{
+	for (unsigned int i = 0; i < players.size(); ++i)
+	{
+		if (players[i]->getCenter().x != ball->at_player->getCenter().x &&
+			players[i]->getCenter().y != ball->at_player->getCenter().y)
+		{
+			float deltax = point.x - players[i]->getCenter().x;
+			float deltay = point.y - players[i]->getCenter().y;
+			if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius )
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 bool WorldDrawer2d::isBallPlayerColision()
@@ -326,19 +399,52 @@ bool WorldDrawer2d::isBallPlayerColision()
 
 void WorldDrawer2d::onKey(unsigned char key){
 	switch(key){
-		case KEY_UP:
-			break;
-		case KEY_DOWN:
-			break;
-		case KEY_LEFT:
-			break;
-		case KEY_RIGHT:
-			break;
 		case KEY_SPACE:
 				animation=!animation;
 			break;
+		case 'w':
+				// move up
+
+			break;
+		case 'a':
+				// move left
+
+			break;
+		case 's':
+				// move down
+				
+			break;
+		case 'd':
+				// move right
+
+			break;
+		case 'q':
+				// rotate counterclockwise
+				rotateBallWithPlayer(rotate_speed * rotation_step);
+			break;
+		case 'e':
+				// rotate clockwise
+				rotateBallWithPlayer(-rotate_speed * rotation_step);
+			break;
 		default:
 			break;
+	}
+}
+
+void WorldDrawer2d::rotateBallWithPlayer(float radius)
+{
+	if(ball->posessed)
+	{
+		Point2d center = ball->current_center;
+		center.rotateRelativeToPoint(ball->at_player->getCenter(), radius);
+
+		if (abs(center.x) > ball_delta_x || abs(center.y) > ball_delta_y)
+			return;
+
+		if (isBallPlayerColision(center))
+			return;
+
+		ball->rotateRelativeToPoint(ball->at_player->getCenter(), radius);
 	}
 }
 

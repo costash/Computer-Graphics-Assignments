@@ -36,7 +36,12 @@ class WorldDrawer2d{
 		static void moveBallRandomAngle(Ball *ball);
 		static bool isCircleOnBoard(Circle2d *ball);
 		static bool isBallPlayerColision();
+		static bool isBallPlayerColision(Point2d point);
+		static Point2d wallColisionDirection();
 		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
+
+		static bool isWallColision();
+		static void rotateBallWithPlayer(float radius);
 
 	public:
 		static bool animation;
