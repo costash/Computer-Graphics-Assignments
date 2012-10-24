@@ -104,7 +104,8 @@ void WorldDrawer2d::keyboardCallbackFunction(unsigned char key, int posx, int po
 WorldDrawer2d::WorldDrawer2d(int argc, char **argv, int windowWidth, int windowHeight, int windowStartX, int windowStartY, std::string windowName){
 	//init
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH|GLUT_MULTISAMPLE);
+	glEnable(GLUT_MULTISAMPLE);
 	glutInitWindowSize(windowWidth,windowHeight);
 	glutInitWindowPosition(windowStartX,windowStartY);
 	glutCreateWindow(windowName.c_str());

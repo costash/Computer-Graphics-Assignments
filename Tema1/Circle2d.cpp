@@ -75,6 +75,7 @@ void Circle2d::rotateRelativeToPoint(Point2d pct, float angleRad)
 	Object2d::rotateRelativeToPoint(pct, angleRad);
 }
 
+// Returns the center of the circle
 Point2d& Circle2d::getCenter()
 {
 	return points[0];

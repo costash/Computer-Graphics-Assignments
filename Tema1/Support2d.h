@@ -52,7 +52,7 @@ class Object2d{
 		std::vector<Point2d> points;							//punctele obiectului
 		std::vector<int> topology;								//topologia punctelor obiectului
 		float colorx, colory, colorz;							//culoare
-		virtual Point2d& getCenter();				//Centrul obiectului
+		virtual Point2d& getCenter();							//Centrul obiectului
 	protected:
 		void Object2d::getCenter(float * const x,  float * const y) const;	//functii helper
 		void computeAxis();					//
