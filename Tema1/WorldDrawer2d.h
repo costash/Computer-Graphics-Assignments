@@ -46,6 +46,8 @@ class WorldDrawer2d{
 		static bool isGoal(Point2d point);
 		static void rotateBallWithPlayer(float radius);
 
+		static void invertColors();
+
 	public:
 		static bool animation;
 		static CoordinateSystem2d cs_basis;

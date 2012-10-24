@@ -146,7 +146,7 @@ void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 	int random_player = getRandomInt(0, players.size() - 1);
 	ball->translate(players[random_player]->getCenter().x, players[random_player]->getCenter().y);
 	
-	ball->translate(player_radius, 0);
+	ball->translate(player_radius + .2, 0);
 	bool position_is_good = false;
 	while (!position_is_good)
 	{
@@ -170,7 +170,13 @@ void WorldDrawer2d::resetBallAfterGoal()
 
 void WorldDrawer2d::resetGame()
 {
-	Sleep(1000);
+	for (int i = 0; i < 4; ++i)
+	{
+		invertColors();
+		displayCallbackFunction();
+		Sleep(500);
+	}
+
 	initTeams();
 	initBall();
 	score_blue = 0;
@@ -183,6 +189,15 @@ void WorldDrawer2d::resetGame()
 	scores.clear();
 	score_lines_down.clear();
 	score_lines_up.clear();
+}
+
+void WorldDrawer2d::invertColors()
+{
+	for (unsigned int i = 0; i < cs1->objects.size(); ++i)
+	{
+		Object2d *o = cs1->objects[i];
+		o->setcolor(1 - o->colorx, 1 - o->colory, 1 - o->colorz);
+	}
 }
 
 // Checks if a Circle object is on board
@@ -364,6 +379,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 		{
 			ball->translate(speed * (ball->current_center.x - ball->at_player->getCenter().x),
 				speed * (ball->current_center.y - ball->at_player->getCenter().y));
+			ball->at_player  = NULL;
 			ball->posessed = false;
 		}
 
@@ -500,7 +516,7 @@ bool WorldDrawer2d::isBallPlayerColision(Point2d point)
 		{
 			float deltax = point.x - players[i]->getCenter().x;
 			float deltay = point.y - players[i]->getCenter().y;
-			if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius )
+			if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius + .2f )
 			{
 				return true;
 			}
@@ -515,7 +531,7 @@ bool WorldDrawer2d::isBallPlayerColision()
 	{
 		float deltax = ball->getCenter().x - players[i]->getCenter().x;
 		float deltay = ball->getCenter().y - players[i]->getCenter().y;
-		if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius )
+		if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius + .2f )
 		{
 			ball->at_player = players[i];
 			ball->posessed = true;
