@@ -42,6 +42,7 @@ std::random_device random_device;
 std::mt19937 generator(random_device());
 
 bool WorldDrawer2d::animation=false;
+int WorldDrawer2d::score_blue = 0, WorldDrawer2d::score_green = 0;		// Game score
 
 
 //used global vars
@@ -51,6 +52,13 @@ Circle2d *circle1, *circle2;
 Object2d *out_border, *in_border;
 Object2d *out_net1, *in_net1, *out_net2, *in_net2;
 Object2d *net_line1, *net_line2, *board_center_line;
+
+Object2d *score_up;
+Object2d *score_down;
+
+std::vector<Object2d *> score_lines_up;
+std::vector<Object2d *> score_lines_down;
+std::vector<Object2d *> scores;
 Ball *ball;
 Object2d *goal_keeper;
 std::vector<Object2d *> team1, team2, players;
@@ -73,6 +81,12 @@ const float net_line_height = 0.25f;
 const float net_line_translate_y = 13.875f;
 const float center_line_height = 0.25f;
 const float center_line_length = 22.f;
+
+const float score_line_length = .4f;
+const float score_line_height = 4.5f;
+const float score_line_translate_y = 4.f;
+const float score_line_translate_x1 = out_length / 2 + 2.f;
+const float score_line_step_x = 2 * score_line_length;
 
 const float ball_radius = 0.7f;
 const float ball_delta_x = out_small_length / 2 - ball_radius - .1;
@@ -101,8 +115,14 @@ void WorldDrawer2d::init(){
 	cs_used.push_back(cs1);
 	cs_used.push_back(cs2);
 	
+	
 
 	initBoard();
+
+	// Game score
+	score_blue = 0;
+	score_green = 0;		
+	animation = false;
 
 	initTeams();
 	initBall();
@@ -112,6 +132,8 @@ void WorldDrawer2d::init(){
 // Initializes the ball on the board
 void WorldDrawer2d::initBall()
 {
+	if (ball != NULL)
+		delete ball;
 	ball = new Ball(ball_radius);
 	ball->setcolor(1, 0, 0);	//red ball
 	cs1->objectAddFront(ball);
@@ -123,8 +145,6 @@ void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 {
 	int random_player = getRandomInt(0, players.size() - 1);
 	ball->translate(players[random_player]->getCenter().x, players[random_player]->getCenter().y);
-
-	printf("2pi = %f \n", TWICE_PI);
 	
 	ball->translate(player_radius, 0);
 	bool position_is_good = false;
@@ -141,19 +161,54 @@ void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 	}
 }
 
+void WorldDrawer2d::resetBallAfterGoal()
+{
+	//move back to origin
+	ball->translate(-ball->getCenter().x, -ball->getCenter().y);
+	moveBallToRandomPlayer(ball);
+}
+
+void WorldDrawer2d::resetGame()
+{
+	Sleep(1000);
+	initTeams();
+	initBall();
+	score_blue = 0;
+	score_green = 0;
+	for (unsigned int i = 0; i < scores.size(); ++i)
+	{
+		cs1->objectRemove(scores[i]);
+		delete scores[i];
+	}
+	scores.clear();
+	score_lines_down.clear();
+	score_lines_up.clear();
+}
+
 // Checks if a Circle object is on board
 bool WorldDrawer2d::isCircleOnBoard(Circle2d *ball)
 {
 	Point2d center = ball->getCenter();
-	if ( abs(center.x) + ball->radius >= out_small_length - .1 ||
+	if ( abs(center.x) + ball->radius >= out_small_length / 2 - .1 ||
 		abs(center.y) + ball_radius >= net_line_translate_y - .1)
 		return false;
 	return true;
 }
 
-// Initializes the teams on the board
+// Initializes the teams on the board. Team1 is green attacking down. Team 2
+// is blue, attacking up.
 void WorldDrawer2d::initTeams()
 {
+	// Clean up players
+	team1.clear();
+	team2.clear();
+	for (unsigned int i = 0; i < players.size(); ++i)
+	{
+		cs1->objectRemove(players[i]);
+		delete players[i];
+	}
+	players.clear();
+
 	initGoalKeepers();
 
 	for (unsigned int i = 0; i < num_players * 2; ++i)
@@ -297,21 +352,86 @@ void WorldDrawer2d::initBoard()
 }
 
 void WorldDrawer2d::onIdle(){	//per frame
-	Sleep(33);
+	Sleep(20);
 	static int iteration=1;
 	static int dir = 1;
 	if(animation){
 		if (iteration%30 == 0)
 			dir *= -1;
 
+		// ball is at player
 		if (ball->posessed)
 		{
 			ball->translate(speed * (ball->current_center.x - ball->at_player->getCenter().x),
 				speed * (ball->current_center.y - ball->at_player->getCenter().y));
 			ball->posessed = false;
 		}
+
+		// Possible colision with walls
 		else
 		{
+			Point2d nextPosition(2 * ball->current_center.x - ball->previews_center.x,
+				2 * ball->current_center.y - ball->previews_center.y);
+			if (isGoal(nextPosition))
+			{
+				ball->translate(ball->current_center.x - ball->previews_center.x,
+					ball->current_center.y - ball->previews_center.y);
+				animation = false;
+
+				// Goal up, so Blue team increases score (team2)
+				if (ball->current_center.y > 0)
+				{
+					++score_blue;
+					score_down = new Rectangle2d(score_line_length, score_line_height);
+					score_down->setcolor(0.5, 0.3, 0);
+					score_down->translate(score_line_translate_x1 + (score_blue - 1) * score_line_step_x,
+						score_line_translate_y);
+					cs1->objectAddFront(score_down);
+					score_lines_down.push_back(score_down);
+					scores.push_back(score_down);
+
+					if (score_blue == 3)
+					{
+						printf("Blue team wins!\n");
+						resetGame();
+						return;
+					}
+					else
+					{
+						printf("Score for blue team: %d\n", score_blue);
+						resetBallAfterGoal();
+						return;
+					}
+				}
+
+				// Goal up, so Green team increases score (team1)
+				if (ball->current_center.y < 0)
+				{
+					++score_green;
+					score_up = new Rectangle2d(score_line_length, score_line_height);
+					score_up->setcolor(0.5, 0.3, 0);
+					score_up->translate(score_line_translate_x1 + (score_green - 1) * score_line_step_x,
+						-score_line_translate_y);
+					cs1->objectAddFront(score_up);
+					score_lines_up.push_back(score_up);
+					scores.push_back(score_up);
+
+					if (score_green == 3)
+					{
+						printf("Green team wins!\n");
+						resetGame();
+						return;
+					}
+					else
+					{
+						printf("Score for green team: %d\n", score_green);
+						resetBallAfterGoal();
+						return;
+					}
+				}
+
+			}
+
 			Point2d wallDirection = wallColisionDirection();
 
 			ball->translate(ball->current_center.x - ball->previews_center.x,
@@ -324,6 +444,14 @@ void WorldDrawer2d::onIdle(){	//per frame
 
 		iteration++;
 	}
+}
+
+bool WorldDrawer2d::isGoal(Point2d point)
+{
+	if (abs(point.y) >= ball_delta_y && 
+		abs(point.x) <= net_line_length / 2)
+		return true;
+	return false;
 }
 
 Point2d WorldDrawer2d::wallColisionDirection()
@@ -426,6 +554,9 @@ void WorldDrawer2d::onKey(unsigned char key){
 				// rotate clockwise
 				rotateBallWithPlayer(-rotate_speed * rotation_step);
 			break;
+		case 'r':
+				// Game reset
+				resetGame();
 		default:
 			break;
 	}

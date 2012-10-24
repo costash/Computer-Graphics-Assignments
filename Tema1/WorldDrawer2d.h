@@ -39,12 +39,16 @@ class WorldDrawer2d{
 		static bool isBallPlayerColision(Point2d point);
 		static Point2d wallColisionDirection();
 		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
+		static void resetGame();
 
 		static bool isWallColision();
+		static void resetBallAfterGoal();
+		static bool isGoal(Point2d point);
 		static void rotateBallWithPlayer(float radius);
 
 	public:
 		static bool animation;
 		static CoordinateSystem2d cs_basis;
 		static std::vector<CoordinateSystem2d*> cs_used;
+		static int score_blue, score_green;		// Game score
 };
