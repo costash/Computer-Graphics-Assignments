@@ -1,6 +1,6 @@
 #include "Circle2d.h"
 
-const int NUM_TRIANGLES = 20;		// Number of triangles used to draw a circle
+const int NUM_TRIANGLES = 32;		// Number of triangles used to draw a circle
 static const float TWICE_PI = (float)(2.0f * M_PI);	// Math constant 2 * pi
 const float DELTA = .001f;			// Error precision of calculus
 

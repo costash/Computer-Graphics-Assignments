@@ -89,10 +89,10 @@ const float score_line_translate_x1 = out_length / 2 + 2.f;
 const float score_line_step_x = 2 * score_line_length;
 
 const float ball_radius = 0.7f;
-const float ball_delta_x = out_small_length / 2 - ball_radius - .1;
-const float ball_delta_y = net_line_translate_y - ball_radius - .1;
+const float ball_delta_x = out_small_length / 2 - ball_radius - .1f;
+const float ball_delta_y = net_line_translate_y - ball_radius - .1f;
 const float player_radius = 1.f;
-const float min_dist_between_player_center = 3.f;
+const float min_dist_between_player_center = 2 * player_radius + 2 * ball_radius + .1f;
 const float min_player_x = -9.7f;
 const float max_player_x = 9.7f;
 const float min_player_y = -12.7f;
@@ -146,7 +146,8 @@ void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 	int random_player = getRandomInt(0, players.size() - 1);
 	ball->translate(players[random_player]->getCenter().x, players[random_player]->getCenter().y);
 	
-	ball->translate(player_radius + .2, 0);
+	/*ball->translate(player_radius + .21, 0);*/
+	ball->translate(ball_radius + player_radius + .01f, 0);
 	bool position_is_good = false;
 	while (!position_is_good)
 	{
@@ -161,9 +162,32 @@ void WorldDrawer2d::moveBallToRandomPlayer(Ball *ball)
 	}
 }
 
+void WorldDrawer2d::rotateBallWithPlayer(float radius)
+{
+	if(ball->posessed)
+	{
+		Point2d center = ball->current_center;
+		center.rotateRelativeToPoint(ball->at_player->getCenter(), radius);
+
+		if (abs(center.x) > ball_delta_x || abs(center.y) > ball_delta_y)
+			return;
+
+		if (isBallPlayerColision(center))
+			return;
+
+		ball->rotateRelativeToPoint(ball->at_player->getCenter(), radius);
+	}
+}
+
 void WorldDrawer2d::resetBallAfterGoal()
 {
 	//move back to origin
+	ball->setcolor(1 - ball->colorx, 1 - ball->colory, 1 - ball->colorz);
+	displayCallbackFunction();
+	Sleep(100);
+	ball->setcolor(1 - ball->colorx, 1 - ball->colory, 1 - ball->colorz);
+	displayCallbackFunction();
+	Sleep(100);
 	ball->translate(-ball->getCenter().x, -ball->getCenter().y);
 	moveBallToRandomPlayer(ball);
 }
@@ -369,10 +393,7 @@ void WorldDrawer2d::initBoard()
 void WorldDrawer2d::onIdle(){	//per frame
 	Sleep(20);
 	static int iteration=1;
-	static int dir = 1;
 	if(animation){
-		if (iteration%30 == 0)
-			dir *= -1;
 
 		// ball is at player
 		if (ball->posessed)
@@ -399,7 +420,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 				{
 					++score_blue;
 					score_down = new Rectangle2d(score_line_length, score_line_height);
-					score_down->setcolor(0.5, 0.3, 0);
+					score_down->setcolor(0.5f, 0.3f, 0.f);
 					score_down->translate(score_line_translate_x1 + (score_blue - 1) * score_line_step_x,
 						score_line_translate_y);
 					cs1->objectAddFront(score_down);
@@ -425,7 +446,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 				{
 					++score_green;
 					score_up = new Rectangle2d(score_line_length, score_line_height);
-					score_up->setcolor(0.5, 0.3, 0);
+					score_up->setcolor(0.5f, 0.3f, 0.f);
 					score_up->translate(score_line_translate_x1 + (score_green - 1) * score_line_step_x,
 						-score_line_translate_y);
 					cs1->objectAddFront(score_up);
@@ -516,7 +537,7 @@ bool WorldDrawer2d::isBallPlayerColision(Point2d point)
 		{
 			float deltax = point.x - players[i]->getCenter().x;
 			float deltay = point.y - players[i]->getCenter().y;
-			if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius + .2f )
+			if ( deltax * deltax + deltay * deltay <= (ball_radius + player_radius) * (ball_radius + player_radius) )
 			{
 				return true;
 			}
@@ -531,7 +552,7 @@ bool WorldDrawer2d::isBallPlayerColision()
 	{
 		float deltax = ball->getCenter().x - players[i]->getCenter().x;
 		float deltay = ball->getCenter().y - players[i]->getCenter().y;
-		if ( deltax * deltax + deltay * deltay <= ball_radius + player_radius + .2f )
+		if ( deltax * deltax + deltay * deltay <= (ball_radius + player_radius) * (ball_radius + player_radius) )
 		{
 			ball->at_player = players[i];
 			ball->posessed = true;
@@ -577,24 +598,6 @@ void WorldDrawer2d::onKey(unsigned char key){
 			break;
 	}
 }
-
-void WorldDrawer2d::rotateBallWithPlayer(float radius)
-{
-	if(ball->posessed)
-	{
-		Point2d center = ball->current_center;
-		center.rotateRelativeToPoint(ball->at_player->getCenter(), radius);
-
-		if (abs(center.x) > ball_delta_x || abs(center.y) > ball_delta_y)
-			return;
-
-		if (isBallPlayerColision(center))
-			return;
-
-		ball->rotateRelativeToPoint(ball->at_player->getCenter(), radius);
-	}
-}
-
 
 int main(int argc, char** argv){
 
