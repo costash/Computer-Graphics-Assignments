@@ -101,10 +101,12 @@ const float max_player_x = -min_player_x;
 const float min_player_y = -(net_line_translate_y - min_dist_between_player_center);
 const float max_player_y = -min_player_y;
 
-// Ball speeds and step sizes
+// Ball and player speeds and step sizes
 const float speed = 0.1f;
 const float rotate_speed = 0.1f;
 const float rotation_step = 1.f;
+const float max_player_move_radius = 3 * player_radius;
+const float translate_step = 0.2f;
 
 // Global functions declaration
 static float getRandomFloat(float low, float high);
@@ -221,7 +223,16 @@ bool WorldDrawer2d::isCircleOnBoard(Circle2d *ball)
 {
 	Point2d center = ball->getCenter();
 	if ( abs(center.x) + ball->radius >= out_small_length / 2 - .1 ||
-		abs(center.y) + ball_radius >= net_line_translate_y - .1)
+		abs(center.y) + ball->radius >= net_line_translate_y - .1)
+		return false;
+	return true;
+}
+
+// Checks wether a circle is on board (limited by x_half and y_half)
+bool WorldDrawer2d::isCircleOnBoard(Point2d center, float radius, float x_half, float y_half)
+{
+	if (abs(center.x) + radius >= x_half ||
+		abs(center.y) + radius >= y_half)
 		return false;
 	return true;
 }
@@ -428,6 +439,25 @@ bool WorldDrawer2d::isBallPlayerColision(Point2d point)
 }
 
 // Colision with player
+bool WorldDrawer2d::isPlayerPlayerColision(Point2d point)
+{
+	for (unsigned int i = 0; i < players.size(); ++i)
+	{
+		if (players[i]->getCenter().x != ball->at_player->getCenter().x &&
+			players[i]->getCenter().y != ball->at_player->getCenter().y)
+		{
+			float deltax = point.x - players[i]->getCenter().x;
+			float deltay = point.y - players[i]->getCenter().y;
+			if ( deltax * deltax + deltay * deltay <= (2 * player_radius) * (2 * player_radius) )
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+// Colision with player
 bool WorldDrawer2d::isBallPlayerColision()
 {
 	for (unsigned int i = 0; i < players.size(); ++i)
@@ -442,6 +472,26 @@ bool WorldDrawer2d::isBallPlayerColision()
 		}
 	}
 	return false;
+}
+
+// Translate the ball with the player that holds it. Returns false if it is not permitted
+bool WorldDrawer2d::translateBallWithPlayer(float tx, float ty)
+{
+	Point2d ballNext(ball->getCenter().x + tx, ball->getCenter().y + ty);
+	Point2d playerNext(ball->at_player->getCenter().x + tx, ball->at_player->getCenter().y + ty);
+
+	bool allow = isCircleOnBoard(ballNext, ball->radius, out_small_length / 2 - .1f,
+		net_translate_y - .1f);
+	allow = allow && isCircleOnBoard(playerNext, player_radius, max_player_x, max_player_y);
+	allow = allow && !isBallPlayerColision(ballNext);
+	allow = allow && !isPlayerPlayerColision(playerNext);
+
+	if (allow)
+	{
+		ball->translate(tx, ty);
+		ball->at_player->translate(tx, ty);
+	}
+	return allow;
 }
 
 // Generate random Point2d in range
@@ -583,19 +633,19 @@ void WorldDrawer2d::onKey(unsigned char key){
 			break;
 		case 'w':
 				// move up
-
+				translateBallWithPlayer(0, translate_step);
 			break;
 		case 'a':
 				// move left
-
+				translateBallWithPlayer(-translate_step, 0);
 			break;
 		case 's':
 				// move down
-				
+				translateBallWithPlayer(0, -translate_step);
 			break;
 		case 'd':
 				// move right
-
+				translateBallWithPlayer(translate_step, 0);
 			break;
 		case 'q':
 				// rotate counterclockwise

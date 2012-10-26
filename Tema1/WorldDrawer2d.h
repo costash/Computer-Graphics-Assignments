@@ -37,6 +37,7 @@ class WorldDrawer2d{
 		static bool isCircleOnBoard(Circle2d *ball);
 		static bool isBallPlayerColision();
 		static bool isBallPlayerColision(Point2d point);
+		static bool isPlayerPlayerColision(Point2d point);
 		static Point2d wallColisionDirection();
 		static Point2d getRandomPoint(float lowx, float highx, float lowy, float highy);
 		static void resetGame();
@@ -45,6 +46,8 @@ class WorldDrawer2d{
 		static void resetBallAfterGoal();
 		static bool isGoal(Point2d point);
 		static void rotateBallWithPlayer(float radius);
+		static bool translateBallWithPlayer(float tx, float ty);
+		static bool isCircleOnBoard(Point2d center, float radius, float x_half, float y_half);
 
 		static void invertColors();
 
