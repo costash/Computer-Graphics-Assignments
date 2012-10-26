@@ -102,7 +102,7 @@ const float min_player_y = -(net_line_translate_y - min_dist_between_player_cent
 const float max_player_y = -min_player_y;
 
 // Ball and player speeds and step sizes
-const float speed = 0.1f;
+const float speed = 0.15f;
 const float rotate_speed = 0.1f;
 const float rotation_step = 1.f;
 const float max_player_move_radius = 3 * player_radius;
@@ -536,6 +536,7 @@ void WorldDrawer2d::init(){
 	
 }
 
+// Callback function for idle
 void WorldDrawer2d::onIdle(){	//per frame
 	Sleep(20);
 	if(animation){
@@ -611,13 +612,17 @@ void WorldDrawer2d::onIdle(){	//per frame
 						return;
 					}
 				}
-
 			}
 
+			Point2d current = ball->current_center;
+			Point2d previous = ball->previews_center;
+			Point2d direction(current.x - previous.x, current.y - previous.y);
 			Point2d wallDirection = wallColisionDirection();
 
-			ball->translate(ball->current_center.x - ball->previews_center.x,
-				ball->current_center.y - ball->previews_center.y);
+			if ( abs(direction.x - wallDirection.x) > 0.001f &&
+				abs(direction.y - wallDirection.y) > 0.001f)
+				ball->translate(ball->current_center.x - ball->previews_center.x,
+					ball->current_center.y - ball->previews_center.y);
 
 			ball->translate(wallDirection.x, wallDirection.y);
 		}
@@ -626,6 +631,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 	}
 }
 
+// Callback function for keyboard press
 void WorldDrawer2d::onKey(unsigned char key){
 	switch(key){
 		case KEY_SPACE:
