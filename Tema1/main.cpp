@@ -568,7 +568,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 					score_down = new Rectangle2d(score_line_length, score_line_height);
 					score_down->setcolor(0.5f, 0.3f, 0.f);
 					score_down->translate(score_line_translate_x1 + (score_blue - 1) * score_line_step_x,
-						score_line_translate_y);
+						-score_line_translate_y);
 					cs1->objectAddFront(score_down);
 					score_lines_down.push_back(score_down);
 					scores.push_back(score_down);
@@ -594,7 +594,7 @@ void WorldDrawer2d::onIdle(){	//per frame
 					score_up = new Rectangle2d(score_line_length, score_line_height);
 					score_up->setcolor(0.5f, 0.3f, 0.f);
 					score_up->translate(score_line_translate_x1 + (score_green - 1) * score_line_step_x,
-						-score_line_translate_y);
+						score_line_translate_y);
 					cs1->objectAddFront(score_up);
 					score_lines_up.push_back(score_up);
 					scores.push_back(score_up);
