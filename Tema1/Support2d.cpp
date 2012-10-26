@@ -54,7 +54,7 @@ Object2d::Object2d(std::vector<Point2d> points, std::vector<int> topology){
 	//color
 	colorx=colory=colorz=1;
 	//drawaxis
-	drawaxis=true;
+	drawaxis=false;
 	//set axis
 	axiscenter.set(0,0);
 	axisup.set(0,1);
@@ -167,7 +167,7 @@ CoordinateSystem2d::CoordinateSystem2d(){
 	axiscenter.set(0,0);
 	axisright.set(20,0);
 	axisup.set(0,20);
-	draw_axis=true;
+	draw_axis=false;
 }
 CoordinateSystem2d::~CoordinateSystem2d(){
 }
