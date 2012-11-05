@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="lab">
+</Property><Property Name="Solution File" Value="D:\Dropbox\EGC\EGC-labs\lab2\lab2\lab.sln">
+</Property><Property Name="Date" Value="Saturday, 20 October, 2012">
+</Property><Property Name="Time" Value="17:30">
+</Property></Properties><Event ErrorLevel="0" Project="lab" Source="lab.vcproj" Description="Converting project file 'D:\Dropbox\EGC\EGC-labs\lab2\lab2\lab.vcproj'.">
+</Event><Event ErrorLevel="1" Project="lab" Source="lab.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="0" Project="lab" Source="lab.vcproj" Description="Done converting to new project file 'D:\Dropbox\EGC\EGC-labs\lab2\lab2\lab.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="lab" Source="lab.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="lab.sln" Description="Solution converted successfully">
+</Event><Event ErrorLevel="3" Project="" Source="lab.sln" Description="Converted">
+</Event></UpgradeLog>
