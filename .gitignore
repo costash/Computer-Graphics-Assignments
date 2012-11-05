@@ -14,6 +14,9 @@
 # Debug folder
 */Debug/*
 
+# Release folder
+*/Release/*
+
 # Inteli Sense files
 *.ncb
 *.opensdf
