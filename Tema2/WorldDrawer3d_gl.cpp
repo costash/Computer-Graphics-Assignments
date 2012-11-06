@@ -1,5 +1,7 @@
 #include "WorldDrawer3d.h"
 
+using namespace WorldDrawer3dNamespace;
+
 CoordinateSystem3d WorldDrawer3d::cs_basis;
 std::vector<CoordinateSystem3d*> WorldDrawer3d::cs_used;
 
@@ -152,14 +154,28 @@ void WorldDrawer3d::displayCallbackFunction(){
 	//swap buffers
 	glutSwapBuffers();
 }
-void WorldDrawer3d::keyboardCallbackFunction(unsigned char key, int posx, int posy){
-	if(key==KEY_ESC) glutExit();
-	//call client function
-	onKey(key);
+
+void WorldDrawer3d::keyDownCallbackFunction(unsigned char key, int posx, int posy)
+{
+	if (key == KEY_SPACE)
+		animation = !animation;
+	keyStates[key] = true;
 }
-void WorldDrawer3d::keyboardSpecialCallbackFunction(int key, int posx, int posy){
-	//call client function
-	onKey(key);
+
+void WorldDrawer3d::keyUpCallbackFunction(unsigned char key, int posx, int posy)
+{
+	keyStates[key] = false;
+}
+
+void WorldDrawer3d::specialKeyDownCallbackFunction(int key, int posx, int posy)
+{
+	keySpecialStates[key] = true;
+	//std::cerr << "Mouse (" << posx << "," << posy << ") ";
+}
+
+void WorldDrawer3d::specialKeyUpCallbackFunction(int key, int posx, int posy)
+{
+	keySpecialStates[key] = false;
 }
 
 WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowHeight, int windowStartX, int windowStartY, std::string windowName){
@@ -174,8 +190,12 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	glutDisplayFunc(displayCallbackFunction);
 	glutReshapeFunc(reshapeCallbackFunction);
 	glutIdleFunc(idleCallbackFunction);
-	glutKeyboardFunc(keyboardCallbackFunction);
-	glutSpecialFunc(keyboardSpecialCallbackFunction);
+
+	//Keyboard callbacks
+	glutKeyboardFunc(keyDownCallbackFunction);
+	glutKeyboardUpFunc(keyUpCallbackFunction);
+	glutSpecialFunc(specialKeyDownCallbackFunction);
+	glutSpecialUpFunc(specialKeyUpCallbackFunction);
 
 	glClearColor(0.4f,0.5f,1,1);
 

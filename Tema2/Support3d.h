@@ -31,7 +31,7 @@ class Point3d{
 class Object3d{
 	public:
 		Object3d(std::vector<Point3d> points, std::vector<int> topology);
-		~Object3d();
+		virtual ~Object3d();
 
 		void translate(float tx, float ty, float tz);			//translatie
 		void rotateXSelf(float angleRad);						//rotatie a obiectului relativ la centrul sau
