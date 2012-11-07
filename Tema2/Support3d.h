@@ -43,6 +43,10 @@ class Object3d{
 		void scale(float sx,float sy,float sz);
 		void scaleRelativeToPoint(Point3d p, float sx,float sy, float sz);
 		void setcolor(float colorx, float colory, float colorz);//set culoare
+
+		//desenare
+		virtual void draw();
+
 	public:
 		bool draw_axis;
 		Point3d axiscenter, axisup, axisright, axisfwd;			//axe obiect
@@ -79,6 +83,9 @@ class CoordinateSystem3d{
 		void rotateXSelf(float angleRad);
 		void rotateYSelf(float angleRad);
 		void rotateZSelf(float angleRad);
+
+		//desenare
+		void draw(float lineWidth);
 		
 	public:
 		bool draw_axis;

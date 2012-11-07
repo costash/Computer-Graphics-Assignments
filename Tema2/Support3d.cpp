@@ -1,5 +1,7 @@
 #include "Support3d.h"
 #include "Transform3d.h"
+#include "HeadersAndDefines.h"
+
 
 //-------------------------------------------------------------------------------------
 //	Point3D
@@ -217,6 +219,48 @@ void Object3d::setcolor(float colorx, float colory, float colorz){
 	this->colorz= colorz;
 }
 
+// draw
+void Object3d::draw()
+{
+	//	Set object color
+	glColor3f(colorx, colory, colorz);
+
+	// Check topology size is correct
+	if (topology.size() < 2)
+	{
+		std::cerr << "Use triangles! Minimum topology size is 3\n";
+		return;
+	}
+
+	// Draw the object
+	glBegin(GL_TRIANGLES);
+	for (unsigned int i = 0; i < topology.size(); ++i)
+	{
+		int index = topology[i];
+		glVertex3f(points[index].x, points[index].y, points[index].z);
+	}
+	glEnd();
+
+	// Draw object's axis
+	glLineWidth(2);
+	if (draw_axis)
+	{
+		glBegin(GL_LINES);
+			glColor3f(0, 1, 0);	// Axis up is Green
+			glVertex3f(axiscenter.x, axiscenter.y, axiscenter.z);
+			glVertex3f(axisup.x, axisup.y, axisup.z);
+
+			glColor3f(1, 0, 0);	// Axis right is Red
+			glVertex3f(axiscenter.x, axiscenter.y, axiscenter.z);
+			glVertex3f(axisright.x, axisright.y, axisright.z);
+
+			glColor3f(0, 0, 1);	// Axis forward is Blue
+			glVertex3f(axiscenter.x, axiscenter.y, axiscenter.z);
+			glVertex3f(axisfwd.x, axisfwd.y, axisfwd.z);
+		glEnd();
+	}
+}
+
 
 
 
@@ -274,7 +318,7 @@ void CoordinateSystem3d::computeRelativeAxis(float *rx, float *ry, float *rz, fl
 void CoordinateSystem3d::objectTranslate(Object3d *obj, float tx, float ty,float tz){
 	float vux,vuy,vuz,vrx,vry,vrz,vfx,vfy,vfz;			//relative axis
 	computeRelativeAxis(&vrx,&vry,&vrz,&vux,&vuy,&vuz,&vfx,&vfy,&vfz);
-	
+
 	float newtx=tx*vrx+ty*vux+tz*vfx;
 	float newty=tx*vry+ty*vuy+tz*vfy;
 	float newtz=tx*vrz+ty*vuz+tz*vfz;
@@ -325,4 +369,30 @@ void CoordinateSystem3d::rotateZSelf(float angleRad){
 	axisfwd.rotateZRelativeToPoint(axiscenter, angleRad);
 }
 
+//desenare
+void CoordinateSystem3d::draw(float lineWidth)
+{
+	glLineWidth(lineWidth);
+	//draw basis coord system
+	if(draw_axis)
+	{
+		glBegin(GL_LINES);
+			glColor3f(0, 1, 1);
+			glVertex3f(axisup.x, -axisup.y, axisup.z);
+			glVertex3f(axisup.x, axisup.y, axisup.z);
+			glColor3f(1, 0, 1);
+			glVertex3f(-axisright.x, axisright.y, axisright.z);
+			glVertex3f(axisright.x, axisright.y, axisright.z);
+			glColor3f(1, 1, 0);
+			glVertex3f(axisfwd.x, axisfwd.y, -axisfwd.z);
+			glVertex3f(axisfwd.x, axisfwd.y, axisfwd.z);
+		glEnd();
+		glPointSize(5);
+		glBegin(GL_POINTS);
+			glColor3f(0, 1, 1);	glVertex3f(axisup.x, axisup.y, axisup.z);
+			glColor3f(1, 0, 1);	glVertex3f(axisright.x, axisright.y, axisright.z);
+			glColor3f(1, 1, 0);	glVertex3f(axisfwd.x, axisfwd.y, axisfwd.z);
+		glEnd();
+	}
+}
 
