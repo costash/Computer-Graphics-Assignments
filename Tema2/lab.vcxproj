@@ -92,6 +92,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Support3d.cpp" />
@@ -99,6 +100,7 @@
     <ClCompile Include="WorldDrawer3d_gl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="HeadersAndDefines.h" />
     <ClInclude Include="Support3d.h" />
