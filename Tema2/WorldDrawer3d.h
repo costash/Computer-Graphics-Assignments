@@ -31,11 +31,20 @@ namespace WorldDrawer3dNamespace
 		// Keyboard operations logic
 		static void keyOperations();
 
+		// Mouse callbacks
+		static void mouseCallbackFunction(int button, int state, int x, int y);
+		static void mouseMotionCallbackFunction(int x, int y);
+
 	public:
 		static bool animation;
 		static CoordinateSystem3d cs_basis;
 		static std::vector<CoordinateSystem3d*> cs_used;
-		static bool keyStates[256];
-		static bool keySpecialStates[256];
+		static bool keyStates[256];					// Key Buffer for standard keys
+		static bool keySpecialStates[256];			// Key Buffer for special keys
+		static bool mouseLeftState;					// Left mouse button state
+		static bool mouseRightState;				// Right mouse button state
+		static float mousePosX, mousePosY;			// Mouse position
+		static float viewAngleX, viewAngleY;		// View angle
+		static float eyeDistance;					// View distance
 	};
 }

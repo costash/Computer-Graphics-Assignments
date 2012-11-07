@@ -4,6 +4,13 @@ using namespace WorldDrawer3dNamespace;
 
 CoordinateSystem3d WorldDrawer3d::cs_basis;
 std::vector<CoordinateSystem3d*> WorldDrawer3d::cs_used;
+bool WorldDrawer3d::mouseLeftState = false;		// Left click not pressed
+bool WorldDrawer3d::mouseRightState = false;	// Right click not pressed
+float WorldDrawer3d::mousePosX = 0.f;
+float WorldDrawer3d::mousePosY = 0.f;
+float WorldDrawer3d::viewAngleX = 0.f;
+float WorldDrawer3d::viewAngleY = 0.f;
+float WorldDrawer3d::eyeDistance = 0.f;
 
 void WorldDrawer3d::idleCallbackFunction(){
 	//call client function
@@ -27,16 +34,25 @@ void WorldDrawer3d::reshapeCallbackFunction(int w, int h){
 
 void WorldDrawer3d::displayCallbackFunction(){
 	//Render objects
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+	// save the initial ModelView matrix before modifying ModelView matrix
+	glPushMatrix();
+
+	// tramsform camera
+	glTranslatef(1.5f, 0, -eyeDistance);
+	glRotatef(viewAngleY, 1, 0, 0);   // pitch
+	glRotatef(viewAngleX, 0, 1, 0);   // heading
+
+	// Draw cs_basis coord system
 	cs_basis.draw(2);
 
-	//draw objects in cs_basis
+	// Draw objects in cs_basis
 	for(unsigned int j=0;j<cs_basis.objects.size();j++){
 		cs_basis.objects[j]->draw();
 	}
 
-	//draw each used coord system
+	// Draw each used coord system
 	for(unsigned int i = 0; i < cs_used.size(); ++i)
 	{
 		//draw used coord system
@@ -48,6 +64,8 @@ void WorldDrawer3d::displayCallbackFunction(){
 			cs_used[i]->objects[j]->draw();
 		}
 	}
+
+	glPopMatrix();
 
 	//swap buffers
 	glutSwapBuffers();
@@ -83,7 +101,7 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	glutInitWindowSize(windowWidth,windowHeight);
 	glutInitWindowPosition(windowStartX,windowStartY);
 	glutCreateWindow(windowName.c_str());
-	
+
 	//bind funcs
 	glutDisplayFunc(displayCallbackFunction);
 	glutReshapeFunc(reshapeCallbackFunction);
@@ -94,6 +112,10 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	glutKeyboardUpFunc(keyUpCallbackFunction);
 	glutSpecialFunc(specialKeyDownCallbackFunction);
 	glutSpecialUpFunc(specialKeyUpCallbackFunction);
+
+	// Mouse callbacks
+	glutMouseFunc(mouseCallbackFunction);
+	glutMotionFunc(mouseMotionCallbackFunction);
 
 	glClearColor(0.4f,0.5f,1,1);
 

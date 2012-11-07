@@ -6,29 +6,30 @@
 //-----------------------------------------------------------------------------------------------------
 
 Cube::Cube()
-	: Object3d(std::vector<Point3d>(), std::vector<int>())
+	: Object3d(std::vector<Point3d>(), std::vector<int>()),
+	size(2)
 {
 	init();
-
-	size = 2;
 
 	computeAxis();
 }
 
 Cube::Cube(float size)
-	: Object3d(std::vector<Point3d>(), std::vector<int>())
+	: Object3d(std::vector<Point3d>(), std::vector<int>()),
+	size(size)
 {
 	init();
 	for (int i = 0; i < 6; ++i)
 		colors[i] = Color();
 
-	scaleRelativeToPoint(axiscenter, size);
+	scaleRelativeToPoint(axiscenter, size / 2);
 
 	computeAxis();
 }
 
 Cube::Cube(float size, Color colors[6])
-	: Object3d(std::vector<Point3d>(), std::vector<int>())
+	: Object3d(std::vector<Point3d>(), std::vector<int>()),
+	size(size)
 {
 	init();
 	for (int i = 0; i < 6; ++i)
@@ -36,7 +37,7 @@ Cube::Cube(float size, Color colors[6])
 		this->colors[i] = colors[i];
 	}
 
-	scaleRelativeToPoint(axiscenter, size);
+	scaleRelativeToPoint(axiscenter, size / 2);
 
 	computeAxis();
 }
@@ -92,6 +93,7 @@ void Cube::scale(float scale)
 	size *= scale;
 }
 
+// Scale cube relative to a point
 void Cube::scaleRelativeToPoint(Point3d p, float scale)
 {
 	Object3d::scaleRelativeToPoint(p, scale, scale, scale);
@@ -99,6 +101,7 @@ void Cube::scaleRelativeToPoint(Point3d p, float scale)
 	size *= scale;
 }
 
+// Draw method called in draw callback
 void Cube::draw()
 {
 	// Draw the object
