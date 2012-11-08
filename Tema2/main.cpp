@@ -93,7 +93,7 @@ void WorldDrawer3d::init(){
 	o2->rotateYSelf(-M_PI_4);
 	cs1->objectAdd(o2);*/
 	
-	rubik = new Rubik(4, 3.f);
+	rubik = new Rubik(5, 3.f);
 	rubik->bindCoordSys(cs1);
 }
 void WorldDrawer3d::onIdle(){	//per frame
@@ -131,16 +131,49 @@ void WorldDrawer3d::keyOperations()
 {
 	if (keyStates[KEY_ESC])
 		glutExit();
+	
+	// Arrow keys rotate the entire cube
+	float rotateStep = 2.f;
+
 	if (keySpecialStates[KEY_UP])
+	{
 		std::cerr << "UP was pressed\n";
+		viewAngleY -= rotateStep;
+	}
 	if (keySpecialStates[KEY_DOWN])
+	{
 		std::cerr << "DOWN was pressed\n";
+		viewAngleY += rotateStep;
+	}
 	if (keySpecialStates[KEY_LEFT])
+	{
 		std::cerr << "LEFT was pressed\n";
+		viewAngleX -= rotateStep;
+	}
 	if (keySpecialStates[KEY_RIGHT])
+	{
 		std::cerr << "RIGHT was pressed\n";
+		viewAngleX += rotateStep;
+	}
+
+	// Move the cube forwards and backwards
+	float eyeDistanceStep = 1.f;
+
+	if (keyStates['['])
+	{
+		std::cerr << "[ was pressed\n";
+		eyeDistance -= eyeDistanceStep;
+	}
+	if (keyStates[']'])
+	{
+		std::cerr << "] was pressed\n";
+		eyeDistance += eyeDistanceStep;
+	}
+
+	// Letters
 	if (keyStates['e'])
 		std::cerr << "e was pressed\n";
+
 }
 
 void WorldDrawer3d::mouseCallbackFunction(int button, int state, int x, int y)
@@ -165,6 +198,7 @@ void WorldDrawer3d::mouseCallbackFunction(int button, int state, int x, int y)
 
 void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 {
+	float eyeDistanceStep = 0.2f;
 	if (mouseLeftState == true)
 	{
 		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
@@ -176,7 +210,7 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 	if (mouseRightState == true)
 	{
 		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
-		eyeDistance -= (y - mousePosY) * 0.2f;
+		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
 		mousePosY = float (y);
 	}
 }

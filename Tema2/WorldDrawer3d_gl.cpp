@@ -29,7 +29,8 @@ void WorldDrawer3d::reshapeCallbackFunction(int w, int h){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);  //looking at xoy
+	//gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);  //looking at xoy
+	gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);
 }
 
 void WorldDrawer3d::displayCallbackFunction(){

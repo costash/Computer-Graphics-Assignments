@@ -18,4 +18,4 @@
 #define MOUSE_MIDDLE GLUT_MIDDLE_BUTTON
 #define MOUSE_RIGHT GLUT_RIGHT_BUTTON
 
-static Color colors[6] = { Color(1, 0, 0), Color(0, 1, 1), Color(0, 1, 0), Color(1, 0, 1), Color(0, 0, 1), Color(1, 1, 0) };
+static Color colors[6] = { Color(1, 1, 0), Color(1, 1, 1), Color(1, 0.5f, 0), Color(1, 0, 0), Color(0, 0, 1), Color(0, 1, 0) };
