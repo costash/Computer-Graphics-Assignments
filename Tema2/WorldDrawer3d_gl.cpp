@@ -37,13 +37,13 @@ void WorldDrawer3d::displayCallbackFunction(){
 	//Render objects
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	// save the initial ModelView matrix before modifying ModelView matrix
+	// Save the initial ModelView matrix before modifying ModelView matrix
 	glPushMatrix();
 
-	// tramsform camera
+	// Tramsform view
 	glTranslatef(1.5f, 0, -eyeDistance);
-	glRotatef(viewAngleY, 1, 0, 0);   // pitch
-	glRotatef(viewAngleX, 0, 1, 0);   // heading
+	glRotatef(viewAngleY, 1, 0, 0);   // Rotate left or right
+	glRotatef(viewAngleX, 0, 1, 0);   // Rotate up or down
 
 	// Draw cs_basis coord system
 	cs_basis.draw(2);
@@ -66,6 +66,7 @@ void WorldDrawer3d::displayCallbackFunction(){
 		}
 	}
 
+	// Restore the ModelView matrix after drawing objects
 	glPopMatrix();
 
 	//swap buffers
@@ -98,7 +99,8 @@ void WorldDrawer3d::specialKeyUpCallbackFunction(int key, int posx, int posy)
 WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowHeight, int windowStartX, int windowStartY, std::string windowName){
 	//init
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGB|GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	glEnable(GLUT_MULTISAMPLE);
 	glutInitWindowSize(windowWidth,windowHeight);
 	glutInitWindowPosition(windowStartX,windowStartY);
 	glutCreateWindow(windowName.c_str());

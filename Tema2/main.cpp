@@ -108,6 +108,7 @@ void WorldDrawer3d::onIdle(){	//per frame
 	static int max_iter = 150;
 	if(animation){
 		
+		rubik->rotateLayerX(3, M_PI_4/12);
 		/*if (iteration < max_iter)
 		{
 			if (dir == 1)
@@ -162,12 +163,12 @@ void WorldDrawer3d::keyOperations()
 	if (keyStates['['])
 	{
 		std::cerr << "[ was pressed\n";
-		eyeDistance -= eyeDistanceStep;
+		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
 	}
 	if (keyStates[']'])
 	{
 		std::cerr << "] was pressed\n";
-		eyeDistance += eyeDistanceStep;
+		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
 	}
 
 	// Letters
