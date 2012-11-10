@@ -106,9 +106,16 @@ void WorldDrawer3d::onIdle(){	//per frame
 	static int iteration=1;
 	static int dir = 1;
 	static int max_iter = 150;
+	static float angleRot = 0;
 	if(animation){
 		
-		rubik->rotateLayerX(3, M_PI_4/12);
+		//if (angleRot <= M_PI_2)
+		//	rubik->rotateLayerX(3, M_PI_4/24);
+		///*if (angleRot > M_PI_2 && angleRot <= M_PI)*/
+		//rubik->rotateLayerY(2, M_PI_4/24);
+		///*if (angleRot > M_PI && angleRot <= 3 * M_PI_2)*/
+		//rubik->rotateLayerZ(0, M_PI_4/24);
+		//angleRot += M_PI_4/24;
 		/*if (iteration < max_iter)
 		{
 			if (dir == 1)
@@ -171,9 +178,40 @@ void WorldDrawer3d::keyOperations()
 		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
 	}
 
-	// Letters
-	if (keyStates['e'])
+	// Rotate faces (HARDCODED!!!)
+	float faceRotateStep = M_PI_4 / 24;
+	if (keyStates['q'])								// Rotate on X axis, positive
+	{
+		std::cerr << "q was pressed\n";
+		rubik->rotateLayerX(2, faceRotateStep);
+	}
+	if (keyStates['a'])								// Rotate on X axis, negative
+	{
+		std::cerr << "a was pressed\n";
+		rubik->rotateLayerX(2, -faceRotateStep);
+	}
+	if (keyStates['w'])								// Rotate on Y axis, positive
+	{
+		std::cerr << "w was pressed\n";
+		rubik->rotateLayerY(2, faceRotateStep);
+	}
+	if (keyStates['s'])								// Rotate on Y axis, negative
+	{
+		std::cerr << "s was pressed\n";
+		rubik->rotateLayerY(2, -faceRotateStep);
+	}
+	if (keyStates['e'])								// Rotate on Z axis, positive
+	{
 		std::cerr << "e was pressed\n";
+		rubik->rotateLayerZ(0, faceRotateStep);
+	}
+	if (keyStates['d'])								// Rotate on Z axis, negative
+	{
+		std::cerr << "d was pressed\n";
+		rubik->rotateLayerZ(0, -faceRotateStep);
+	}
+
+
 
 }
 
