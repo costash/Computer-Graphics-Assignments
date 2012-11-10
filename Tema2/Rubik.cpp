@@ -67,7 +67,7 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 	}
 	else
 		rotXinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << abs(radiansToDegrees(rotationAngle)) << " rotationInProgress " << rotXinProgress << "\n";
+	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotXinProgress << "\n";
 }
 
 void Rubik::rotateLayerY(unsigned int layer, float angle)
@@ -86,10 +86,13 @@ void Rubik::rotateLayerY(unsigned int layer, float angle)
 		}
 
 	if (abs(radiansToDegrees(rotationAngle)) % 90 == 0)
+	{
+		updateCubesPosition('Y', layer, rotationAngle);
 		rotYinProgress = false;
+	}
 	else
 		rotYinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << abs(radiansToDegrees(rotationAngle)) << " rotationInProgress " << rotYinProgress << "\n";
+	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotYinProgress << "\n";
 
 }
 
@@ -109,10 +112,13 @@ void Rubik::rotateLayerZ(unsigned int layer, float angle)
 		}
 
 	if (abs(radiansToDegrees(rotationAngle)) % 90 == 0)
+	{
+		updateCubesPosition('Z', layer, rotationAngle);
 		rotZinProgress = false;
+	}
 	else
 		rotZinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << abs(radiansToDegrees(rotationAngle)) << " rotationInProgress " << rotZinProgress << "\n";
+	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotZinProgress << "\n";
 }
 
 void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
@@ -128,8 +134,8 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 				for (unsigned int j = 0; j < size; ++j)
 					for (unsigned int k = 0; k < size; ++k)
 					{
-						unsigned int c_idx = linear3index(layer, j, k);
-						unsigned int aux_idx = linear3index(layer, size - k - 1, j);
+						unsigned int c_idx = linear3index(layer, size - k - 1, j);
+						unsigned int aux_idx = linear3index(layer, j, k);
 						cubes[c_idx] = aux[aux_idx];
 					}
 			}
@@ -138,16 +144,64 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 				for (unsigned int j = 0; j < size; ++j)
 					for (unsigned int k = 0; k < size; ++k)
 					{
-						unsigned int c_idx = linear3index(layer, size - k - 1, j);
-						unsigned int aux_idx = linear3index(layer, j, k);
+						unsigned int c_idx = linear3index(layer, j, k);
+						unsigned int aux_idx = linear3index(layer, size - k - 1, j);
 						cubes[c_idx] = aux[aux_idx];
 					}
 			}
 		break;
 		}
 	case 'Y':
+		{
+			std::vector<Cube *> aux(cubes);
+			if (radiansToDegrees(angle) >= 85)
+			{
+				for (unsigned int i = 0; i < size; ++i)
+					for (unsigned int k = 0; k < size; ++k)
+					{
+						unsigned int c_idx = linear3index(k, layer, i);
+						unsigned int aux_idx = linear3index(size - i - 1, layer, k);
+						cubes[c_idx] = aux[aux_idx];
+					}
+			}
+			else if (radiansToDegrees(angle) <= -85)
+			{
+				for (unsigned int i = 0; i < size; ++i)
+					for (unsigned int k = 0; k < size; ++k)
+					{
+						unsigned int c_idx = linear3index(size - i - 1, layer, k);
+						unsigned int aux_idx = linear3index(k, layer, i);
+						cubes[c_idx] = aux[aux_idx];
+					}
+			}
+		}
 		break;
 	case 'Z':
+		{
+			std::vector<Cube *> aux(cubes);
+			if (radiansToDegrees(angle) >= 85)
+			{
+				for (unsigned int i = 0; i < size; ++i)
+					for (unsigned int j = 0; j < size; ++j)
+					{
+						unsigned int c_idx = linear3index(j, i, layer);
+						unsigned int aux_idx = linear3index(i, size - j - 1, layer);
+						cubes[c_idx] = aux[aux_idx];
+					}
+			}
+			else if (radiansToDegrees(angle) <= -85)
+			{
+				for (unsigned int i = 0; i < size; ++i)
+					for (unsigned int j = 0; j < size; ++j)
+					{
+						/*unsigned int c_idx = linear3index(j, i, layer);
+						unsigned int aux_idx = linear3index(i, size - j - 1, layer);*/
+						unsigned int c_idx = linear3index(i, size - j - 1, layer);
+						unsigned int aux_idx = linear3index(j, i, layer);
+						cubes[c_idx] = aux[aux_idx];
+					}
+			}
+		}
 		break;
 	default:
 		break;

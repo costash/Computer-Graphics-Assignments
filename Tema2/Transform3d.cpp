@@ -15,8 +15,8 @@ void Transform3d::rotateX(Point3d *pct, float angleInRadians){
 }
 void Transform3d::rotateY(Point3d *pct, float angleInRadians){
 	float x_aux = pct->x;
-	pct->x = pct->x * cos(angleInRadians) - pct->z * sin(angleInRadians);
-	pct->z = x_aux * sin(angleInRadians) + pct->z * cos(angleInRadians);
+	pct->x = pct->x * cos(angleInRadians) + pct->z * sin(angleInRadians);
+	pct->z = -x_aux * sin(angleInRadians) + pct->z * cos(angleInRadians);
 }
 void Transform3d::rotateZ(Point3d *pct, float angleInRadians){
 	float x_aux = pct->x;
