@@ -140,3 +140,20 @@ void Cube::setColors(Color col[6])
 	for (int i = 0; i < 6; ++i)
 		colors[i] = col[i];
 }
+
+// Decrease light of cube's colors
+void Cube::lightenColors(float lightPercent)
+{
+	for (int i = 0; i < 6; ++i)
+	{
+		lightenColor(colors[i], lightPercent);
+	}
+}
+
+// Decrease light of a color to lightPercent
+void Cube::lightenColor(Color &col, float lightPercent)
+{
+	col.r *= lightPercent;
+	col.g *= lightPercent;
+	col.b *= lightPercent;
+}

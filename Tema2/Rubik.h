@@ -25,6 +25,25 @@ public:
 	// Helpers
 	static int radiansToDegrees(float rad);
 
+	// Select layers
+	void highlightLayerX();
+	void highlightLayerY();
+	void highlightLayerZ();
+	void unHighlightLayerX();
+	void unHighlightLayerY();
+	void unHighlightLayerZ();
+	void highlightSelectedLayers();
+	void unHighlightSelectedLayers();
+
+	void increaseSelectedX();
+	void increaseSelectedY();
+	void increaseSelectedZ();
+	void decreaseSelectedX();
+	void decreaseSelectedY();
+	void decreaseSelectedZ();
+
+	bool rotInProgress();
+
 public:
 	unsigned int size;			// Number of cubes per line
 	float cubeSize;				// Dimension of a small cube
@@ -34,6 +53,10 @@ public:
 	bool rotXinProgress, rotYinProgress, rotZinProgress;	// Wether a rotation is in progress or not
 	float rotationAngle;									// Rotation angle for current layer rotation
 	unsigned int rotationEndTime;							// The moment when the rotation ended
+	unsigned int selectedX, selectedY, selectedZ;			// Specifies the selected layer
+	bool updatedHighlightX, updatedHighlightY, updatedHighlightZ;
+
+	unsigned int selectEndTime;
 
 private:
 	void init();				// Inits the Rubik for the first time
@@ -42,3 +65,5 @@ private:
 };
 
 const unsigned int ROT_SLEEP = 200;
+const float LIGHT_PERCENT = 0.8f;
+const unsigned int SELECT_SLEEP = 200;

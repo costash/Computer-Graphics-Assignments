@@ -8,7 +8,9 @@
 
 Rubik::Rubik(unsigned int size, float cubeSize)
 	: size(size), cubeSize(cubeSize), spaceBetweenCubes(1.f), rotXinProgress(false),
-	rotYinProgress(false), rotZinProgress(false), rotationAngle(0.f), rotationEndTime(0)
+	rotYinProgress(false), rotZinProgress(false), rotationAngle(0.f), rotationEndTime(0),
+	selectedX(0), selectedY(0), selectedZ(0), updatedHighlightX(false), updatedHighlightY(false),
+	updatedHighlightZ(false), selectEndTime(0)
 {
 	init();
 }
@@ -26,11 +28,12 @@ void Rubik::init()
 		for (unsigned int j = 0; j < size; ++j)
 			for (unsigned int k = 0; k < size; ++k)
 			{
-				Cube *cube = new Cube(cubeSize, colors);
+				Cube *cube = new Cube(cubeSize, rubik_colors);
 				cube->translate(cubeStep * i, cubeStep * j, cubeStep * k);
 				cube->translate(-rubik_center, -rubik_center, -rubik_center);
 				cubes.push_back(cube);
 			}
+	highlightSelectedLayers();
 }
 
 // Adds cubelets to a coordinate system to be drawn
@@ -58,13 +61,13 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 	// If rotation is almost 90 or -90 degrees snap the cube to be exactly 90/-90
 	if (radiansToDegrees(rotationAngle) >= 85)
 	{
-		angle = (M_PI_2 - rotationAngle + angle);
-		rotationAngle = M_PI_2;
+		angle = float(M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(M_PI_2);
 	}
 	else if (radiansToDegrees(rotationAngle) <= -85)
 	{
-		angle = (-M_PI_2 - rotationAngle + angle);
-		rotationAngle = -M_PI_2;
+		angle = float(-M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(-M_PI_2);
 	}
 
 	// Make the rotation
@@ -73,6 +76,8 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 		for (unsigned int k = 0; k < size; ++k)
 		{
 			unsigned int idx = linear3index(layer, j, k);
+			//if (!rotXinProgress)
+			//	cubes[idx]->lightenColors(LIGHT_PERCENT);		// lighten colors for current face
 			cubes[idx]->rotateXRelativeToPoint(center, angle);
 		}
 
@@ -80,9 +85,20 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 	if (abs(radiansToDegrees(rotationAngle)) % 90 == 0)
 	{
 		rotationEndTime = WorldDrawer3d::getTime();		// current rotation end time
+		
+		unHighlightSelectedLayers();					// update highlight
 		updateCubesPosition('X', layer, rotationAngle);
+		highlightSelectedLayers();						// update highlight
+		
 		rotXinProgress = false;
 		rotationAngle = 0;
+		//// Reset colors back
+		//for (unsigned int j = 0; j < size; ++j)
+		//	for (unsigned int k = 0; k < size; ++k)
+		//	{
+		//		unsigned int idx = linear3index(layer, j, k);
+		//		cubes[idx]->lightenColors(1 / LIGHT_PERCENT);
+		//	}
 	}
 	else
 		rotXinProgress = true;
@@ -101,13 +117,13 @@ void Rubik::rotateLayerY(unsigned int layer, float angle)
 	// If rotation is almost 90 or -90 degrees snap the cube to be exactly 90/-90
 	if (radiansToDegrees(rotationAngle) >= 85)
 	{
-		angle = (M_PI_2 - rotationAngle + angle);
-		rotationAngle = M_PI_2;
+		angle = float(M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(M_PI_2);
 	}
 	else if (radiansToDegrees(rotationAngle) <= -85)
 	{
-		angle = (-M_PI_2 - rotationAngle + angle);
-		rotationAngle = -M_PI_2;
+		angle = float(-M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(-M_PI_2);
 	}
 
 	// Make the rotation
@@ -123,7 +139,11 @@ void Rubik::rotateLayerY(unsigned int layer, float angle)
 	if (abs(radiansToDegrees(rotationAngle)) % 90 == 0)
 	{
 		rotationEndTime = WorldDrawer3d::getTime();		// current rotation end time
+
+		unHighlightSelectedLayers();					// update highlight
 		updateCubesPosition('Y', layer, rotationAngle);
+		highlightSelectedLayers();						// update highlight
+
 		rotYinProgress = false;
 		rotationAngle = 0;
 	}
@@ -144,13 +164,13 @@ void Rubik::rotateLayerZ(unsigned int layer, float angle)
 	// If rotation is almost 90 or -90 degrees snap the cube to be exactly 90/-90
 	if (radiansToDegrees(rotationAngle) >= 85)
 	{
-		angle = (M_PI_2 - rotationAngle + angle);
-		rotationAngle = M_PI_2;
+		angle = float(M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(M_PI_2);
 	}
 	else if (radiansToDegrees(rotationAngle) <= -85)
 	{
-		angle = (-M_PI_2 - rotationAngle + angle);
-		rotationAngle = -M_PI_2;
+		angle = float(-M_PI_2 - rotationAngle + angle);
+		rotationAngle = float(-M_PI_2);
 	}
 
 	// Make the rotation
@@ -166,7 +186,11 @@ void Rubik::rotateLayerZ(unsigned int layer, float angle)
 	if (abs(radiansToDegrees(rotationAngle)) % 90 == 0)
 	{
 		rotationEndTime = WorldDrawer3d::getTime();		// current rotation end time
+
+		unHighlightSelectedLayers();					// update highlight
 		updateCubesPosition('Z', layer, rotationAngle);
+		highlightSelectedLayers();						// update highlight
+
 		rotZinProgress = false;
 		rotationAngle = 0;
 	}
@@ -269,4 +293,149 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 int Rubik::radiansToDegrees(float rad)
 {
 	return int(rad * 180 / M_PI);
+}
+
+void Rubik::highlightLayerX()
+{
+	for (unsigned int j = 0; j < size; ++j)
+		for (unsigned int k = 0; k < size; ++k)
+		{
+			unsigned int idx = linear3index(selectedX, j, k);
+			cubes[idx]->lightenColors(LIGHT_PERCENT);
+		}
+}
+
+void Rubik::highlightLayerY()
+{
+	for (unsigned int i = 0; i < size; ++i)
+		for (unsigned int k = 0; k < size; ++k)
+		{
+			unsigned int idx = linear3index(i, selectedY, k);
+			cubes[idx]->lightenColors(LIGHT_PERCENT);
+		}
+}
+
+void Rubik::highlightLayerZ()
+{
+	for (unsigned int i = 0; i < size; ++i)
+		for (unsigned int j = 0; j < size; ++j)
+		{
+			unsigned int idx = linear3index(i, j, selectedZ);
+			cubes[idx]->lightenColors(LIGHT_PERCENT);
+		}
+}
+
+void Rubik::unHighlightLayerX()
+{
+	for (unsigned int j = 0; j < size; ++j)
+		for (unsigned int k = 0; k < size; ++k)
+		{
+			unsigned int idx = linear3index(selectedX, j, k);
+			cubes[idx]->lightenColors(1 / LIGHT_PERCENT);
+		}
+}
+
+void Rubik::unHighlightLayerY()
+{
+	for (unsigned int i = 0; i < size; ++i)
+		for (unsigned int k = 0; k < size; ++k)
+		{
+			unsigned int idx = linear3index(i, selectedY, k);
+			cubes[idx]->lightenColors(1 / LIGHT_PERCENT);
+		}
+}
+
+void Rubik::unHighlightLayerZ()
+{
+	for (unsigned int i = 0; i < size; ++i)
+		for (unsigned int j = 0; j < size; ++j)
+		{
+			unsigned int idx = linear3index(i, j, selectedZ);
+			cubes[idx]->lightenColors(1 / LIGHT_PERCENT);
+		}
+}
+
+void Rubik::highlightSelectedLayers()
+{
+	highlightLayerX();
+	highlightLayerY();
+	highlightLayerZ();
+}
+
+void Rubik::unHighlightSelectedLayers()
+{
+	unHighlightLayerX();
+	unHighlightLayerY();
+	unHighlightLayerZ();
+}
+
+void Rubik::increaseSelectedX()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerX();
+	selectedX = (selectedX + 1 + size) % size;
+	highlightLayerX();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+void Rubik::increaseSelectedY()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerY();
+	selectedY = (selectedY + 1 + size) % size;
+	highlightLayerY();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+void Rubik::increaseSelectedZ()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerZ();
+	selectedZ = (selectedZ + 1 + size) % size;
+	highlightLayerZ();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+void Rubik::decreaseSelectedX()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerX();
+	selectedX = (selectedX - 1 + size) % size;
+	highlightLayerX();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+void Rubik::decreaseSelectedY()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerY();
+	selectedY = (selectedY - 1 + size) % size;
+	highlightLayerY();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+void Rubik::decreaseSelectedZ()
+{
+	if (WorldDrawer3d::getTime() - selectEndTime <= SELECT_SLEEP)
+		return;
+	unHighlightLayerZ();
+	selectedZ = (selectedZ - 1 + size) % size;
+	highlightLayerZ();
+
+	selectEndTime = WorldDrawer3d::getTime();
+}
+
+bool Rubik::rotInProgress()
+{
+	return rotXinProgress || rotYinProgress || rotZinProgress;
 }

@@ -22,6 +22,8 @@ public:
 	void draw();
 
 	void setColors(Color colors[6]);
+	void lightenColors(float lightPercent);
+
 public:
 	float size;
 	Color colors[6];	// Color for each cube's side
@@ -29,5 +31,6 @@ public:
 
 private:
 	void init();	// Helper for constructor
+	void lightenColor(Color &col, float lightPercent);
 };
 

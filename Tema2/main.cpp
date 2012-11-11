@@ -114,42 +114,77 @@ void WorldDrawer3d::keyOperations()
 		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
 	}
 
-	// Rotate faces (HARDCODED!!!)
-	float faceRotateStep = M_PI_4 / 24;
+	// Rotate faces
+	float faceRotateStep = float(M_PI_4 / 24);
 	if (keyStates['q'])								// Rotate on X axis, positive
 	{
 		std::cerr << "q was pressed\n";
 		
-		rubik->rotateLayerX(2, faceRotateStep);
+		rubik->rotateLayerX(rubik->selectedX, faceRotateStep);
 	}
 	if (keyStates['a'])								// Rotate on X axis, negative
 	{
 		std::cerr << "a was pressed\n";
-		rubik->rotateLayerX(2, -faceRotateStep);
+		rubik->rotateLayerX(rubik->selectedX, -faceRotateStep);
 	}
 	if (keyStates['w'])								// Rotate on Y axis, positive
 	{
 		std::cerr << "w was pressed\n";
-		rubik->rotateLayerY(2, faceRotateStep);
+		rubik->rotateLayerY(rubik->selectedY, faceRotateStep);
 	}
 	if (keyStates['s'])								// Rotate on Y axis, negative
 	{
 		std::cerr << "s was pressed\n";
-		rubik->rotateLayerY(2, -faceRotateStep);
+		rubik->rotateLayerY(rubik->selectedY, -faceRotateStep);
 	}
 	if (keyStates['e'])								// Rotate on Z axis, positive
 	{
 		std::cerr << "e was pressed\n";
-		rubik->rotateLayerZ(0, faceRotateStep);
+		rubik->rotateLayerZ(rubik->selectedZ, faceRotateStep);
 	}
 	if (keyStates['d'])								// Rotate on Z axis, negative
 	{
 		std::cerr << "d was pressed\n";
-		rubik->rotateLayerZ(0, -faceRotateStep);
+		rubik->rotateLayerZ(rubik->selectedZ, -faceRotateStep);
 	}
 
-
-
+	// Select layers (increase/decrease)
+	if (keyStates['t'])
+	{
+		std::cerr << "t was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->increaseSelectedX();
+	}
+	if (keyStates['g'])
+	{
+		std::cerr << "g was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->decreaseSelectedX();
+	}
+	if (keyStates['y'])
+	{
+		std::cerr << "y was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->increaseSelectedY();
+	}
+	if (keyStates['h'])
+	{
+		std::cerr << "h was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->decreaseSelectedY();
+	}
+	if (keyStates['u'])
+	{
+		std::cerr << "u was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->increaseSelectedZ();
+	}
+	if (keyStates['j'])
+	{
+		std::cerr << "j was pressed\n";
+		if (!rubik->rotInProgress())
+			rubik->decreaseSelectedZ();
+	}
 }
 
 void WorldDrawer3d::mouseCallbackFunction(int button, int state, int x, int y)
