@@ -19,11 +19,13 @@ public:
 	// Inherited from Object3d
 	void scale(float scale);
 	void scaleRelativeToPoint(Point3d p, float scale);
+	void draw();
 
+	void setColors(Color colors[6]);
 public:
 	float size;
 	Color colors[6];	// Color for each cube's side
-	void draw();		// Inherited from Object3d
+	
 
 private:
 	void init();	// Helper for constructor

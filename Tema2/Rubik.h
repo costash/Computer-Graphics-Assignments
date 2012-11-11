@@ -19,21 +19,26 @@ public:
 	void rotateLayerY(unsigned int layer, float angle);
 	void rotateLayerZ(unsigned int layer, float angle);
 
+	// Gets the linearized index for i,j,k tuple that would represent the 3 dimensions
 	unsigned int linear3index(unsigned int i, unsigned int j, unsigned int k);
+
+	// Helpers
+	static int radiansToDegrees(float rad);
 
 public:
 	unsigned int size;			// Number of cubes per line
 	float cubeSize;				// Dimension of a small cube
 	std::vector<Cube *> cubes;	// Cublets that form the Rubik
 
-	const float spaceBetweenCubes;
-	bool rotXinProgress, rotYinProgress, rotZinProgress;
-	float rotationAngle;
+	const float spaceBetweenCubes;							// Space to be added between cubelets
+	bool rotXinProgress, rotYinProgress, rotZinProgress;	// Wether a rotation is in progress or not
+	float rotationAngle;									// Rotation angle for current layer rotation
+	unsigned int rotationEndTime;							// The moment when the rotation ended
 
 private:
-	void init();
+	void init();				// Inits the Rubik for the first time
+	// Updates the cubelets positions in the Rubik based on previews layer rotations
 	void updateCubesPosition(char axis, unsigned int layer, float angle);
 };
 
-// Helpers
-static int radiansToDegrees(float rad);
+const unsigned int ROT_SLEEP = 200;

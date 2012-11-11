@@ -32,10 +32,7 @@ Cube::Cube(float size, Color colors[6])
 	size(size)
 {
 	init();
-	for (int i = 0; i < 6; ++i)
-	{
-		this->colors[i] = colors[i];
-	}
+	setColors(colors);
 
 	scaleRelativeToPoint(axiscenter, size / 2);
 
@@ -135,4 +132,11 @@ void Cube::draw()
 			glVertex3f(axisfwd.x, axisfwd.y, axisfwd.z);
 		glEnd();
 	}
+}
+
+// Set colors to cube's faces
+void Cube::setColors(Color col[6])
+{
+	for (int i = 0; i < 6; ++i)
+		colors[i] = col[i];
 }

@@ -31,16 +31,14 @@
 #include <iostream>
 #include "Rubik.h"
 
-using namespace WorldDrawer3dNamespace;
-
 bool WorldDrawer3d::animation=true;
 bool WorldDrawer3d::keyStates[256];
 bool WorldDrawer3d::keySpecialStates[256];
+unsigned int WorldDrawer3d::tick = 0;
 
 
 //used global vars
 CoordinateSystem3d *cs1;
-Object3d *o1, *o2, *o3, *o4,*o5, *o6;
 
 Rubik *rubik;
 
@@ -49,56 +47,15 @@ void WorldDrawer3d::init(){
 	//creeaza 2 sistem de coordonate client
 	cs1 = new CoordinateSystem3d();
 	cs_used.push_back(cs1);
-	
-	//cub
-	//std::vector<Point3d> points;
-	//std::vector<int> topology;
-	//points.push_back(Point3d(1,1,1));
-	//points.push_back(Point3d(1,1,-1));
-	//points.push_back(Point3d(-1,1,-1));
-	//points.push_back(Point3d(-1,1,1));
-	//points.push_back(Point3d(1,-1,1));
-	//points.push_back(Point3d(1,-1,-1));
-	//points.push_back(Point3d(-1,-1,-1));
-	//points.push_back(Point3d(-1,-1,1));
-	//topology.push_back(0);topology.push_back(1);topology.push_back(2);	//top
-	//topology.push_back(2);topology.push_back(3);topology.push_back(0);
-	//topology.push_back(6);topology.push_back(5);topology.push_back(4);	//bottom
-	//topology.push_back(7);topology.push_back(4);topology.push_back(6);
-	//topology.push_back(2);topology.push_back(3);topology.push_back(6);	//left
-	//topology.push_back(7);topology.push_back(3);topology.push_back(6);
-	//topology.push_back(0);topology.push_back(1);topology.push_back(5);	//right
-	//topology.push_back(0);topology.push_back(5);topology.push_back(4);
-	//topology.push_back(0);topology.push_back(3);topology.push_back(4);	//front
-	//topology.push_back(7);topology.push_back(3);topology.push_back(4);
-	//topology.push_back(5);topology.push_back(1);topology.push_back(2);	//back
-	//topology.push_back(6);topology.push_back(2);topology.push_back(5);
-	//o1 = new Object3d(points,topology);
-	//o1->setcolor(1,0.8f,0.9f);
-	//o1->scaleRelativeToPoint(o1->axiscenter, 2, 4, 2);
-	////cs1
-	//cs1->objectAdd(o1);
-	/*cs1->translate(10,-3,-10);
-	cs1->rotateXSelf(3.1416f);*/
 
-	
-	//Color colors[6] = { Color(1, 0, 0), Color(0, 1, 1), Color(0, 1, 0), Color(1, 0, 1), Color(0, 0, 1), Color(1, 1, 0) };
-	/*o2 = new Cube(6, colors);
-	o2->setcolor(1.f, 0.4f, 0.f);
-	o2->translate(5.f, 0.f, 0.f);
-	o2->rotateYSelf(M_PI_4);
-	o2->rotateXSelf(M_PI_4);
-	
-	o2->rotateXSelf(-M_PI_4);
-	o2->rotateYSelf(-M_PI_4);
-	cs1->objectAdd(o2);*/
+	tick = glutGet(GLUT_ELAPSED_TIME);
 	
 	rubik = new Rubik(5, 3.f);
 	rubik->bindCoordSys(cs1);
 }
 void WorldDrawer3d::onIdle(){	//per frame
 	keyOperations();
-	Sleep(20);
+	//Sleep(20);
 
 	float step = 1.01f;
 	float angle = 0.05f;
@@ -109,30 +66,9 @@ void WorldDrawer3d::onIdle(){	//per frame
 	static float angleRot = 0;
 	if(animation){
 		
-		//if (angleRot <= M_PI_2)
-		//	rubik->rotateLayerX(3, M_PI_4/24);
-		///*if (angleRot > M_PI_2 && angleRot <= M_PI)*/
-		//rubik->rotateLayerY(2, M_PI_4/24);
-		///*if (angleRot > M_PI && angleRot <= 3 * M_PI_2)*/
-		//rubik->rotateLayerZ(0, M_PI_4/24);
-		//angleRot += M_PI_4/24;
-		/*if (iteration < max_iter)
-		{
-			if (dir == 1)
-			{
-				o1->scaleRelativeToPoint(o1->axiscenter, step - .01, step - .01, step - .01);
-			}
-			else
-			{
-				o1->scaleRelativeToPoint(o1->axiscenter, 1/(step - .01), 1/(step - .01), 1/(step - .01));
-			}
-			o1->rotateXSelf(dir * angle);
-		}
 
-		iteration += dir;
-		if (iteration == max_iter || iteration == 0)
-			dir *= -1;*/
 	}
+
 }
 
 void WorldDrawer3d::keyOperations()
@@ -183,6 +119,7 @@ void WorldDrawer3d::keyOperations()
 	if (keyStates['q'])								// Rotate on X axis, positive
 	{
 		std::cerr << "q was pressed\n";
+		
 		rubik->rotateLayerX(2, faceRotateStep);
 	}
 	if (keyStates['a'])								// Rotate on X axis, negative

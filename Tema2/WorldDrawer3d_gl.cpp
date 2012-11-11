@@ -1,7 +1,5 @@
 #include "WorldDrawer3d.h"
 
-using namespace WorldDrawer3dNamespace;
-
 CoordinateSystem3d WorldDrawer3d::cs_basis;
 std::vector<CoordinateSystem3d*> WorldDrawer3d::cs_used;
 bool WorldDrawer3d::mouseLeftState = false;		// Left click not pressed
@@ -14,9 +12,32 @@ float WorldDrawer3d::eyeDistance = 0.f;
 
 void WorldDrawer3d::idleCallbackFunction(){
 	//call client function
-	onIdle();
-	//redisplay
-	glutPostRedisplay();
+	
+	unsigned int diff = getTimeDifference();
+	// Limit to 50 frames per second
+	if (diff >= 20)
+	{
+		tick += diff;
+
+		//std::cerr << "tick: " << tick / 20 << "\n";
+		onIdle();
+
+		//redisplay
+		glutPostRedisplay();
+	}
+}
+
+// Returns difference of time since last update
+unsigned int WorldDrawer3d::getTimeDifference()
+{
+	unsigned int newTick = getTime();
+	return newTick - tick;
+}
+
+// Gets current time
+unsigned int WorldDrawer3d::getTime()
+{
+	return glutGet(GLUT_ELAPSED_TIME);
 }
 
 void WorldDrawer3d::reshapeCallbackFunction(int w, int h){
@@ -120,6 +141,7 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	glutMouseFunc(mouseCallbackFunction);
 	glutMotionFunc(mouseMotionCallbackFunction);
 
+	// Background color
 	glClearColor(0.4f,0.5f,1,1);
 
 	//zbuff
