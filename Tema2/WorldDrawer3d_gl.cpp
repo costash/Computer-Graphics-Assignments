@@ -10,6 +10,8 @@ float WorldDrawer3d::viewAngleX = 0.f;
 float WorldDrawer3d::viewAngleY = 0.f;
 float WorldDrawer3d::eyeDistance = 0.f;
 
+int WorldDrawer3d::mainWindow = 0;
+
 void WorldDrawer3d::idleCallbackFunction(){
 	//call client function
 	
@@ -19,7 +21,6 @@ void WorldDrawer3d::idleCallbackFunction(){
 	{
 		tick += diff;
 
-		//std::cerr << "tick: " << tick / 20 << "\n";
 		onIdle();
 
 		//redisplay
@@ -90,6 +91,11 @@ void WorldDrawer3d::displayCallbackFunction(){
 	// Restore the ModelView matrix after drawing objects
 	glPopMatrix();
 
+
+	// Draw text here
+	drawScore(-25, 22, 3, Color(0.961f, 0.871f, 0.702f));
+	drawWin(-25, 20, 3, Color(0.961f, 0.871f, 0.702f));
+
 	//swap buffers
 	glutSwapBuffers();
 }
@@ -120,11 +126,13 @@ void WorldDrawer3d::specialKeyUpCallbackFunction(int key, int posx, int posy)
 WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowHeight, int windowStartX, int windowStartY, std::string windowName){
 	//init
 	glutInit(&argc, argv);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);	// This will not close the program for multiWindowClose
+
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glEnable(GLUT_MULTISAMPLE);
 	glutInitWindowSize(windowWidth,windowHeight);
 	glutInitWindowPosition(windowStartX,windowStartY);
-	glutCreateWindow(windowName.c_str());
+	mainWindow = glutCreateWindow(windowName.c_str());
 
 	//bind funcs
 	glutDisplayFunc(displayCallbackFunction);
@@ -140,6 +148,7 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	// Mouse callbacks
 	glutMouseFunc(mouseCallbackFunction);
 	glutMotionFunc(mouseMotionCallbackFunction);
+	glutMouseWheelFunc(mouseWheelCallbackFunction);
 
 	// Background color
 	glClearColor(0.4f,0.5f,1,1);

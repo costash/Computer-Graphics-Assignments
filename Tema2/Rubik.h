@@ -13,6 +13,7 @@ public:
 	~Rubik();
 
 	void bindCoordSys(CoordinateSystem3d *cs);		// Must be called for the Rubik to be drawn
+	void reset();
 
 	// Rotation for layers
 	void rotateLayerX(unsigned int layer, float angle);
@@ -44,10 +45,14 @@ public:
 
 	bool rotInProgress();
 
+	bool isVictory();
+
 public:
 	unsigned int size;			// Number of cubes per line
 	float cubeSize;				// Dimension of a small cube
 	std::vector<Cube *> cubes;	// Cublets that form the Rubik
+
+	std::vector<Cube *> initialCubesPositions;
 
 	const float spaceBetweenCubes;							// Space to be added between cubelets
 	bool rotXinProgress, rotYinProgress, rotZinProgress;	// Wether a rotation is in progress or not
@@ -56,7 +61,9 @@ public:
 	unsigned int selectedX, selectedY, selectedZ;			// Specifies the selected layer
 	bool updatedHighlightX, updatedHighlightY, updatedHighlightZ;
 
-	unsigned int selectEndTime;
+	unsigned int selectEndTime;								// The moment when the selection ended
+	unsigned int state;			// state of the Game
+	unsigned int moves;			// Moves since game started
 
 private:
 	void init();				// Inits the Rubik for the first time

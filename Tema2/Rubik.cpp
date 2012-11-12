@@ -10,13 +10,17 @@ Rubik::Rubik(unsigned int size, float cubeSize)
 	: size(size), cubeSize(cubeSize), spaceBetweenCubes(1.f), rotXinProgress(false),
 	rotYinProgress(false), rotZinProgress(false), rotationAngle(0.f), rotationEndTime(0),
 	selectedX(0), selectedY(0), selectedZ(0), updatedHighlightX(false), updatedHighlightY(false),
-	updatedHighlightZ(false), selectEndTime(0)
+	updatedHighlightZ(false), selectEndTime(0), state(0), moves(0)
 {
 	init();
 }
 
 Rubik::~Rubik()
 {
+	for (unsigned int i = 0; i < cubes.size(); ++i)
+	{
+		delete cubes[i];
+	}
 }
 
 // Initializes the Rubik cube for the first time
@@ -32,14 +36,55 @@ void Rubik::init()
 				cube->translate(cubeStep * i, cubeStep * j, cubeStep * k);
 				cube->translate(-rubik_center, -rubik_center, -rubik_center);
 				cubes.push_back(cube);
+
+				initialCubesPositions.push_back(cube);
 			}
 	highlightSelectedLayers();
+
+	if (WorldDrawer3d::windowCreated)
+	{
+		//glutDestroyWindow(WorldDrawer3d::secondaryWindow);
+		
+		WorldDrawer3d::windowCreated = false;
+		//WorldDrawer3d::secondaryWindow = -1;
+	}
+}
+
+void Rubik::reset()
+{
+	for (unsigned int i = 0; i < cubes.size(); ++i)
+	{
+		delete cubes[i];
+	}
+	cubes.clear();
+	initialCubesPositions.clear();
+
+	rotXinProgress = rotYinProgress = rotZinProgress = false;
+	rotationAngle = 0.f;
+	rotationEndTime = 0;
+	selectedX = selectedY = selectedZ = 0;
+	updatedHighlightX = updatedHighlightY = updatedHighlightZ = false;
+	selectEndTime = 0;
+	state = 0;
+	moves = 0;
+
+	init();
 }
 
 // Adds cubelets to a coordinate system to be drawn
 void Rubik::bindCoordSys(CoordinateSystem3d *cs)
 {
 	cs->objects.insert(cs->objects.end(), cubes.begin(), cubes.end());
+}
+
+bool Rubik::isVictory()
+{
+	for (unsigned int i = 0; i < cubes.size(); ++i)
+	{
+		if (initialCubesPositions[i] != cubes[i])
+			return false;
+	}
+	return true;
 }
 
 // Helper to linearize 3 indexes i, j, k
@@ -76,8 +121,6 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 		for (unsigned int k = 0; k < size; ++k)
 		{
 			unsigned int idx = linear3index(layer, j, k);
-			//if (!rotXinProgress)
-			//	cubes[idx]->lightenColors(LIGHT_PERCENT);		// lighten colors for current face
 			cubes[idx]->rotateXRelativeToPoint(center, angle);
 		}
 
@@ -92,13 +135,6 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 		
 		rotXinProgress = false;
 		rotationAngle = 0;
-		//// Reset colors back
-		//for (unsigned int j = 0; j < size; ++j)
-		//	for (unsigned int k = 0; k < size; ++k)
-		//	{
-		//		unsigned int idx = linear3index(layer, j, k);
-		//		cubes[idx]->lightenColors(1 / LIGHT_PERCENT);
-		//	}
 	}
 	else
 		rotXinProgress = true;
@@ -216,6 +252,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(layer, j, k);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 			else if (radiansToDegrees(angle) <= -85)
 			{
@@ -227,6 +269,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(layer, size - k - 1, j);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 		break;
 		}
@@ -243,6 +291,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(size - i - 1, layer, k);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 			else if (radiansToDegrees(angle) <= -85)
 			{
@@ -254,6 +308,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(k, layer, i);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 		}
 		break;
@@ -270,6 +330,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(i, size - j - 1, layer);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 			else if (radiansToDegrees(angle) <= -85)
 			{
@@ -281,6 +347,12 @@ void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
 						unsigned int aux_idx = linear3index(j, i, layer);
 						cubes[c_idx] = aux[aux_idx];
 					}
+				if (state == 1)
+				{
+					++moves;
+					if (isVictory())
+						state = 2;
+				}
 			}
 		}
 		break;

@@ -29,12 +29,17 @@
 #include "WorldDrawer3d.h"
 #include "Cube.h"
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "Rubik.h"
 
 bool WorldDrawer3d::animation=true;
 bool WorldDrawer3d::keyStates[256];
 bool WorldDrawer3d::keySpecialStates[256];
 unsigned int WorldDrawer3d::tick = 0;
+
+bool WorldDrawer3d::windowCreated = false;
+int WorldDrawer3d::secondaryWindow;
 
 
 //used global vars
@@ -53,22 +58,54 @@ void WorldDrawer3d::init(){
 	rubik = new Rubik(5, 3.f);
 	rubik->bindCoordSys(cs1);
 }
+
 void WorldDrawer3d::onIdle(){	//per frame
 	keyOperations();
-	//Sleep(20);
 
-	float step = 1.01f;
-	float angle = 0.05f;
-	float trans_step = 0.05f;
-	static int iteration=1;
-	static int dir = 1;
-	static int max_iter = 150;
-	static float angleRot = 0;
 	if(animation){
 		
+		if (rubik->state == 2)
+		{
+			windowCreated = true;
+			
+			std::cerr << "Victory\n";
+			//drawScore(-10, 22, 3, Color(0.961f, 0.871f, 0.702f));
+			drawText(-10, 16, 3, Color(0.961f, 0.871f, 0.702f), (const unsigned char *)"You have won!");
+		}
 
 	}
+}
 
+void WorldDrawer3d::drawText(float posx, float posy, float posz, Color col, const unsigned char * text)
+{
+	glPushMatrix();
+	glColor3f(col.r, col.g, col.b);		// Text color
+	glRasterPos3f(posx, posy, posz);	// Place text
+	char *c = (char *)text;
+	for (; *c != '\0'; c++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	
+	glPopMatrix();
+}
+
+void WorldDrawer3d::drawScore(float posx, float posy, float posz, Color col)
+{
+	std::stringstream ss;
+	if (rubik->state == 0)
+		ss << "Game did not start yet. Press ENTER to start counting.";
+	else if(rubik->state == 1 || rubik->state == 2)
+		ss << "Game started. Rotated " << rubik->moves << " times until now.";
+
+	const std::string& tmp = ss.str();
+	const char* cstr = tmp.c_str();
+	std::cerr << cstr;
+	drawText(posx, posy, posz, col, (const unsigned char *)cstr);
+}
+
+void WorldDrawer3d::drawWin(float posx, float posy, float posz, Color col)
+{
+	if (rubik->state == 2)
+		drawText(posx, posy, posz, col, (const unsigned char *)"You win! Press 1 to reset.");
 }
 
 void WorldDrawer3d::keyOperations()
@@ -149,41 +186,63 @@ void WorldDrawer3d::keyOperations()
 	}
 
 	// Select layers (increase/decrease)
-	if (keyStates['t'])
+	if (keyStates['t'])								// Increase selection on X axis
 	{
 		std::cerr << "t was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedX();
 	}
-	if (keyStates['g'])
+	if (keyStates['g'])								// Decrease selection on X axis
 	{
 		std::cerr << "g was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedX();
 	}
-	if (keyStates['y'])
+	if (keyStates['y'])								// Increase selection on Y axis
 	{
 		std::cerr << "y was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedY();
 	}
-	if (keyStates['h'])
+	if (keyStates['h'])								// Decrease selection on Y axis
 	{
 		std::cerr << "h was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedY();
 	}
-	if (keyStates['u'])
+	if (keyStates['u'])								// Increase selection on Z axis
 	{
 		std::cerr << "u was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedZ();
 	}
-	if (keyStates['j'])
+	if (keyStates['j'])								// Decrease selection on Z axis
 	{
 		std::cerr << "j was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedZ();
+	}
+
+	// Start counting moves
+	if (keyStates['\r'])
+	{
+		std::cerr << "enter was pressed\n";
+		std::cerr << "game state: " << rubik->state << "\n";
+		if (rubik->state != 1)
+		{
+			if (rubik->state == 2)
+				rubik->moves = 0;
+			rubik->state = 1;
+			
+		}
+	}
+
+	// Reset game
+	if (keyStates['1'])
+	{
+		cs1->objects.clear();
+		rubik->reset();
+		rubik->bindCoordSys(cs1);
 	}
 }
 
@@ -224,6 +283,12 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
 		mousePosY = float (y);
 	}
+}
+
+void WorldDrawer3d::mouseWheelCallbackFunction(int wheel, int direction, int x, int y)
+{
+	float eyeDistanceStep = 2.f;
+	eyeDistance += eyeDistanceStep * direction;
 }
 
 

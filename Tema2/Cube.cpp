@@ -105,6 +105,7 @@ void Cube::draw()
 	glBegin(GL_TRIANGLES);
 	for (unsigned int side = 0; side < 6; ++side)
 	{
+		// Draw each side in specific color
 		glColor3f(colors[side].r, colors[side].g, colors[side].b);
 		for (unsigned int idx = 0; idx < 6; ++idx)
 		{

@@ -32,9 +32,14 @@ public:
 	// Mouse callbacks
 	static void mouseCallbackFunction(int button, int state, int x, int y);
 	static void mouseMotionCallbackFunction(int x, int y);
+	static void mouseWheelCallbackFunction(int wheel, int direction, int x, int y);
 
 	static unsigned int getTimeDifference();
 	static unsigned int getTime();
+
+	static void drawText(float posx, float posy, float posz, Color col, const unsigned char * text);
+	static void drawScore(float posx, float posy, float posz, Color col);
+	static void drawWin(float posx, float posy, float posz, Color col);
 
 public:
 	static bool animation;
@@ -48,4 +53,8 @@ public:
 	static float viewAngleX, viewAngleY;		// View angle
 	static float eyeDistance;					// View distance
 	static unsigned int tick;					// Used for clock
+
+	static int mainWindow;
+	static bool windowCreated;
+	static int secondaryWindow;
 };
