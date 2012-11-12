@@ -219,7 +219,7 @@ void Object3d::setcolor(float colorx, float colory, float colorz){
 	this->colorz= colorz;
 }
 
-// draw
+// Draw the object
 void Object3d::draw()
 {
 	//	Set object color
@@ -369,7 +369,7 @@ void CoordinateSystem3d::rotateZSelf(float angleRad){
 	axisfwd.rotateZRelativeToPoint(axiscenter, angleRad);
 }
 
-//desenare
+// Desenare sistem de coordonate si obiectele aferente
 void CoordinateSystem3d::draw(float lineWidth)
 {
 	glLineWidth(lineWidth);

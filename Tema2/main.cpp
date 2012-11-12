@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------------------
-//					LAB 2
+//					Tema 2 - Rubik's Cube
 //
 //	Fisiere de interes: Transform3d.cpp main.cpp
 //
@@ -55,45 +55,39 @@ void WorldDrawer3d::init(){
 
 	tick = glutGet(GLUT_ELAPSED_TIME);
 	
-	rubik = new Rubik(5, 3.f);
-	rubik->bindCoordSys(cs1);
+	rubik = new Rubik(5, 3.f);		// Create a Rubik cube with 5 cubes of size 3
+	rubik->bindCoordSys(cs1);		// Bind it's cubelets to the coord system
 }
 
+// Is called in glut main loop by the system on idle
 void WorldDrawer3d::onIdle(){	//per frame
-	keyOperations();
+	keyOperations();			// Operations for buffered keys
 
 	if(animation){
-		
-		if (rubik->state == 2)
-		{
-			windowCreated = true;
-			
-			std::cerr << "Victory\n";
-			//drawScore(-10, 22, 3, Color(0.961f, 0.871f, 0.702f));
-			drawText(-10, 16, 3, Color(0.961f, 0.871f, 0.702f), (const unsigned char *)"You have won!");
-		}
-
+		// Do nothing here
 	}
 }
 
+// Draws text on screen
 void WorldDrawer3d::drawText(float posx, float posy, float posz, Color col, const unsigned char * text)
 {
-	glPushMatrix();
+	glPushMatrix();						// Save context
 	glColor3f(col.r, col.g, col.b);		// Text color
 	glRasterPos3f(posx, posy, posz);	// Place text
-	char *c = (char *)text;
+	char *c = (char *)text;				// Draw each character
 	for (; *c != '\0'; c++)
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
 	
-	glPopMatrix();
+	glPopMatrix();						// Restore context
 }
 
+// Draws the current score
 void WorldDrawer3d::drawScore(float posx, float posy, float posz, Color col)
 {
 	std::stringstream ss;
-	if (rubik->state == 0)
+	if (rubik->state == 0)		// Game not started
 		ss << "Game did not start yet. Press ENTER to start counting.";
-	else if(rubik->state == 1 || rubik->state == 2)
+	else if(rubik->state == 1 || rubik->state == 2)		// Game started or is won
 		ss << "Game started. Rotated " << rubik->moves << " times until now.";
 
 	const std::string& tmp = ss.str();
@@ -102,36 +96,38 @@ void WorldDrawer3d::drawScore(float posx, float posy, float posz, Color col)
 	drawText(posx, posy, posz, col, (const unsigned char *)cstr);
 }
 
+// Draws the text for win
 void WorldDrawer3d::drawWin(float posx, float posy, float posz, Color col)
 {
-	if (rubik->state == 2)
-		drawText(posx, posy, posz, col, (const unsigned char *)"You win! Press 1 to reset.");
+	if (rubik->state == 2)		// Game is won
+		drawText(posx, posy, posz, col, (const unsigned char *)"You win! Press 1 to reset or ENTER to start counting.");
 }
 
+// All key events are processed here
 void WorldDrawer3d::keyOperations()
 {
-	if (keyStates[KEY_ESC])
+	if (keyStates[KEY_ESC])			// On Escape, program exits
 		glutExit();
 	
 	// Arrow keys rotate the entire cube
 	float rotateStep = 2.f;
 
-	if (keySpecialStates[KEY_UP])
+	if (keySpecialStates[KEY_UP])			// Rotate cube up
 	{
 		std::cerr << "UP was pressed\n";
 		viewAngleY -= rotateStep;
 	}
-	if (keySpecialStates[KEY_DOWN])
+	if (keySpecialStates[KEY_DOWN])			// Rotate cube down
 	{
 		std::cerr << "DOWN was pressed\n";
 		viewAngleY += rotateStep;
 	}
-	if (keySpecialStates[KEY_LEFT])
+	if (keySpecialStates[KEY_LEFT])			// Rotate cube left
 	{
 		std::cerr << "LEFT was pressed\n";
 		viewAngleX -= rotateStep;
 	}
-	if (keySpecialStates[KEY_RIGHT])
+	if (keySpecialStates[KEY_RIGHT])		// Rotate cube right
 	{
 		std::cerr << "RIGHT was pressed\n";
 		viewAngleX += rotateStep;
@@ -224,7 +220,7 @@ void WorldDrawer3d::keyOperations()
 	}
 
 	// Start counting moves
-	if (keyStates['\r'])
+	if (keyStates['\r'])							// If ENTER is pressed, game starts
 	{
 		std::cerr << "enter was pressed\n";
 		std::cerr << "game state: " << rubik->state << "\n";
@@ -238,7 +234,7 @@ void WorldDrawer3d::keyOperations()
 	}
 
 	// Reset game
-	if (keyStates['1'])
+	if (keyStates['1'])								// If 1 is pressedm, game is reset
 	{
 		cs1->objects.clear();
 		rubik->reset();
@@ -246,18 +242,19 @@ void WorldDrawer3d::keyOperations()
 	}
 }
 
+// Callback function for mouse actions
 void WorldDrawer3d::mouseCallbackFunction(int button, int state, int x, int y)
 {
 	mousePosX = float (x);
 	mousePosY = float (y);
-	if (button == MOUSE_LEFT)
+	if (button == MOUSE_LEFT)			// Buffer left clicks
 	{
 		if (state == GLUT_DOWN)
 			mouseLeftState = true;
 		else if (state == GLUT_UP)
 			mouseLeftState = false;
 	}
-	else if (button == MOUSE_RIGHT)
+	else if (button == MOUSE_RIGHT)		// Buffer right clicks
 	{
 		if (state == GLUT_DOWN)
 			mouseRightState = true;
@@ -266,10 +263,11 @@ void WorldDrawer3d::mouseCallbackFunction(int button, int state, int x, int y)
 	}
 }
 
+// Callback for mouse movement
 void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 {
 	float eyeDistanceStep = 0.2f;
-	if (mouseLeftState == true)
+	if (mouseLeftState == true)			// Make rotation if left is clicked and moved mouse
 	{
 		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
 		viewAngleX += (x - mousePosX);
@@ -277,7 +275,7 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 		mousePosX = float(x);
 		mousePosY = float(y);
 	}
-	if (mouseRightState == true)
+	if (mouseRightState == true)		// Make zoom in/out if right is clicked and moved
 	{
 		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
 		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
@@ -285,10 +283,11 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 	}
 }
 
+// Callback for mouse scroll (wheel)
 void WorldDrawer3d::mouseWheelCallbackFunction(int wheel, int direction, int x, int y)
 {
 	float eyeDistanceStep = 2.f;
-	eyeDistance += eyeDistanceStep * direction;
+	eyeDistance += eyeDistanceStep * (-direction);
 }
 
 

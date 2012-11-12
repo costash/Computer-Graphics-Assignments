@@ -19,18 +19,18 @@ public:
 	// Inherited from Object3d
 	void scale(float scale);
 	void scaleRelativeToPoint(Point3d p, float scale);
-	void draw();
+	void draw();										// Cube is drawn differently
 
-	void setColors(Color colors[6]);
-	void lightenColors(float lightPercent);
+	void setColors(Color colors[6]);					// Sets colors for cube sides
+	void lightenColors(float lightPercent);				// Changes light of colors for faces
 
 public:
-	float size;
+	float size;			// Size of a cube's side
 	Color colors[6];	// Color for each cube's side
 	
 
 private:
 	void init();	// Helper for constructor
-	void lightenColor(Color &col, float lightPercent);
+	void lightenColor(Color &col, float lightPercent);	// Changes light of color for a given color
 };
 

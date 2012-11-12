@@ -4,16 +4,15 @@ CoordinateSystem3d WorldDrawer3d::cs_basis;
 std::vector<CoordinateSystem3d*> WorldDrawer3d::cs_used;
 bool WorldDrawer3d::mouseLeftState = false;		// Left click not pressed
 bool WorldDrawer3d::mouseRightState = false;	// Right click not pressed
-float WorldDrawer3d::mousePosX = 0.f;
-float WorldDrawer3d::mousePosY = 0.f;
-float WorldDrawer3d::viewAngleX = 0.f;
-float WorldDrawer3d::viewAngleY = 0.f;
-float WorldDrawer3d::eyeDistance = 0.f;
+float WorldDrawer3d::mousePosX = 0.f;			// Mouse position X coordinate
+float WorldDrawer3d::mousePosY = 0.f;			// Mouse position Y coordinate
+float WorldDrawer3d::viewAngleX = 0.f;			// ViewAngle on OX
+float WorldDrawer3d::viewAngleY = 0.f;			// ViewAngle on OY
+float WorldDrawer3d::eyeDistance = 0.f;			// Distance from viewer
 
-int WorldDrawer3d::mainWindow = 0;
+int WorldDrawer3d::mainWindow = 0;				// Main window ID
 
 void WorldDrawer3d::idleCallbackFunction(){
-	//call client function
 	
 	unsigned int diff = getTimeDifference();
 	// Limit to 50 frames per second
@@ -51,8 +50,7 @@ void WorldDrawer3d::reshapeCallbackFunction(int w, int h){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//gluLookAt(20.0, 20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);  //looking at xoy
-	gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);
+	gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
 }
 
 void WorldDrawer3d::displayCallbackFunction(){
@@ -100,6 +98,7 @@ void WorldDrawer3d::displayCallbackFunction(){
 	glutSwapBuffers();
 }
 
+// Buffer keys on press
 void WorldDrawer3d::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 {
 	if (key == KEY_SPACE)
@@ -107,17 +106,19 @@ void WorldDrawer3d::keyDownCallbackFunction(unsigned char key, int posx, int pos
 	keyStates[key] = true;
 }
 
+// Unbuffer keys on release
 void WorldDrawer3d::keyUpCallbackFunction(unsigned char key, int posx, int posy)
 {
 	keyStates[key] = false;
 }
 
+// Buffer special keys on press
 void WorldDrawer3d::specialKeyDownCallbackFunction(int key, int posx, int posy)
 {
 	keySpecialStates[key] = true;
-	//std::cerr << "Mouse (" << posx << "," << posy << ") ";
 }
 
+// Unbuffer special keys on release
 void WorldDrawer3d::specialKeyUpCallbackFunction(int key, int posx, int posy)
 {
 	keySpecialStates[key] = false;
@@ -129,17 +130,17 @@ WorldDrawer3d::WorldDrawer3d(int argc, char **argv, int windowWidth, int windowH
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);	// This will not close the program for multiWindowClose
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
-	glEnable(GLUT_MULTISAMPLE);
-	glutInitWindowSize(windowWidth,windowHeight);
-	glutInitWindowPosition(windowStartX,windowStartY);
+	glEnable(GLUT_MULTISAMPLE);							// Enable multisampling
+	glutInitWindowSize(windowWidth,windowHeight);		// Window size
+	glutInitWindowPosition(windowStartX,windowStartY);	// Window position
 	mainWindow = glutCreateWindow(windowName.c_str());
 
-	//bind funcs
+	// Display, reshape and idle callbacks
 	glutDisplayFunc(displayCallbackFunction);
 	glutReshapeFunc(reshapeCallbackFunction);
 	glutIdleFunc(idleCallbackFunction);
 
-	//Keyboard callbacks
+	// Keyboard callbacks
 	glutKeyboardFunc(keyDownCallbackFunction);
 	glutKeyboardUpFunc(keyUpCallbackFunction);
 	glutSpecialFunc(specialKeyDownCallbackFunction);

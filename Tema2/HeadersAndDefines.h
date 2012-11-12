@@ -18,4 +18,12 @@
 #define MOUSE_MIDDLE GLUT_MIDDLE_BUTTON
 #define MOUSE_RIGHT GLUT_RIGHT_BUTTON
 
-static Color rubik_colors[6] = { Color(1, 1, 0), Color(1, 1, 1), Color(1, 0.5f, 0), Color(1, 0, 0), Color(0, 0, 1), Color(0, 1, 0) };
+static Color rubik_colors[6] =
+{ 
+	Color(1, 1, 0),		// Top color
+	Color(1, 1, 1),		// Bottom color
+	Color(1, 0.5f, 0),	// Left color
+	Color(1, 0, 0),		// Right color
+	Color(0, 0, 1),		// Front color
+	Color(0, 1, 0)		// Back color
+};

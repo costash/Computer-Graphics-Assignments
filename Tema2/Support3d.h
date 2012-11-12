@@ -21,10 +21,10 @@ public:
 	void rotateXRelativeToPoint(Point3d p, float angleRad);	//rotatie relativ la punctul p
 	void rotateYRelativeToPoint(Point3d p, float angleRad);	
 	void rotateZRelativeToPoint(Point3d p, float angleRad);	
-	void scale(float sx,float sy,float sz);
+	void scale(float sx,float sy,float sz);					//scalare
 	void scaleRelativeToPoint(Point3d p, float sx,float sy, float sz);
 public:
-	float x,y,z;											// (x,y)
+	float x,y,z;											// (x,y,z)
 };
 
 //object2d
@@ -40,11 +40,11 @@ public:
 	void rotateXRelativeToPoint(Point3d pct, float angleRad);	//rotatie relativa la punctul p
 	void rotateYRelativeToPoint(Point3d pct, float angleRad);
 	void rotateZRelativeToPoint(Point3d pct, float angleRad);
-	void scale(float sx,float sy, float sz);
+	void scale(float sx,float sy, float sz);				// scalare
 	void scaleRelativeToPoint(Point3d p, float sx, float sy, float sz);
 	void setcolor(float colorx, float colory, float colorz);//set culoare
 
-	//desenare
+	//desenare obiect
 	virtual void draw();
 
 public:
@@ -84,11 +84,11 @@ public:
 	void rotateYSelf(float angleRad);
 	void rotateZSelf(float angleRad);
 
-	//desenare
+	// Desenare sistem de coordonate
 	void draw(float lineWidth);
 
 public:
-	bool draw_axis;
+	bool draw_axis;									// Daca se vor desena sau nu axele
 	Point3d axiscenter,axisright, axisup, axisfwd;	//axe
 	std::vector<Object3d*> objects;					//obiecte
 private:

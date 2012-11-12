@@ -13,7 +13,7 @@ public:
 	~Rubik();
 
 	void bindCoordSys(CoordinateSystem3d *cs);		// Must be called for the Rubik to be drawn
-	void reset();
+	void reset();									// Resets rubik to initial position
 
 	// Rotation for layers
 	void rotateLayerX(unsigned int layer, float angle);
@@ -33,9 +33,10 @@ public:
 	void unHighlightLayerX();
 	void unHighlightLayerY();
 	void unHighlightLayerZ();
-	void highlightSelectedLayers();
-	void unHighlightSelectedLayers();
+	void highlightSelectedLayers();		// Highlights the selected layers (on X, Y, Z axis)
+	void unHighlightSelectedLayers();	// Unhiglights selected layers
 
+	// Move forwards or backwards with selection with a step
 	void increaseSelectedX();
 	void increaseSelectedY();
 	void increaseSelectedZ();
@@ -43,25 +44,25 @@ public:
 	void decreaseSelectedY();
 	void decreaseSelectedZ();
 
-	bool rotInProgress();
+	bool rotInProgress();				// Checks wether if there is a rotation in progress or not
 
-	bool isVictory();
+	bool isVictory();					// Checks if rubik is solved
 
 public:
 	unsigned int size;			// Number of cubes per line
 	float cubeSize;				// Dimension of a small cube
 	std::vector<Cube *> cubes;	// Cublets that form the Rubik
 
-	std::vector<Cube *> initialCubesPositions;
+	std::vector<Cube *> initialCubesPositions;				// Holds the initial position of cubelets
 
 	const float spaceBetweenCubes;							// Space to be added between cubelets
 	bool rotXinProgress, rotYinProgress, rotZinProgress;	// Wether a rotation is in progress or not
 	float rotationAngle;									// Rotation angle for current layer rotation
 	unsigned int rotationEndTime;							// The moment when the rotation ended
 	unsigned int selectedX, selectedY, selectedZ;			// Specifies the selected layer
-	bool updatedHighlightX, updatedHighlightY, updatedHighlightZ;
+	bool updatedHighlightX, updatedHighlightY, updatedHighlightZ;	// Wether highlight is updated or not
 
-	unsigned int selectEndTime;								// The moment when the selection ended
+	unsigned int selectEndTime;	// The moment when the selection ended
 	unsigned int state;			// state of the Game
 	unsigned int moves;			// Moves since game started
 
@@ -71,6 +72,6 @@ private:
 	void updateCubesPosition(char axis, unsigned int layer, float angle);
 };
 
-const unsigned int ROT_SLEEP = 200;
-const float LIGHT_PERCENT = 0.8f;
-const unsigned int SELECT_SLEEP = 200;
+const unsigned int ROT_SLEEP = 200;		// Time to prevent rotation at fixed points (0, 90, 180, 270 degrees)
+const float LIGHT_PERCENT = 0.8f;		// Percent for colors to be lightened/darkened
+const unsigned int SELECT_SLEEP = 200;	// Time to prevent selection after one has been completed

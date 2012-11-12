@@ -5,6 +5,9 @@
 //	Cube class extending Object3d
 //-----------------------------------------------------------------------------------------------------
 
+// Constructors and destructors
+
+// Create a cube of size 2, with default color
 Cube::Cube()
 	: Object3d(std::vector<Point3d>(), std::vector<int>()),
 	size(2)
@@ -14,6 +17,7 @@ Cube::Cube()
 	computeAxis();
 }
 
+// Create a cube with specified size centered in origin
 Cube::Cube(float size)
 	: Object3d(std::vector<Point3d>(), std::vector<int>()),
 	size(size)
@@ -27,6 +31,7 @@ Cube::Cube(float size)
 	computeAxis();
 }
 
+// Create a cube with size and colors specified centered in origin
 Cube::Cube(float size, Color colors[6])
 	: Object3d(std::vector<Point3d>(), std::vector<int>()),
 	size(size)
@@ -44,6 +49,7 @@ Cube::~Cube()
 {
 }
 
+// Creates the points and the topology for a cube
 void Cube::init()
 {
 	//               v4.-----------.v1
@@ -101,7 +107,7 @@ void Cube::scaleRelativeToPoint(Point3d p, float scale)
 // Draw method called in draw callback
 void Cube::draw()
 {
-	// Draw the object
+	// Draw the cube
 	glBegin(GL_TRIANGLES);
 	for (unsigned int side = 0; side < 6; ++side)
 	{
