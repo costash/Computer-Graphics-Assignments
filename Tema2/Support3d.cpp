@@ -66,7 +66,8 @@ Object3d::Object3d(std::vector<Point3d> points, std::vector<int> topology){
 	this->topology = topology;
 	//color
 	colorx=colory=colorz=1;
-	draw_axis=true;
+	//draw_axis=true;
+	draw_axis = false;
 	//compute axis
 	axiscenter.set(0,0,0);
 	axisup.set(0,2,0);
@@ -273,7 +274,8 @@ CoordinateSystem3d::CoordinateSystem3d(){
 	axisright.set(20,0,0);
 	axisup.set(0,20,0);
 	axisfwd.set(0,0,20);
-	draw_axis=true;
+	//draw_axis=true;
+	draw_axis = false;
 }
 CoordinateSystem3d::~CoordinateSystem3d(){
 }

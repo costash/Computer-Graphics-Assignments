@@ -92,7 +92,7 @@ void WorldDrawer3d::drawScore(float posx, float posy, float posz, Color col)
 
 	const std::string& tmp = ss.str();
 	const char* cstr = tmp.c_str();
-	std::cerr << cstr;
+	//std::cerr << cstr;
 	drawText(posx, posy, posz, col, (const unsigned char *)cstr);
 }
 
@@ -114,22 +114,22 @@ void WorldDrawer3d::keyOperations()
 
 	if (keySpecialStates[KEY_UP])			// Rotate cube up
 	{
-		std::cerr << "UP was pressed\n";
+		//std::cerr << "UP was pressed\n";
 		viewAngleY -= rotateStep;
 	}
 	if (keySpecialStates[KEY_DOWN])			// Rotate cube down
 	{
-		std::cerr << "DOWN was pressed\n";
+		//std::cerr << "DOWN was pressed\n";
 		viewAngleY += rotateStep;
 	}
 	if (keySpecialStates[KEY_LEFT])			// Rotate cube left
 	{
-		std::cerr << "LEFT was pressed\n";
+		//std::cerr << "LEFT was pressed\n";
 		viewAngleX -= rotateStep;
 	}
 	if (keySpecialStates[KEY_RIGHT])		// Rotate cube right
 	{
-		std::cerr << "RIGHT was pressed\n";
+		//std::cerr << "RIGHT was pressed\n";
 		viewAngleX += rotateStep;
 	}
 
@@ -138,12 +138,12 @@ void WorldDrawer3d::keyOperations()
 
 	if (keyStates['['])
 	{
-		std::cerr << "[ was pressed\n";
+		//std::cerr << "[ was pressed\n";
 		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
 	}
 	if (keyStates[']'])
 	{
-		std::cerr << "] was pressed\n";
+		//std::cerr << "] was pressed\n";
 		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
 	}
 
@@ -151,70 +151,69 @@ void WorldDrawer3d::keyOperations()
 	float faceRotateStep = float(M_PI_4 / 24);
 	if (keyStates['q'])								// Rotate on X axis, positive
 	{
-		std::cerr << "q was pressed\n";
-		
+		//std::cerr << "q was pressed\n";
 		rubik->rotateLayerX(rubik->selectedX, faceRotateStep);
 	}
 	if (keyStates['a'])								// Rotate on X axis, negative
 	{
-		std::cerr << "a was pressed\n";
+		//std::cerr << "a was pressed\n";
 		rubik->rotateLayerX(rubik->selectedX, -faceRotateStep);
 	}
 	if (keyStates['w'])								// Rotate on Y axis, positive
 	{
-		std::cerr << "w was pressed\n";
+		//std::cerr << "w was pressed\n";
 		rubik->rotateLayerY(rubik->selectedY, faceRotateStep);
 	}
 	if (keyStates['s'])								// Rotate on Y axis, negative
 	{
-		std::cerr << "s was pressed\n";
+		//std::cerr << "s was pressed\n";
 		rubik->rotateLayerY(rubik->selectedY, -faceRotateStep);
 	}
 	if (keyStates['e'])								// Rotate on Z axis, positive
 	{
-		std::cerr << "e was pressed\n";
+		//std::cerr << "e was pressed\n";
 		rubik->rotateLayerZ(rubik->selectedZ, faceRotateStep);
 	}
 	if (keyStates['d'])								// Rotate on Z axis, negative
 	{
-		std::cerr << "d was pressed\n";
+		//std::cerr << "d was pressed\n";
 		rubik->rotateLayerZ(rubik->selectedZ, -faceRotateStep);
 	}
 
 	// Select layers (increase/decrease)
 	if (keyStates['t'])								// Increase selection on X axis
 	{
-		std::cerr << "t was pressed\n";
+		//std::cerr << "t was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedX();
 	}
 	if (keyStates['g'])								// Decrease selection on X axis
 	{
-		std::cerr << "g was pressed\n";
+		//std::cerr << "g was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedX();
 	}
 	if (keyStates['y'])								// Increase selection on Y axis
 	{
-		std::cerr << "y was pressed\n";
+		//std::cerr << "y was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedY();
 	}
 	if (keyStates['h'])								// Decrease selection on Y axis
 	{
-		std::cerr << "h was pressed\n";
+		//std::cerr << "h was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedY();
 	}
 	if (keyStates['u'])								// Increase selection on Z axis
 	{
-		std::cerr << "u was pressed\n";
+		//std::cerr << "u was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->increaseSelectedZ();
 	}
 	if (keyStates['j'])								// Decrease selection on Z axis
 	{
-		std::cerr << "j was pressed\n";
+		//std::cerr << "j was pressed\n";
 		if (!rubik->rotInProgress())
 			rubik->decreaseSelectedZ();
 	}
@@ -222,8 +221,8 @@ void WorldDrawer3d::keyOperations()
 	// Start counting moves
 	if (keyStates['\r'])							// If ENTER is pressed, game starts
 	{
-		std::cerr << "enter was pressed\n";
-		std::cerr << "game state: " << rubik->state << "\n";
+		//std::cerr << "enter was pressed\n";
+		//std::cerr << "game state: " << rubik->state << "\n";
 		if (rubik->state != 1)
 		{
 			if (rubik->state == 2)
@@ -269,7 +268,7 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 	float eyeDistanceStep = 0.2f;
 	if (mouseLeftState == true)			// Make rotation if left is clicked and moved mouse
 	{
-		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
+		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
 		viewAngleX += (x - mousePosX);
 		viewAngleY += (y - mousePosY);
 		mousePosX = float(x);
@@ -277,7 +276,7 @@ void WorldDrawer3d::mouseMotionCallbackFunction(int x, int y)
 	}
 	if (mouseRightState == true)		// Make zoom in/out if right is clicked and moved
 	{
-		std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
+		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
 		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
 		mousePosY = float (y);
 	}

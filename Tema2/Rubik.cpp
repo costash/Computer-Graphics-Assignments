@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------------------------------------
 
 Rubik::Rubik(unsigned int size, float cubeSize)
-	: size(size), cubeSize(cubeSize), spaceBetweenCubes(1.f), rotXinProgress(false),
+	: size(size), cubeSize(cubeSize), spaceBetweenCubes(.2f), rotXinProgress(false),
 	rotYinProgress(false), rotZinProgress(false), rotationAngle(0.f), rotationEndTime(0),
 	selectedX(0), selectedY(0), selectedZ(0), updatedHighlightX(false), updatedHighlightY(false),
 	updatedHighlightZ(false), selectEndTime(0), state(0), moves(0)
@@ -138,7 +138,7 @@ void Rubik::rotateLayerX(unsigned int layer, float angle)
 	}
 	else
 		rotXinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotXinProgress << "\n";
+	//std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotXinProgress << "\n";
 }
 
 void Rubik::rotateLayerY(unsigned int layer, float angle)
@@ -185,7 +185,7 @@ void Rubik::rotateLayerY(unsigned int layer, float angle)
 	}
 	else
 		rotYinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotYinProgress << "\n";
+	//std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotYinProgress << "\n";
 }
 
 void Rubik::rotateLayerZ(unsigned int layer, float angle)
@@ -232,7 +232,7 @@ void Rubik::rotateLayerZ(unsigned int layer, float angle)
 	}
 	else
 		rotZinProgress = true;
-	std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotZinProgress << "\n";
+	//std::cerr << "Angle " << rotationAngle << " grd " << radiansToDegrees(rotationAngle) << " rotationInProgress " << rotZinProgress << "\n";
 }
 
 void Rubik::updateCubesPosition(char axis, unsigned int layer, float angle)
