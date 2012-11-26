@@ -1,5 +1,5 @@
 #pragma once
-#include <glut.h>
+#include "HeadersAndDefines.h"
 #include <math.h>
 
 class Vector3D

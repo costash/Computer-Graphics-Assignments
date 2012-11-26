@@ -1,5 +1,6 @@
 //clasa camera
 #pragma once
+#include "HeadersAndDefines.h"
 #include "Vector3D.h"
 
 

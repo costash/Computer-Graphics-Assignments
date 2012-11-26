@@ -1,109 +1,103 @@
-//include librarii de opengl, glut si glu
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "glut32.lib")
-
-//includes
-#include <stdio.h>
-#include <iostream>
-#include <stdlib.h>
-#include <sstream>
-#include <string>
-
-//glut and glew
-#include "glut.h"
-
-//ground
-#include "ground.h"
-
-//camera
+#include "HeadersAndDefines.h"
+#include "WorldDrawer.h"
 #include "camera.h"
 
-
-
-//cam
-Camera camera;
-
-//cuburi
 float angle=0;
 
-//functie afisare
-void display(){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+bool WorldDrawer::animation = true;
+bool WorldDrawer::keyStates[256];
+bool WorldDrawer::keySpecialStates[256];
 
-	//setup view
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	camera.render();
+unsigned int WorldDrawer::tick = 0;
+Camera WorldDrawer::camera;
 
+//add
+void WorldDrawer::init(){
 
-	//ground
-	glColor3f(0.5,0.5,0.5);
-	draw_ground(20,16,2,2,-2);
+	camera.init();
+	tick = glutGet(GLUT_ELAPSED_TIME);
+}
 
-	//rest scena
-	for(int i=0;i<4;i++){
-		for(int j=0;j<4;j++){
-			glPushMatrix();
+// Is called in glut main loop by the system on idle
+void WorldDrawer::onIdle(){	//per frame
+	keyOperations();			// Operations for buffered keys
+	
+	
+	if(animation){
+		// Do nothing here
+		angle = angle+1;
+	
+		if(angle > 360) angle = angle-360;
+	}
+}
 
-			if((i+j)%5==0) glColor3f( 1,0,0);
-			if((i+j)%5==1) glColor3f( 0,1,0);
-			if((i+j)%5==2) glColor3f( 0,0,1);
-			if((i+j)%5==3) glColor3f( 1,0,1);
-			if((i+j)%5==4) glColor3f( 1,1,0);
-			glTranslatef((i-1.5)*3, j*3, -25);
+// All key events are processed here
+void WorldDrawer::keyOperations()
+{
+	if (keyStates[KEY_ESC])			// On Escape, program exits
+		glutExit();
+	
+	// Arrow keys rotate the entire cube
+	float rotateStep = 2.f;
 
-			glRotatef(angle*(i+1)*(j+1)/(i+2+j),0,1,0);
-			glutSolidCube(2);
-			glPopMatrix();
-		}
+	if (keySpecialStates[KEY_UP])			// Rotate cube up
+	{
+		//std::cerr << "UP was pressed\n";
+		viewAngleY -= rotateStep;
+		camera.rotateFPS_OX(-0.05);
+	}
+	if (keySpecialStates[KEY_DOWN])			// Rotate cube down
+	{
+		//std::cerr << "DOWN was pressed\n";
+		viewAngleY += rotateStep;
+		camera.rotateFPS_OX(0.05);
+	}
+	if (keySpecialStates[KEY_LEFT])			// Rotate cube left
+	{
+		//std::cerr << "LEFT was pressed\n";
+		viewAngleX -= rotateStep;
+		camera.rotateFPS_OY(-0.05);
+	}
+	if (keySpecialStates[KEY_RIGHT])		// Rotate cube right
+	{
+		//std::cerr << "RIGHT was pressed\n";
+		viewAngleX += rotateStep;
+		camera.rotateFPS_OY(0.05);
 	}
 
-	// Cub la punctul de interes
-	glPushMatrix();
+	// Move the cube forwards and backwards
+	float eyeDistanceStep = 1.f;
 
+	if (keyStates['['])
+	{
+		//std::cerr << "[ was pressed\n";
+		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
+	}
+	if (keyStates[']'])
+	{
+		//std::cerr << "] was pressed\n";
+		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
+	}
 
-	Vector3D pos(camera.position + camera.forward * 10);
-	glTranslatef(pos.x, pos.y, pos.z);
-	glutSolidCube(2);
-	glPopMatrix();
-
-	//swap buffers
-	glutSwapBuffers();
-}
-
-void reshape(int width, int height){
-	//set viewport
-	glViewport(0,0,width,height);
-
-	//set proiectie
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45,(float)width/(float)height,0.2,100);
-}
-
-void idle();
-
-void keyboard(unsigned char ch, int x, int y){
-	switch(ch){
-	case 27:	//esc
-		exit(0);
-		break;
-
-	case 'w':
+	if (keyStates['w'])
+	{
 		camera.translate_Forward(0.5);
-		break;
+	}
+	if (keyStates['s'])
+	{
+		camera.translate_Forward(-0.5);
+	}
+	if (keyStates['a'])
+	{
+		camera.translate_Right(-0.5);
+	}
+	if (keyStates['d'])
+	{
+		camera.translate_Right(0.5);
+	}
+	/*
 	case 'a':
 		camera.rotateFPS_OY(-0.1);
-		break;
-	case 's':
-		camera.translate_Forward(-0.5);
-		break;
-	case 'r':
-		camera.translate_Right(0.5);
-		break;
-	case 'f':
-		camera.translate_Right(-0.5);
 		break;
 	case 't':
 		camera.translate_Up(0.5);
@@ -146,55 +140,62 @@ void keyboard(unsigned char ch, int x, int y){
 		break;
 	case 'l':
 		camera.rotateTPS_OZ(0.1, 10);
-		break;
+		break;*/
 
+}
 
-
-	default:
-		break;
+// Callback function for mouse actions
+void WorldDrawer::mouseCallbackFunction(int button, int state, int x, int y)
+{
+	mousePosX = float (x);
+	mousePosY = float (y);
+	if (button == MOUSE_LEFT)			// Buffer left clicks
+	{
+		if (state == GLUT_DOWN)
+			mouseLeftState = true;
+		else if (state == GLUT_UP)
+			mouseLeftState = false;
 	}
-
+	else if (button == MOUSE_RIGHT)		// Buffer right clicks
+	{
+		if (state == GLUT_DOWN)
+			mouseRightState = true;
+		else if (state == GLUT_UP)
+			mouseRightState = false;
+	}
 }
 
-
-//idle
-void idle(){
-	angle = angle+0.01;
-	if(angle >360) angle = angle-360;
-	glutPostRedisplay();
+// Callback for mouse movement
+void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
+{
+	float eyeDistanceStep = 0.2f;
+	if (mouseLeftState == true)			// Make rotation if left is clicked and moved mouse
+	{
+		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
+		viewAngleX += (x - mousePosX);
+		viewAngleY += (y - mousePosY);
+		mousePosX = float(x);
+		mousePosY = float(y);
+	}
+	if (mouseRightState == true)		// Make zoom in/out if right is clicked and moved
+	{
+		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
+		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
+		mousePosY = float (y);
+	}
 }
 
-
+// Callback for mouse scroll (wheel)
+void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, int y)
+{
+	float eyeDistanceStep = 2.f;
+	eyeDistance += eyeDistanceStep * (-direction);
+}
 
 int main(int argc, char *argv[]){
-
-	//init glut
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
-
-	//init window
-	glutInitWindowSize(800,600);
-	glutInitWindowPosition(200,200);
-	glutCreateWindow("lab transformari si camera");
-
-	//callbacks
-	glutDisplayFunc(display);
-	glutReshapeFunc(reshape);
-	glutKeyboardFunc(keyboard);
-	glutIdleFunc(idle);
-
-
-	//z test on
-	glEnable(GL_DEPTH_TEST);
-
-	//set background
-	glClearColor(0.2,0.2,0.2,1.0);
-
-	//init camera
-	camera.init();
-
-	//loop
-	glutMainLoop();
+	WorldDrawer wd(argc,argv,600,600,200,100,std::string("Tema 3: Labyrinth"));
+	wd.init();
+	wd.run();
 
 	return 0;
 }
