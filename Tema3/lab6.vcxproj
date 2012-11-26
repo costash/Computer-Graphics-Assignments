@@ -143,6 +143,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Labyrinth.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="WorldDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="ground.h" />
     <ClInclude Include="HeadersAndDefines.h" />
     <ClInclude Include="Labyrinth.h" />
+    <ClInclude Include="Point2d.h" />
     <ClInclude Include="Vector3D.h" />
     <ClInclude Include="WorldDrawer.h" />
   </ItemGroup>

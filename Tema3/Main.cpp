@@ -2,6 +2,8 @@
 #include "WorldDrawer.h"
 #include "camera.h"
 
+#include "Point2d.h"
+
 float angle=0;
 
 bool WorldDrawer::animation = true;
@@ -196,6 +198,6 @@ int main(int argc, char *argv[]){
 	WorldDrawer wd(argc,argv,600,600,200,100,std::string("Tema 3: Labyrinth"));
 	wd.init();
 	wd.run();
-
+	
 	return 0;
 }

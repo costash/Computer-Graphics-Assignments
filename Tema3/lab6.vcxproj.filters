@@ -13,6 +13,9 @@
     <ClCompile Include="WorldDrawer.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Point2d.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -31,6 +34,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="HeadersAndDefines.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2d.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

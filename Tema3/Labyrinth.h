@@ -4,5 +4,7 @@ class Labyrinth
 public:
 	Labyrinth();
 	~Labyrinth();
+
+
 };
 
