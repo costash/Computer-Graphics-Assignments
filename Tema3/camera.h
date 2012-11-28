@@ -29,4 +29,6 @@ public:
 	Vector3D up;
 	Vector3D right;
 	Vector3D position;
+private:
+	float anglex;
 };

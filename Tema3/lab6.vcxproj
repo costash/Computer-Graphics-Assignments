@@ -144,6 +144,7 @@
     <ClCompile Include="Labyrinth.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Point2d.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WorldDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>

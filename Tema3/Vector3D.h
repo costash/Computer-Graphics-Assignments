@@ -119,4 +119,6 @@ public:
 		arr[2] = z;
 		return arr;
 	}
+
+	friend std::ostream& operator<< (std::ostream& os, const Vector3D &v2);
 };

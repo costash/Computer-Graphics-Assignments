@@ -1,6 +1,8 @@
 #include "camera.h"
 
-Camera::Camera(){
+Camera::Camera()
+	: anglex(0)
+{
 }
 Camera::~Camera(){
 }
@@ -28,10 +30,21 @@ void Camera::translate_Right(float dist){
 void Camera::rotateFPS_OY(float angle){
 	forward = forward * cos(angle) + right * sin(angle);
 	right = forward.CrossProduct(up);
+
 }
 void Camera::rotateFPS_OX(float angle){
-	up = up * cos(angle) + forward * sin(angle);
-	forward = up.CrossProduct(right);
+	float newangle = anglex + angle;
+	std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+	if (newangle >= M_PI_2)
+		anglex = (float) M_PI_2;
+	else if (newangle <= - M_PI_2)
+		anglex = (float) -M_PI_2;
+	else
+	{
+		anglex = newangle;
+		up = up * cos(angle) + forward * sin(angle);
+		forward = up.CrossProduct(right);
+	}
 }
 void Camera::rotateFPS_OZ(float angle){
 	right = right * cos(angle) + up * sin(angle);
@@ -56,7 +69,16 @@ void Camera::rotateTPS_OZ(float angle, float dist_to_interes){
 
 
 void Camera::render(){
+	up.Normalize();
+	forward.Normalize();
+	right.Normalize();
+
 	Vector3D center = position + forward;
+	std::cerr << "Position: " << position << " forward: " << forward
+		<< " \ncenter: " << center << " up: " << up << "\n\n";
+
+	std::cerr << "Pos_len: " << position.Length() << " fwd_len: " << forward.Length()
+		<< "\ncent_len: " << center.Length() << " up_len: " << up.Length() << "\n\n";
 	gluLookAt(	position.x, position.y, position.z, 
 		center.x, center.y, center.z,
 		up.x, up.y, up.z);

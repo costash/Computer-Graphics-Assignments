@@ -16,6 +16,9 @@
     <ClCompile Include="Point2d.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Vector3D.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
