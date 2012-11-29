@@ -46,25 +46,25 @@ void WorldDrawer::keyOperations()
 	{
 		//std::cerr << "UP was pressed\n";
 		viewAngleY -= rotateStep;
-		camera.rotateFPS_OX(-0.05);
+		camera.rotateFPS_OX(-0.05f);
 	}
 	if (keySpecialStates[KEY_DOWN])			// Rotate cube down
 	{
 		//std::cerr << "DOWN was pressed\n";
 		viewAngleY += rotateStep;
-		camera.rotateFPS_OX(0.05);
+		camera.rotateFPS_OX(0.05f);
 	}
 	if (keySpecialStates[KEY_LEFT])			// Rotate cube left
 	{
 		//std::cerr << "LEFT was pressed\n";
 		viewAngleX -= rotateStep;
-		camera.rotateFPS_OY(-0.05);
+		camera.rotateFPS_OY(-0.05f);
 	}
 	if (keySpecialStates[KEY_RIGHT])		// Rotate cube right
 	{
 		//std::cerr << "RIGHT was pressed\n";
 		viewAngleX += rotateStep;
-		camera.rotateFPS_OY(0.05);
+		camera.rotateFPS_OY(0.05f);
 	}
 
 	// Move the cube forwards and backwards

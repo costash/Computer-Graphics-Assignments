@@ -44,7 +44,7 @@ WorldDrawer::WorldDrawer
 	glutMouseWheelFunc(mouseWheelCallbackFunction);
 
 	// Background color
-	glClearColor(0.2,0.2,0.2,1.0);
+	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
 
 	//zbuff
 	glEnable(GL_DEPTH_TEST);
@@ -120,7 +120,7 @@ void WorldDrawer::displayCallbackFunction(){
 			if((i+j)%5==2) glColor3f( 0,0,1);
 			if((i+j)%5==3) glColor3f( 1,0,1);
 			if((i+j)%5==4) glColor3f( 1,1,0);
-			glTranslatef((i-1.5)*3, j*3, -25);
+			glTranslatef((i - 1.5f) * 3.f, j * 3.f, -25.f);
 
 			glRotatef(angle*(i+1)*(j+1)/(i+2+j),0,1,0);
 			glutSolidCube(2);
