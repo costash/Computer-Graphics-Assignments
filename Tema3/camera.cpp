@@ -102,22 +102,22 @@ void Camera::rotateFPS_OZ(float angle)
 
 void Camera::rotateTPS_OY(float angle, float dist_to_interes)
 {
-	translate_Forward(dist_to_interes);
+	translate_ForwardFree(dist_to_interes);
 	rotateFPS_OY(angle);
-	translate_Forward(-dist_to_interes);
+	translate_ForwardFree(-dist_to_interes);
 
 }
 void Camera::rotateTPS_OX(float angle, float dist_to_interes)
 {
-	translate_Forward(dist_to_interes);
+	translate_ForwardFree(dist_to_interes);
 	rotateFPS_OX(angle);
-	translate_Forward(-dist_to_interes);
+	translate_ForwardFree(-dist_to_interes);
 }
 void Camera::rotateTPS_OZ(float angle, float dist_to_interes)
 {
-	translate_Forward(dist_to_interes);
+	translate_ForwardFree(dist_to_interes);
 	rotateFPS_OZ(angle);
-	translate_Forward(-dist_to_interes);
+	translate_ForwardFree(-dist_to_interes);
 }
 
 

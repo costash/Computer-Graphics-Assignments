@@ -1,5 +1,5 @@
 #pragma once
-#define _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES		// Used to activate PI related constants
 #include <cmath>
 #include <cstdlib>
 #include "glut\freeglut.h"

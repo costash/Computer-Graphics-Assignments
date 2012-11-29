@@ -110,7 +110,7 @@ void WorldDrawer::displayCallbackFunction(){
 
 	//ground
 	glColor3f(0.5,0.5,0.5);
-	draw_ground(20,16,2,2,-2);
+	draw_ground(20, 16, 2, 2, -2);
 
 	//rest scena
 	for(int i=0;i<4;i++){
