@@ -10,8 +10,10 @@ public:
 	~Camera();
 
 	void translate_Forward(float dist);
+	void translate_ForwardFree(float dist);
 	void translate_Up(float dist);
 	void translate_Right(float dist);
+	void translate_RightFree(float dist);
 
 	void rotateFPS_OY(float angle);
 	void rotateFPS_OX(float angle);

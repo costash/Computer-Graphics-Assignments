@@ -48,7 +48,8 @@ public:
 	static bool mouseLeftState;					// Left mouse button state
 	static bool mouseRightState;				// Right mouse button state
 	static float mousePosX, mousePosY;			// Mouse position
-	static float viewAngleX, viewAngleY;		// View angle
+	static float viewAngleX, viewAngleY;		// View angle for FPS
+	static float viewAngleTpsX, viewAngleTpsY;	// View angle for TPS
 	static float eyeDistance;					// View distance
 	static unsigned int tick;					// Used for clock
 

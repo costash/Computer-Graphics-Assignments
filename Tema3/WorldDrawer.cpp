@@ -7,6 +7,8 @@ float WorldDrawer::mousePosX = 0.f;			// Mouse position X coordinate
 float WorldDrawer::mousePosY = 0.f;			// Mouse position Y coordinate
 float WorldDrawer::viewAngleX = 0.f;			// ViewAngle on OX
 float WorldDrawer::viewAngleY = 0.f;			// ViewAngle on OY
+float WorldDrawer::viewAngleTpsX = 0.f;			// ViewAngle on OX for TPS camera
+float WorldDrawer::viewAngleTpsY = 0.f;			// ViewAngle on OY for TPS camera
 float WorldDrawer::eyeDistance = 0.f;			// Distance from viewer
 
 int WorldDrawer::mainWindow = 0;				// Main window ID

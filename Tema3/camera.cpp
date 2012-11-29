@@ -10,21 +10,41 @@ Camera::~Camera()
 
 void Camera::init()
 {
-	position = Vector3D(0,0,3);
-	forward = Vector3D(0,0,-1);
-	up = Vector3D(0,1,0);
-	right = Vector3D(1,0,0);
+	position = Vector3D(0, 0, 3);
+	forward = Vector3D(0, 0, -1);
+	up = Vector3D(0, 1, 0);
+	right = Vector3D(1, 0, 0);
 }
 
 void Camera::translate_Forward(float dist)
 {
+	// Translate forward like in FPS games
+	Vector3D temp(forward * dist);
+	position.x += temp.x;
+	position.z += temp.z;
+}
+
+// Move forward free roaming style
+void Camera::translate_ForwardFree(float dist)
+{
 	position += forward * dist;
 }
+
 void Camera::translate_Up(float dist)
 {
 	position += up * dist;
 }
+
 void Camera::translate_Right(float dist)
+{
+	// Translate right like in FPS games
+	Vector3D temp(right * dist);
+	position.x += temp.x;
+	position.z += temp.z;
+}
+
+// Move right free roaming style
+void Camera::translate_RightFree(float dist)
 {
 	position += right * dist;
 }
@@ -60,7 +80,8 @@ void Camera::rotateFPS_OY(float angle)
 void Camera::rotateFPS_OX(float angle)
 {
 	float newangle = anglex + angle;
-	std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+	//std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+	// Limit the up/down rotation
 	if (newangle >= ANGLE_LIMIT)
 		anglex = (float) ANGLE_LIMIT;
 	else if (newangle <= -ANGLE_LIMIT)

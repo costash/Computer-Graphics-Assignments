@@ -42,29 +42,50 @@ void WorldDrawer::keyOperations()
 	// Arrow keys rotate the entire cube
 	float rotateStep = 2.f;
 
-	if (keySpecialStates[KEY_UP])			// Rotate cube up
+	if (keySpecialStates[KEY_UP])			// Rotate FPS up
 	{
 		//std::cerr << "UP was pressed\n";
-		viewAngleY -= rotateStep;
+		viewAngleX -= rotateStep;
 		camera.rotateFPS_OX(-0.05f);
 	}
-	if (keySpecialStates[KEY_DOWN])			// Rotate cube down
+	if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
 	{
 		//std::cerr << "DOWN was pressed\n";
-		viewAngleY += rotateStep;
+		viewAngleX += rotateStep;
 		camera.rotateFPS_OX(0.05f);
 	}
-	if (keySpecialStates[KEY_LEFT])			// Rotate cube left
+	if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
 	{
 		//std::cerr << "LEFT was pressed\n";
-		viewAngleX -= rotateStep;
+		viewAngleY -= rotateStep;
 		camera.rotateFPS_OY(-0.05f);
 	}
-	if (keySpecialStates[KEY_RIGHT])		// Rotate cube right
+	if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
 	{
 		//std::cerr << "RIGHT was pressed\n";
-		viewAngleX += rotateStep;
+		viewAngleY += rotateStep;
 		camera.rotateFPS_OY(0.05f);
+	}
+
+	if (keyStates['i'])					// Rotate TPS up
+	{
+		viewAngleTpsX -= rotateStep;
+		camera.rotateTPS_OX(-0.05f, 10.f);
+	}
+	if (keyStates['k'])					// Rotate TPS down
+	{
+		viewAngleTpsX += rotateStep;
+		camera.rotateTPS_OX(0.05f, 10.f);
+	}
+	if (keyStates['j'])						// Rotate TPS left
+	{
+		viewAngleTpsY -= rotateStep;
+		camera.rotateTPS_OY(-0.05f, 10.f);
+	}
+	if (keyStates['l'])						// Rotate TPS right
+	{
+		viewAngleTpsY += rotateStep;
+		camera.rotateTPS_OY(0.05f, 10.f);
 	}
 
 	// Move the cube forwards and backwards
@@ -98,17 +119,12 @@ void WorldDrawer::keyOperations()
 		camera.translate_Right(0.5);
 	}
 	/*
-	case 'a':
-		camera.rotateFPS_OY(-0.1);
-		break;
 	case 't':
 		camera.translate_Up(0.5);
 		break;
 	case 'g':
 		camera.translate_Up(-0.5);
 		break;
-	case 'd':
-		camera.rotateFPS_OY(0.1);
 		break;
 	case 'z':
 		camera.rotateFPS_OX(0.1);
