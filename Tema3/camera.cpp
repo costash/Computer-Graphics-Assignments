@@ -55,11 +55,11 @@ void Camera::translate_RightFree(float dist)
 void Camera::rotateFPS_OY(float angle)
 {
 	angley += angle;
-	std::cerr << "angley: " << angley << "\n\n";
+	//std::cerr << "angley: " << angley << "\n\n";
 	if (angley > 2 * M_PI)
-		angley -= 2 * M_PI;
+		angley -= (float)(2 * M_PI);
 	else if (angley < -2 * M_PI)
-		angley += 2 * M_PI;
+		angley += (float)(2 * M_PI);
 
 	// Create projection of fwd and right vectors on XoZ plan
 	Vector3D fwdProjected(forward);

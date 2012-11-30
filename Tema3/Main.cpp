@@ -1,6 +1,7 @@
 #include "HeadersAndDefines.h"
 #include "WorldDrawer.h"
 #include "camera.h"
+#include "Labyrinth.h"
 
 #include "Point2d.h"
 
@@ -13,6 +14,12 @@ Camera WorldDrawer::camera;
 
 //add
 void WorldDrawer::init(){
+
+	Labyrinth *l = new Labyrinth(31);
+	l->init();
+	std::cerr << *l;
+	l->generateNewMaze();
+	std::cerr << "new\n\n" << *l;
 
 	camera.init();
 	tick = glutGet(GLUT_ELAPSED_TIME);
@@ -198,6 +205,8 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 }
 
 int main(int argc, char *argv[]){
+	srand((unsigned int)time(0));
+
 	WorldDrawer wd(argc,argv,600,600,200,100,std::string("Tema 3: Labyrinth"));
 	wd.init();
 	wd.run();

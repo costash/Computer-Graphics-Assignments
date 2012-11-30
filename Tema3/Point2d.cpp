@@ -61,9 +61,9 @@ bool Point2d::operator!= (const Point2d &p2) const
 	return x != p2.x || y != p2.y;
 }
 
-std::ostream& operator<< (std::ostream& os, const Point2d &p2)
+std::ostream& operator<< (std::ostream& os, const Point2d &p)
 {
-	os << "(" << p2.x << "," << p2.y << ")";
+	os << "(" << p.x << "," << p.y << ")";
 	return os;
 }
 

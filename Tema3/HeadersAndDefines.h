@@ -20,3 +20,9 @@
 
 #define MODE_FPS 1
 #define MODE_TPS 2
+
+enum CellType
+{
+	WALL = 1,
+	PATH = 0
+};
