@@ -25,12 +25,17 @@ public:
 	void init();
 	void render();
 
+	float getAngleX();
+	float getAngleY();
+
 	//private:
 public:
 	Vector3D forward;
 	Vector3D up;
 	Vector3D right;
 	Vector3D position;
+	short int mode;
 private:
 	float anglex;
+	float angley;
 };

@@ -10,10 +10,13 @@ float WorldDrawer::viewAngleY = 0.f;			// ViewAngle on OY
 float WorldDrawer::viewAngleTpsX = 0.f;			// ViewAngle on OX for TPS camera
 float WorldDrawer::viewAngleTpsY = 0.f;			// ViewAngle on OY for TPS camera
 float WorldDrawer::eyeDistance = 0.f;			// Distance from viewer
+float WorldDrawer::distanceToTPSTarget = 10.f;	// Distance to target for TPS camera
+float WorldDrawer::mouseSensivity = 100.f;
+float WorldDrawer::zoomSensivity = 0.1f;
 
 int WorldDrawer::mainWindow = 0;				// Main window ID
 float WorldDrawer::angle = 0;
-//Camera WorldDrawer::camera;
+
 
 WorldDrawer::WorldDrawer
 	(int argc, char **argv, int windowWidth, int windowHeight,
@@ -105,6 +108,8 @@ void WorldDrawer::displayCallbackFunction(){
 	//setup view
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+
 	camera.render();
 
 
@@ -134,7 +139,7 @@ void WorldDrawer::displayCallbackFunction(){
 	glPushMatrix();
 
 
-	Vector3D pos(camera.position + camera.forward * 10);
+	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 	glTranslatef(pos.x, pos.y, pos.z);
 	glutSolidCube(2);
 	glPopMatrix();

@@ -4,8 +4,6 @@
 
 #include "Point2d.h"
 
-float angle=0;
-
 bool WorldDrawer::animation = true;
 bool WorldDrawer::keyStates[256];
 bool WorldDrawer::keySpecialStates[256];
@@ -23,7 +21,7 @@ void WorldDrawer::init(){
 // Is called in glut main loop by the system on idle
 void WorldDrawer::onIdle(){	//per frame
 	keyOperations();			// Operations for buffered keys
-	
+	mouseRotations();
 	
 	if(animation){
 		// Do nothing here
@@ -39,53 +37,53 @@ void WorldDrawer::keyOperations()
 	if (keyStates[KEY_ESC])			// On Escape, program exits
 		glutExit();
 	
-	// Arrow keys rotate the entire cube
-	float rotateStep = 2.f;
+	float rotateStep = 0.04f;
+	float moveStep = 0.25f;
 
 	if (keySpecialStates[KEY_UP])			// Rotate FPS up
 	{
 		//std::cerr << "UP was pressed\n";
-		viewAngleX -= rotateStep;
-		camera.rotateFPS_OX(-0.05f);
+		//viewAngleX -= rotateStep;
+		camera.rotateFPS_OX(-rotateStep);
 	}
 	if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
 	{
 		//std::cerr << "DOWN was pressed\n";
-		viewAngleX += rotateStep;
-		camera.rotateFPS_OX(0.05f);
+		//viewAngleX += rotateStep;
+		camera.rotateFPS_OX(rotateStep);
 	}
 	if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
 	{
 		//std::cerr << "LEFT was pressed\n";
-		viewAngleY -= rotateStep;
-		camera.rotateFPS_OY(-0.05f);
+		//viewAngleY -= rotateStep;
+		camera.rotateFPS_OY(-rotateStep);
 	}
 	if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
 	{
 		//std::cerr << "RIGHT was pressed\n";
-		viewAngleY += rotateStep;
-		camera.rotateFPS_OY(0.05f);
+		//viewAngleY += rotateStep;
+		camera.rotateFPS_OY(rotateStep);
 	}
 
 	if (keyStates['i'])					// Rotate TPS up
 	{
-		viewAngleTpsX -= rotateStep;
-		camera.rotateTPS_OX(-0.05f, 10.f);
+		//viewAngleTpsX -= rotateStep;
+		camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
 	}
 	if (keyStates['k'])					// Rotate TPS down
 	{
-		viewAngleTpsX += rotateStep;
-		camera.rotateTPS_OX(0.05f, 10.f);
+		//viewAngleTpsX += rotateStep;
+		camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
 	}
 	if (keyStates['j'])						// Rotate TPS left
 	{
-		viewAngleTpsY -= rotateStep;
-		camera.rotateTPS_OY(-0.05f, 10.f);
+		//viewAngleTpsY -= rotateStep;
+		camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
 	}
 	if (keyStates['l'])						// Rotate TPS right
 	{
-		viewAngleTpsY += rotateStep;
-		camera.rotateTPS_OY(0.05f, 10.f);
+		//viewAngleTpsY += rotateStep;
+		camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
 	}
 
 	// Move the cube forwards and backwards
@@ -95,71 +93,39 @@ void WorldDrawer::keyOperations()
 	{
 		//std::cerr << "[ was pressed\n";
 		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
+		if (camera.mode == MODE_TPS)
+		{
+			distanceToTPSTarget -= zoomSensivity;
+			camera.translate_ForwardFree(zoomSensivity);
+		}
 	}
 	if (keyStates[']'])
 	{
 		//std::cerr << "] was pressed\n";
 		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
+		if (camera.mode == MODE_TPS)
+		{
+			distanceToTPSTarget += zoomSensivity;
+			camera.translate_ForwardFree(-zoomSensivity);
+		}
 	}
 
 	if (keyStates['w'])
 	{
-		camera.translate_Forward(0.5);
+		camera.translate_Forward(moveStep);
 	}
 	if (keyStates['s'])
 	{
-		camera.translate_Forward(-0.5);
+		camera.translate_Forward(-moveStep);
 	}
 	if (keyStates['a'])
 	{
-		camera.translate_Right(-0.5);
+		camera.translate_Right(-moveStep);
 	}
 	if (keyStates['d'])
 	{
-		camera.translate_Right(0.5);
+		camera.translate_Right(moveStep);
 	}
-	/*
-	case 't':
-		camera.translate_Up(0.5);
-		break;
-	case 'g':
-		camera.translate_Up(-0.5);
-		break;
-		break;
-	case 'z':
-		camera.rotateFPS_OX(0.1);
-		break;
-	case 'x':
-		camera.rotateFPS_OX(-0.1);
-		break;
-	case 'v':
-		camera.rotateFPS_OZ(0.1);
-		break;
-	case 'b':
-		camera.rotateFPS_OZ(-0.1);
-		break;
-
-	case 'q':
-		camera.rotateTPS_OY(-0.1,10);
-		break;
-	case 'e':
-		camera.rotateTPS_OY(0.1,10);
-		break;
-
-	case 'n':
-		camera.rotateTPS_OX(-0.1, 10);
-		break;
-	case 'm':
-		camera.rotateTPS_OX(0.1, 10);
-		break;
-
-	case 'k':
-		camera.rotateTPS_OZ(-0.1, 10);
-		break;
-	case 'l':
-		camera.rotateTPS_OZ(0.1, 10);
-		break;*/
-
 }
 
 // Callback function for mouse actions
@@ -190,8 +156,8 @@ void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
 	if (mouseLeftState == true)			// Make rotation if left is clicked and moved mouse
 	{
 		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
-		viewAngleX += (x - mousePosX);
-		viewAngleY += (y - mousePosY);
+		viewAngleX += (y - mousePosY) / mouseSensivity;
+		viewAngleY += (x - mousePosX) / mouseSensivity;
 		mousePosX = float(x);
 		mousePosY = float(y);
 	}
@@ -203,11 +169,32 @@ void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
 	}
 }
 
+void WorldDrawer::mouseRotations()
+{
+	if (camera.mode == MODE_FPS)
+	{
+		camera.rotateFPS_OX(viewAngleX);
+		camera.rotateFPS_OY(viewAngleY);
+		viewAngleX = viewAngleY = 0.f;
+	}
+	else if (camera.mode == MODE_TPS)
+	{
+		camera.rotateTPS_OX(viewAngleX, distanceToTPSTarget);
+		camera.rotateTPS_OY(viewAngleY, distanceToTPSTarget);
+		viewAngleX = viewAngleY = 0.f;
+	}
+}
+
 // Callback for mouse scroll (wheel)
 void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, int y)
 {
 	float eyeDistanceStep = 2.f;
 	eyeDistance += eyeDistanceStep * (-direction);
+	if (camera.mode == MODE_TPS)
+	{
+		distanceToTPSTarget += zoomSensivity * 20 * (-direction);
+		camera.translate_ForwardFree(-zoomSensivity * 20 * (-direction));
+	}
 }
 
 int main(int argc, char *argv[]){

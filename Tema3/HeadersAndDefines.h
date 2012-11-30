@@ -17,3 +17,6 @@
 #define MOUSE_RIGHT GLUT_RIGHT_BUTTON
 
 #define ANGLE_LIMIT (M_PI_2 - 0.01f)
+
+#define MODE_FPS 1
+#define MODE_TPS 2

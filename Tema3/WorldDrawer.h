@@ -41,6 +41,9 @@ public:
 	// Text drawing helpers
 	//static void drawText(float posx, float posy, float posz, Color col, const unsigned char * text);
 
+	// Mouse rotations helper
+	static void mouseRotations();
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -58,5 +61,9 @@ public:
 	static int secondaryWindow;					// The ID for a secondary window
 
 	static Camera camera;
-	static float angle;
+	static float distanceToTPSTarget;			// Distance to the target for TPS camera
+	static float mouseSensivity;				// Mouse sensivity
+	static float zoomSensivity;
+
+	static float angle;							// Angle for cubes rotating
 };

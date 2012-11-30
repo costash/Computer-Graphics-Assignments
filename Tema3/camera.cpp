@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera()
-	: anglex(0)
+	: anglex(0), angley(0), mode(MODE_TPS)
 {
 }
 Camera::~Camera()
@@ -54,6 +54,13 @@ void Camera::translate_RightFree(float dist)
 // Left/right rotation is always relative to the fixed up vector (0, 1, 0)
 void Camera::rotateFPS_OY(float angle)
 {
+	angley += angle;
+	std::cerr << "angley: " << angley << "\n\n";
+	if (angley > 2 * M_PI)
+		angley -= 2 * M_PI;
+	else if (angley < -2 * M_PI)
+		angley += 2 * M_PI;
+
 	// Create projection of fwd and right vectors on XoZ plan
 	Vector3D fwdProjected(forward);
 	fwdProjected.y = 0.f;
@@ -89,8 +96,8 @@ void Camera::rotateFPS_OX(float angle)
 	else
 	{
 		anglex = newangle;
-		up = up * cos(angle) + forward * sin(angle);
-		forward = up.CrossProduct(right);
+		up = (up * cos(angle) + forward * sin(angle)).Normalize();
+		forward = up.CrossProduct(right).Normalize();
 	}
 }
 
@@ -137,4 +144,14 @@ void Camera::render()
 	gluLookAt(position.x, position.y, position.z, 
 		center.x, center.y, center.z,
 		up.x, up.y, up.z);
+}
+
+float Camera::getAngleX()
+{
+	return anglex;
+}
+
+float Camera::getAngleY()
+{
+	return angley;
 }
