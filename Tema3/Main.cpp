@@ -24,8 +24,11 @@ void WorldDrawer::init(){
 
 	labyrinth.init();
 	std::cerr << labyrinth;
+	labyrinth.generatePortalPosition();
 
 	camera.init();
+	if (camera.mode == MODE_TPS)
+		camera.rotateTPS_OX(float(M_PI_4 / 2), distanceToTPSTarget);
 	tick = glutGet(GLUT_ELAPSED_TIME);
 }
 

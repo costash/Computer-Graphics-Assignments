@@ -23,6 +23,8 @@
 
 enum CellType
 {
+	PORTAL = 3,
+	PLAYER = 2,
 	WALL = 1,
 	PATH = 0
 };

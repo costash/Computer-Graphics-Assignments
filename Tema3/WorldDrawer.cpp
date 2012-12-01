@@ -98,7 +98,7 @@ void WorldDrawer::reshapeCallbackFunction(int w, int h){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
+	//gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
 }
 
 void WorldDrawer::displayCallbackFunction(){
@@ -136,20 +136,7 @@ void WorldDrawer::displayCallbackFunction(){
 	//}
 
 	// Labyrinth
-	int dim = labyrinth.size * 2 + 1;
-	for (int i = 0; i < dim; ++i)
-		for (int j = 0; j < dim; ++j)
-		{
-			glPushMatrix();
-
-			if (labyrinth.maze[i * dim + j] == WALL)
-			{
-				glColor3f(0.f, 0.f, 1.f);
-				glTranslatef((i - dim / 2) * 3.f, 0.f, (j - dim / 2) * 3.f);
-				glutSolidCube(2.5f);
-				glPopMatrix();
-			}
-		}
+	labyrinth.drawLabyrinth();
 
 	// Cub la punctul de interes
 	glPushMatrix();
@@ -157,8 +144,14 @@ void WorldDrawer::displayCallbackFunction(){
 
 	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 	glTranslatef(pos.x, pos.y, pos.z);
+	glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 	glColor3f(0.f, 1.f, 0.f);
-	glutSolidCube(2);
+	//glutSolidCube(1);
+	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
+	
+	glutSolidCone(1, 4, 100, 10);
+	glColor3f(0.f, 0.9f, 0.f);
+	glutSolidSphere(1, 100, 10);
 	glPopMatrix();
 
 	//swap buffers

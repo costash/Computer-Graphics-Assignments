@@ -93,7 +93,7 @@ void Camera::rotateFPS_OY(float angle)
 void Camera::rotateFPS_OX(float angle)
 {
 	float newangle = anglex + angle;
-	std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+	//std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
 
 	float angleToRotate;
 	// Limit the up/down rotation

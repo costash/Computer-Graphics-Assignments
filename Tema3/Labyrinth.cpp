@@ -48,6 +48,72 @@ void Labyrinth::generateNewMaze()
 	delete[] backY;
 }
 
+void Labyrinth::drawLabyrinth()
+{
+	int dim = size * 2 + 1;
+	for (int i = 0; i < dim; ++i)
+		for (int j = 0; j < dim; ++j)
+		{
+			glPushMatrix();
+
+			if (maze[i * dim + j] == WALL)
+			{
+				glColor3f(0.f, 0.f, 1.f);
+				//glScalef(1.f, 2.f, 1.f);
+				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
+				glutSolidCube(2.5f);
+			}
+			else if (maze[i * dim + j] == PORTAL)
+			{
+				glColor3f(1.f, 0.f, 0.f);
+				
+				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
+				// Rotate portal coresponding to the walls
+				if (maze[i * dim + j - 1] == WALL && maze[(i - 1) * dim + j] == WALL)	// left, up walls
+					glRotatef(-45, 0.f, 1.f, 0.f);
+				else if (maze[i * dim + j - 1] == WALL && maze[(i + 1) * dim + j] == WALL) // left, down walls
+					glRotatef(45, 0.f, 1.f, 0.f);
+				else if (maze[i * dim + j + 1] == WALL && maze[(i + 1) * dim + j] == WALL) // right, down walls
+					glRotatef(-45, 0.f, 1.f, 0.f);
+				else if (maze[i * dim + j + 1] == WALL && maze[(i - 1) * dim + j] == WALL) // right, up walls
+					glRotatef(45, 0.f, 1.f, 0.f);
+				else if (maze[(i - 1) * dim + j] == WALL && maze[(i - 1) * dim + j] == WALL) // up, down walls
+					glRotatef(90, 0.f, 1.f, 0.f);
+				
+				glutSolidTorus(0.5, 1, 100, 100);
+				//glutSolidCube(3);
+			}
+			glPopMatrix();
+		}
+}
+
+// Generates a random position for portal
+void Labyrinth::generatePortalPosition()
+{
+	int x, y, dim = size * 2 + 1;
+	bool wall = true;
+
+	do
+	{
+		x = rand() % dim;
+		y = rand() % dim;
+		wall = isOnWall(Point2d(x, y));
+		std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+	} while (wall == true);
+	
+	portalPos = Point2d(x, y);
+	maze[x * dim + y] = PORTAL;
+	std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+}
+
+bool Labyrinth::isOnWall(const Point2d p)
+{
+	int dim = size * 2 + 1;
+	if (maze[p.x * dim + p.y] == WALL)
+		return true;
+	return false;
+}
+
 void Labyrinth::initMaze()
 {
 	int dim = size * 2 + 1;
