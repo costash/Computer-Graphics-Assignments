@@ -88,22 +88,33 @@ void Labyrinth::drawLabyrinth()
 }
 
 // Generates a random position for portal
-void Labyrinth::generatePortalPosition()
+Point2d Labyrinth::generateRandomPosition()
 {
 	int x, y, dim = size * 2 + 1;
-	bool wall = true;
+	bool wall;
 
 	do
 	{
 		x = rand() % dim;
 		y = rand() % dim;
 		wall = isOnWall(Point2d(x, y));
-		std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+		//std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
 	} while (wall == true);
 	
-	portalPos = Point2d(x, y);
-	maze[x * dim + y] = PORTAL;
-	std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+	//std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+	return Point2d(x, y);
+}
+
+void Labyrinth::setPortal(const Point2d p)
+{
+	portalPos = p;
+	maze[p.x * (size * 2 + 1) + p.y] = PORTAL;
+}
+
+void Labyrinth::setPlayerPos(const Point2d p)
+{
+	playerPos = p;
+	maze[p.x * (size * 2 + 1) + p.y] = PLAYER;
 }
 
 bool Labyrinth::isOnWall(const Point2d p)

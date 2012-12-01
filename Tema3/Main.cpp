@@ -16,17 +16,20 @@ Labyrinth WorldDrawer::labyrinth(30);
 //add
 void WorldDrawer::init(){
 
-	/*Labyrinth *l = new Labyrinth(31);
-	l->init();
-	std::cerr << *l;
-	l->generateNewMaze();
-	std::cerr << "new\n\n" << *l;*/
-
 	labyrinth.init();
 	std::cerr << labyrinth;
-	labyrinth.generatePortalPosition();
+	Point2d portal = labyrinth.generateRandomPosition();
+	labyrinth.setPortal(portal);
+	
+	Point2d player = labyrinth.generateRandomPosition();
+	labyrinth.setPlayerPos(player);
 
 	camera.init();
+	float distx = (player.x - (labyrinth.size * 2 + 1) / 2) * 3.f;
+	float disty = (player.y - (labyrinth.size * 2 + 1) / 2) * 3.f;
+	camera.position = Vector3D(disty - (camera.forward * distanceToTPSTarget).x, 0.f, distx - (camera.forward * distanceToTPSTarget).z);
+
+
 	if (camera.mode == MODE_TPS)
 		camera.rotateTPS_OX(float(M_PI_4 / 2), distanceToTPSTarget);
 	tick = glutGet(GLUT_ELAPSED_TIME);

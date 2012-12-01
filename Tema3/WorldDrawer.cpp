@@ -138,21 +138,21 @@ void WorldDrawer::displayCallbackFunction(){
 	// Labyrinth
 	labyrinth.drawLabyrinth();
 
-	// Cub la punctul de interes
-	glPushMatrix();
+	// Player-ul de la punctul de interes
+	/*glPushMatrix();*/
 
 
 	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 	glTranslatef(pos.x, pos.y, pos.z);
 	glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 	glColor3f(0.f, 1.f, 0.f);
-	//glutSolidCube(1);
+	//glutSolidCube(2.5);
 	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
 	
-	glutSolidCone(1, 4, 100, 10);
+	glutSolidCone(1, 2, 100, 10);
 	glColor3f(0.f, 0.9f, 0.f);
 	glutSolidSphere(1, 100, 10);
-	glPopMatrix();
+	//glPopMatrix();
 
 	//swap buffers
 	glutSwapBuffers();

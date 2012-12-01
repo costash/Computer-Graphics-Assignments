@@ -13,7 +13,9 @@ public:
 	void generateNewMaze();	// Generates a new Maze with current size
 	void drawLabyrinth();	// Draws Labyrinth on scene
 
-	void generatePortalPosition();	// Generates a random position for portal
+	Point2d generateRandomPosition();	// Generates a random position on labyrinth not on wall
+	void setPortal(const Point2d p);
+	void setPlayerPos(const Point2d p);
 
 	friend std::ostream& operator<< (std::ostream& os, const Labyrinth &p);
 
@@ -21,6 +23,7 @@ public:
 	int size;				// Size of maze. Actual size is size * 2 + 1
 	int *maze;				// Matrix for maze
 	Point2d portalPos;		// Position of the portal
+	Point2d playerPos;		// Position of the player
 
 private:
 	void initMaze();
