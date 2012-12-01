@@ -11,15 +11,19 @@ bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
 Camera WorldDrawer::camera;
+Labyrinth WorldDrawer::labyrinth(30);
 
 //add
 void WorldDrawer::init(){
 
-	Labyrinth *l = new Labyrinth(31);
+	/*Labyrinth *l = new Labyrinth(31);
 	l->init();
 	std::cerr << *l;
 	l->generateNewMaze();
-	std::cerr << "new\n\n" << *l;
+	std::cerr << "new\n\n" << *l;*/
+
+	labyrinth.init();
+	std::cerr << labyrinth;
 
 	camera.init();
 	tick = glutGet(GLUT_ELAPSED_TIME);
@@ -207,7 +211,7 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 int main(int argc, char *argv[]){
 	srand((unsigned int)time(0));
 
-	WorldDrawer wd(argc,argv,600,600,200,100,std::string("Tema 3: Labyrinth"));
+	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 3: Labyrinth"));
 	wd.init();
 	wd.run();
 	

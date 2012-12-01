@@ -2,6 +2,7 @@
 #include "HeadersAndDefines.h"
 #include "Vector3D.h"
 #include "camera.h"
+#include "Labyrinth.h"
 
 class WorldDrawer{
 public:
@@ -64,6 +65,8 @@ public:
 	static float distanceToTPSTarget;			// Distance to the target for TPS camera
 	static float mouseSensivity;				// Mouse sensivity
 	static float zoomSensivity;
+
+	static Labyrinth labyrinth;					// Labyrinth to use
 
 	static float angle;							// Angle for cubes rotating
 };

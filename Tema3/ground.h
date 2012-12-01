@@ -20,7 +20,7 @@ void draw_ground(int dimx, int dimy, int tessx, int tessy, float height){
 	int sizey = (int)floor(cy);
 
 	glPushMatrix();
-	glTranslatef(-dimx/2.0f, height, -35);
+	glTranslatef(-dimx/2.f, height, -dimy/2.f);
 	glBegin(GL_QUADS);
 	for(int i=0;i<sizex;i++){
 		for(int j=0;j<sizey;j++){

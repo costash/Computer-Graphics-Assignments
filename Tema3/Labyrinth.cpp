@@ -1,12 +1,16 @@
 #include "Labyrinth.h"
 
+//-----------------------------------------------------------------------------------------------------
+//	Labyrinth class holding information of maze
+//-----------------------------------------------------------------------------------------------------
+
 
 Labyrinth::Labyrinth(int size)
 	: size(size)
 {
 }
 
-
+// Init Labyrinth with a new maze of current size
 void Labyrinth::init()
 {
 	if (size > 30)
@@ -28,6 +32,7 @@ Labyrinth::~Labyrinth()
 	}
 }
 
+// Generates a new Maze with current size
 void Labyrinth::generateNewMaze()
 {
 	initMaze();
@@ -45,22 +50,24 @@ void Labyrinth::generateNewMaze()
 
 void Labyrinth::initMaze()
 {
-	for (int i = 0; i < size * 2 + 1; ++i)
-		for (int j = 0; j < size * 2 + 1; ++j)
+	int dim = size * 2 + 1;
+	for (int i = 0; i < dim; ++i)
+		for (int j = 0; j < dim; ++j)
 		{
 			if (i % 2 == 0 || j % 2 == 0)
-				maze[i * (size * 2 + 1) + j] = WALL;
+				maze[i * (dim) + j] = WALL;
 			else
-				maze[i * (size * 2 + 1) + j] = PATH;
+				maze[i * (dim) + j] = PATH;
 		}
 }
 
 bool Labyrinth::isMazeClosed(const Point2d p)
 {
-	if (maze[(p.x - 1) * (size * 2 + 1) + p.y]  == WALL
-		&& maze[p.x * (size * 2 + 1) + p.y - 1] == WALL
-		&& maze[p.x * (size * 2 + 1) + p.y + 1] == WALL
-		&& maze[(p.x + 1) * (size * 2 + 1) + p.y] == WALL)
+	int dim = size * 2 + 1;
+	if (maze[(p.x - 1) * (dim) + p.y]  == WALL
+		&& maze[p.x * (dim) + p.y - 1] == WALL
+		&& maze[p.x * (dim) + p.y + 1] == WALL
+		&& maze[(p.x + 1) * (dim) + p.y] == WALL)
 		return true;
 
 	return false;
@@ -79,7 +86,9 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
         int nextX;
         int nextY;
 
-        if(p.x - 2 > 0 && isMazeClosed(Point2d(p.x - 2, p.y)))  // upside
+		int dim = size * 2 + 1;
+
+        if(p.x - 2 > 0 && isMazeClosed(Point2d(p.x - 2, p.y)))  // up side of point
         {
             neighbourValid++;
             neighbourX[neighbourValid] = p.x - 2;
@@ -87,7 +96,7 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
             step[neighbourValid] = 1;
         }
 
-        if(p.y - 2 > 0 && isMazeClosed(Point2d(p.x, p.y - 2)))  // leftside
+        if(p.y - 2 > 0 && isMazeClosed(Point2d(p.x, p.y - 2)))  // left side of point
         {
             neighbourValid++;
             neighbourX[neighbourValid] = p.x;
@@ -95,7 +104,7 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
             step[neighbourValid] = 2;
         }
 
-        if(p.y + 2 < size * 2 + 1 && isMazeClosed(Point2d(p.x, p.y + 2)))  // rightside
+        if(p.y + 2 < dim && isMazeClosed(Point2d(p.x, p.y + 2)))  // right side of point
         {
             neighbourValid++;
             neighbourX[neighbourValid] = p.x;
@@ -104,7 +113,7 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
 
         }
 
-		if(p.x + 2 < size * 2 + 1 && isMazeClosed(Point2d(p.x + 2, p.y)))  // downside
+		if(p.x + 2 < dim && isMazeClosed(Point2d(p.x + 2, p.y)))  // down side of point
         {
             neighbourValid++;
             neighbourX[neighbourValid] = p.x + 2;
@@ -133,13 +142,13 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
             int rstep = step[random];
 
             if(rstep == 1)
-                maze[(nextX + 1) * (size * 2 + 1) + nextY] = PATH;
+                maze[(nextX + 1) * (dim) + nextY] = PATH;
             else if(rstep == 2)
-                maze[nextX * (size * 2 + 1) + nextY + 1] = PATH;
+                maze[nextX * (dim) + nextY + 1] = PATH;
             else if(rstep == 3)
-                maze[nextX * (size * 2 + 1) + nextY - 1] = PATH;
+                maze[nextX * (dim) + nextY - 1] = PATH;
             else if(rstep == 4)
-                maze[(nextX - 1) * (size * 2 + 1) + nextY] = PATH;
+                maze[(nextX - 1) * (dim) + nextY] = PATH;
             visited++;
         }
 
@@ -149,18 +158,19 @@ void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, i
 
 std::ostream& operator<< (std::ostream& os, const Labyrinth &l)
 {
-	for (int i = 0; i < l.size * 2 + 1; ++i)
+	int dim = l.size * 2 + 1;
+	for (int i = 0; i < dim; ++i)
 		os << "_";
 	os << "\n";
-	for (int i = 0; i < l.size * 2 + 1; ++i)
+	for (int i = 0; i < dim; ++i)
 	{
-		for (int j = 0; j < l.size * 2 + 1; ++j)
+		for (int j = 0; j < dim; ++j)
 		{
-			os << ((l.maze[i * (l.size * 2 + 1) + j] == WALL) ? "#" : " ");
+			os << ((l.maze[i * (dim) + j] == WALL) ? "#" : " ");
 		}
 		os << "\n";
 	}
-	for (int i = 0; i < l.size * 2 + 1; ++i)
+	for (int i = 0; i < dim; ++i)
 		os << "_";
 	os << "\n";
 	return os;

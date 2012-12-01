@@ -19,7 +19,10 @@ void Camera::init()
 void Camera::translate_Forward(float dist)
 {
 	// Translate forward like in FPS games
-	Vector3D temp(forward * dist);
+	Vector3D temp(forward);
+	temp.y = 0;
+	temp.Normalize();
+	temp = temp * dist;
 	position.x += temp.x;
 	position.z += temp.z;
 }
@@ -38,7 +41,10 @@ void Camera::translate_Up(float dist)
 void Camera::translate_Right(float dist)
 {
 	// Translate right like in FPS games
-	Vector3D temp(right * dist);
+	Vector3D temp(right);
+	temp.y = 0;
+	temp.Normalize();
+	temp = temp * dist;
 	position.x += temp.x;
 	position.z += temp.z;
 }
@@ -87,16 +93,29 @@ void Camera::rotateFPS_OY(float angle)
 void Camera::rotateFPS_OX(float angle)
 {
 	float newangle = anglex + angle;
-	//std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+	std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
+
+	float angleToRotate;
 	// Limit the up/down rotation
 	if (newangle >= ANGLE_LIMIT)
+	{
+		angleToRotate = float(ANGLE_LIMIT - anglex);
 		anglex = (float) ANGLE_LIMIT;
+		up = (up * cos(angleToRotate) + forward * sin(angleToRotate)).Normalize();
+		forward = up.CrossProduct(right).Normalize();
+	}
 	else if (newangle <= -ANGLE_LIMIT)
+	{
+		angleToRotate = float(-ANGLE_LIMIT - anglex);
 		anglex = (float) -ANGLE_LIMIT;
+		up = (up * cos(angleToRotate) + forward * sin(angleToRotate)).Normalize();
+		forward = up.CrossProduct(right).Normalize();
+	}
 	else
 	{
+		angleToRotate = angle;
 		anglex = newangle;
-		up = (up * cos(angle) + forward * sin(angle)).Normalize();
+		up = (up * cos(angleToRotate) + forward * sin(angleToRotate)).Normalize();
 		forward = up.CrossProduct(right).Normalize();
 	}
 }

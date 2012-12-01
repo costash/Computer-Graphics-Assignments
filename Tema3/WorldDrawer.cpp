@@ -94,11 +94,11 @@ void WorldDrawer::reshapeCallbackFunction(int w, int h){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspect = (float)w/(float)h;
-	gluPerspective(45.0f, aspect, 0.2f, 100.0f);
+	gluPerspective(45.0f, aspect, 0.2f, 400.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	//gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
+	gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
 }
 
 void WorldDrawer::displayCallbackFunction(){
@@ -115,25 +115,41 @@ void WorldDrawer::displayCallbackFunction(){
 
 	//ground
 	glColor3f(0.5,0.5,0.5);
-	draw_ground(20, 16, 2, 2, -2);
+	draw_ground(200, 200, 2, 2, -2);
 
-	//rest scena
-	for(int i=0;i<4;i++){
-		for(int j=0;j<4;j++){
+	////rest scena
+	//for(int i=0;i<4;i++){
+	//	for(int j=0;j<4;j++){
+	//		glPushMatrix();
+
+	//		if((i+j)%5==0) glColor3f( 1,0,0);
+	//		if((i+j)%5==1) glColor3f( 0,1,0);
+	//		if((i+j)%5==2) glColor3f( 0,0,1);
+	//		if((i+j)%5==3) glColor3f( 1,0,1);
+	//		if((i+j)%5==4) glColor3f( 1,1,0);
+	//		glTranslatef((i - 1.5f) * 3.f, j * 3.f, -25.f);
+
+	//		glRotatef(angle*(i+1)*(j+1)/(i+2+j),0,1,0);
+	//		glutSolidCube(2);
+	//		glPopMatrix();
+	//	}
+	//}
+
+	// Labyrinth
+	int dim = labyrinth.size * 2 + 1;
+	for (int i = 0; i < dim; ++i)
+		for (int j = 0; j < dim; ++j)
+		{
 			glPushMatrix();
 
-			if((i+j)%5==0) glColor3f( 1,0,0);
-			if((i+j)%5==1) glColor3f( 0,1,0);
-			if((i+j)%5==2) glColor3f( 0,0,1);
-			if((i+j)%5==3) glColor3f( 1,0,1);
-			if((i+j)%5==4) glColor3f( 1,1,0);
-			glTranslatef((i - 1.5f) * 3.f, j * 3.f, -25.f);
-
-			glRotatef(angle*(i+1)*(j+1)/(i+2+j),0,1,0);
-			glutSolidCube(2);
-			glPopMatrix();
+			if (labyrinth.maze[i * dim + j] == WALL)
+			{
+				glColor3f(0.f, 0.f, 1.f);
+				glTranslatef((i - dim / 2) * 3.f, 0.f, (j - dim / 2) * 3.f);
+				glutSolidCube(2.5f);
+				glPopMatrix();
+			}
 		}
-	}
 
 	// Cub la punctul de interes
 	glPushMatrix();
@@ -141,6 +157,7 @@ void WorldDrawer::displayCallbackFunction(){
 
 	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 	glTranslatef(pos.x, pos.y, pos.z);
+	glColor3f(0.f, 1.f, 0.f);
 	glutSolidCube(2);
 	glPopMatrix();
 
