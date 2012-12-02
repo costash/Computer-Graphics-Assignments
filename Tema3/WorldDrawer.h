@@ -44,6 +44,7 @@ public:
 
 	// Mouse rotations helper
 	static void mouseRotations();
+	static void switchCameraMode(int mode);
 
 public:
 	static bool animation;
@@ -61,10 +62,10 @@ public:
 	static bool windowCreated;					// Wether a new window has been created or not
 	static int secondaryWindow;					// The ID for a secondary window
 
-	static Camera camera;
+	static Camera camera;						// Camera
 	static float distanceToTPSTarget;			// Distance to the target for TPS camera
 	static float mouseSensivity;				// Mouse sensivity
-	static float zoomSensivity;
+	static float zoomSensivity;					// Sensivity for zooming with scroll
 
 	static Labyrinth labyrinth;					// Labyrinth to use
 

@@ -10,7 +10,7 @@ bool WorldDrawer::keyStates[256];
 bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
-Camera WorldDrawer::camera;
+Camera WorldDrawer::camera(MODE_FPS);
 Labyrinth WorldDrawer::labyrinth(30);
 
 //add
@@ -27,7 +27,10 @@ void WorldDrawer::init(){
 	camera.init();
 	float distx = (player.x - (labyrinth.size * 2 + 1) / 2) * 3.f;
 	float disty = (player.y - (labyrinth.size * 2 + 1) / 2) * 3.f;
-	camera.position = Vector3D(disty - (camera.forward * distanceToTPSTarget).x, 0.f, distx - (camera.forward * distanceToTPSTarget).z);
+	if (camera.mode == MODE_TPS)
+		camera.position = Vector3D(disty - (camera.forward * distanceToTPSTarget).x, 0.f, distx - (camera.forward * distanceToTPSTarget).z);
+	else if (camera.mode == MODE_FPS)
+		camera.position = Vector3D(disty, 0.f, distx);
 
 
 	if (camera.mode == MODE_TPS)
@@ -57,51 +60,89 @@ void WorldDrawer::keyOperations()
 	float rotateStep = 0.04f;
 	float moveStep = 0.25f;
 
-	if (keySpecialStates[KEY_UP])			// Rotate FPS up
+	if (camera.mode == MODE_FPS)
 	{
-		//std::cerr << "UP was pressed\n";
-		//viewAngleX -= rotateStep;
-		camera.rotateFPS_OX(-rotateStep);
+		if (keySpecialStates[KEY_UP])			// Rotate FPS up
+		{
+			//std::cerr << "UP was pressed\n";
+			//viewAngleX -= rotateStep;
+			camera.rotateFPS_OX(-rotateStep);
+		}
+		if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
+		{
+			//std::cerr << "DOWN was pressed\n";
+			//viewAngleX += rotateStep;
+			camera.rotateFPS_OX(rotateStep);
+		}
+		if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
+		{
+			//std::cerr << "LEFT was pressed\n";
+			//viewAngleY -= rotateStep;
+			camera.rotateFPS_OY(-rotateStep);
+		}
+		if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
+		{
+			//std::cerr << "RIGHT was pressed\n";
+			//viewAngleY += rotateStep;
+			camera.rotateFPS_OY(rotateStep);
+		}
 	}
-	if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
+	else if (camera.mode == MODE_TPS)
 	{
-		//std::cerr << "DOWN was pressed\n";
-		//viewAngleX += rotateStep;
-		camera.rotateFPS_OX(rotateStep);
+		if (keySpecialStates[KEY_UP])					// Rotate TPS up
+		{
+			//viewAngleTpsX -= rotateStep;
+			camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
+		}
+		if (keySpecialStates[KEY_DOWN])					// Rotate TPS down
+		{
+			//viewAngleTpsX += rotateStep;
+			camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
+		}
+		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
+		{
+			//viewAngleTpsY -= rotateStep;
+			camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
+		}
+		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
+		{
+			//viewAngleTpsY += rotateStep;
+			camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
+		}
 	}
-	if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
+	else if (camera.mode == MODE_TOP)
 	{
-		//std::cerr << "LEFT was pressed\n";
-		//viewAngleY -= rotateStep;
-		camera.rotateFPS_OY(-rotateStep);
+		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
+		{
+			//viewAngleTpsY -= rotateStep;
+			camera.rotateTPS_OY(-rotateStep, (labyrinth.size * 2.f + 1) * 3.f);
+		}
+		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
+		{
+			//viewAngleTpsY += rotateStep;
+			camera.rotateTPS_OY(rotateStep, (labyrinth.size * 2.f + 1) * 3.f);
+		}
 	}
-	if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
-	{
-		//std::cerr << "RIGHT was pressed\n";
-		//viewAngleY += rotateStep;
-		camera.rotateFPS_OY(rotateStep);
-	}
-
-	if (keyStates['i'])					// Rotate TPS up
-	{
-		//viewAngleTpsX -= rotateStep;
-		camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
-	}
-	if (keyStates['k'])					// Rotate TPS down
-	{
-		//viewAngleTpsX += rotateStep;
-		camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
-	}
-	if (keyStates['j'])						// Rotate TPS left
-	{
-		//viewAngleTpsY -= rotateStep;
-		camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
-	}
-	if (keyStates['l'])						// Rotate TPS right
-	{
-		//viewAngleTpsY += rotateStep;
-		camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
-	}
+	//if (keyStates['i'])					// Rotate TPS up
+	//{
+	//	//viewAngleTpsX -= rotateStep;
+	//	camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
+	//}
+	//if (keyStates['k'])					// Rotate TPS down
+	//{
+	//	//viewAngleTpsX += rotateStep;
+	//	camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
+	//}
+	//if (keyStates['j'])						// Rotate TPS left
+	//{
+	//	//viewAngleTpsY -= rotateStep;
+	//	camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
+	//}
+	//if (keyStates['l'])						// Rotate TPS right
+	//{
+	//	//viewAngleTpsY += rotateStep;
+	//	camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
+	//}
 
 	// Move the cube forwards and backwards
 	float eyeDistanceStep = 1.f;
@@ -212,6 +253,45 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 		distanceToTPSTarget += zoomSensivity * 20 * (-direction);
 		camera.translate_ForwardFree(-zoomSensivity * 20 * (-direction));
 	}
+}
+
+void WorldDrawer::switchCameraMode(int mode)
+{
+	if (camera.mode == MODE_FPS && mode == MODE_TPS)
+	{
+		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT + M_PI_4 / 2));
+		camera.translate_ForwardFree(-distanceToTPSTarget);
+	}
+	else if (camera.mode == MODE_FPS && mode == MODE_TOP)
+	{
+		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
+		camera.translate_ForwardFree(-(labyrinth.size * 2.f + 1) * 3.f);
+	}
+	else if (camera.mode == MODE_TPS && mode == MODE_FPS)
+	{
+		camera.translate_ForwardFree(distanceToTPSTarget);
+		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT));
+	}
+	else if (camera.mode == MODE_TPS && mode == MODE_TOP)
+	{
+		camera.translate_ForwardFree(distanceToTPSTarget);
+		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
+		camera.translate_ForwardFree(-(labyrinth.size * 2.f + 1) * 3.f);
+	}
+	else if (camera.mode == MODE_TOP && mode == MODE_FPS)
+	{
+		camera.translate_ForwardFree((labyrinth.size * 2.f + 1) * 3.f);
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT));
+	}
+	else if (camera.mode == MODE_TOP && mode == MODE_TPS)
+	{
+		camera.translate_ForwardFree((labyrinth.size * 2.f + 1) * 3.f);
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT + M_PI_4 / 2));
+		camera.translate_ForwardFree(-distanceToTPSTarget);
+	}
+	camera.mode = mode;
 }
 
 int main(int argc, char *argv[]){

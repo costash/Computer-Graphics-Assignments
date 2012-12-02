@@ -28,6 +28,7 @@ WorldDrawer::WorldDrawer
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glEnable(GLUT_MULTISAMPLE);							// Enable multisampling
+
 	glutInitWindowSize(windowWidth,windowHeight);		// Window size
 	glutInitWindowPosition(windowStartX,windowStartY);	// Window position
 	mainWindow = glutCreateWindow(windowName.c_str());
@@ -53,6 +54,28 @@ WorldDrawer::WorldDrawer
 
 	//zbuff
 	glEnable(GL_DEPTH_TEST);
+
+	// Enable and init lighting
+	glEnable(GL_LIGHTING);
+	// Track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+	
+
+	// Set up light colors (ambient, diffuse, specular)
+    GLfloat lightKa[] = {.2f, .2f, .2f, 1.0f};  // Ambient light
+    GLfloat lightKd[] = {.7f, .7f, .7f, 1.0f};  // Diffuse light
+    GLfloat lightKs[] = {1, 1, 1, 1};           // Specular light
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
+
+    // position the light
+    float lightPos[4] = {0, 0, 20, 1}; // positional light
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+    glEnable(GL_LIGHT0);  // MUST enable each light source after configuration
+
 }
 
 
@@ -141,19 +164,35 @@ void WorldDrawer::displayCallbackFunction(){
 	// Player-ul de la punctul de interes
 	/*glPushMatrix();*/
 
-
-	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
-	glTranslatef(pos.x, pos.y, pos.z);
-	glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
-	glColor3f(0.f, 1.f, 0.f);
+	if (camera.mode == MODE_TPS)
+	{
+		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
+		glTranslatef(pos.x, pos.y, pos.z);
+		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+		glColor3f(0.f, 1.f, 0.f);
 	//glutSolidCube(2.5);
 	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
 	
-	glutSolidCone(1, 2, 100, 10);
-	glColor3f(0.f, 0.9f, 0.f);
-	glutSolidSphere(1, 100, 10);
+		glutSolidCone(.5f, 1, 100, 10);
+		glColor3f(0.f, 0.9f, 0.f);
+		glutSolidSphere(.5f, 100, 10);
 	//glPopMatrix();
-
+	}
+	else if (camera.mode == MODE_TOP)	
+	{
+		Vector3D pos(camera.position + camera.forward * (labyrinth.size * 2.f + 1) * 3.f);
+		glTranslatef(pos.x, pos.y, pos.z);
+		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+		
+		glColor3f(0.f, 1.f, 0.f);
+	//glutSolidCube(2.5);
+	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
+	
+		glutSolidCone(.5f, 1, 100, 10);
+		glColor3f(0.f, 0.9f, 0.f);
+		glutSolidSphere(.5f, 100, 10);
+	//glPopMatrix();
+	}
 	//swap buffers
 	glutSwapBuffers();
 }
@@ -164,6 +203,13 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 	if (key == KEY_SPACE)
 		animation = !animation;
 	keyStates[key] = true;
+
+	if (key == '1')
+		switchCameraMode(1);
+	if (key == '2')
+		switchCameraMode(2);
+	if (key == '3')
+		switchCameraMode(3);
 }
 
 // Unbuffer keys on release

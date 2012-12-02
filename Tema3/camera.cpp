@@ -1,7 +1,7 @@
 #include "camera.h"
 
-Camera::Camera()
-	: anglex(0), angley(0), mode(MODE_TPS)
+Camera::Camera(int mode)
+	: anglex(0), angley(0), mode(mode)
 {
 }
 Camera::~Camera()

@@ -6,7 +6,7 @@
 
 class Camera{
 public:
-	Camera();
+	Camera(int mode);
 	~Camera();
 
 	void translate_Forward(float dist);

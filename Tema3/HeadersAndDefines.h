@@ -18,8 +18,12 @@
 
 #define ANGLE_LIMIT (M_PI_2 - 0.1f)
 
-#define MODE_FPS 1
-#define MODE_TPS 2
+enum CameraModes
+{
+	MODE_FPS = 1,
+	MODE_TPS = 2,
+	MODE_TOP = 3
+};
 
 enum CellType
 {

@@ -69,7 +69,13 @@ void Labyrinth::drawLabyrinth()
 				
 				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
 				// Rotate portal coresponding to the walls
-				if (maze[i * dim + j - 1] == WALL && maze[(i - 1) * dim + j] == WALL)	// left, up walls
+				if (maze[i * dim + j - 1] == WALL && maze[(i - 1) * dim + j] == WALL && maze[(i + 1) * dim + j] == WALL ||	// left, up, down walls
+					maze[i * dim + j + 1] == WALL && maze[(i - 1) * dim + j] == WALL && maze[(i + 1) * dim + j] == WALL)	// right, up, down walls
+					glRotatef(90, 0.f, 1.f, 0.f);
+				else if (maze[i * dim + j - 1] == WALL && maze[(i - 1) * dim + j] == WALL && maze[i * dim + j + 1] == WALL ||	// left, up, right walls
+					maze[i * dim + j - 1] == WALL && maze[(i + 1) * dim + j] == WALL && maze[i * dim + j + 1] == WALL)		// left, down, right walls
+					;
+				else if (maze[i * dim + j - 1] == WALL && maze[(i - 1) * dim + j] == WALL)	// left, up walls
 					glRotatef(-45, 0.f, 1.f, 0.f);
 				else if (maze[i * dim + j - 1] == WALL && maze[(i + 1) * dim + j] == WALL) // left, down walls
 					glRotatef(45, 0.f, 1.f, 0.f);
@@ -98,10 +104,10 @@ Point2d Labyrinth::generateRandomPosition()
 		x = rand() % dim;
 		y = rand() % dim;
 		wall = isOnWall(Point2d(x, y));
-		//std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+		std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
 	} while (wall == true);
 	
-	//std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
+	std::cerr << "GOOD (x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
 	return Point2d(x, y);
 }
 
