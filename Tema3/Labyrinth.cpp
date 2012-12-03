@@ -61,7 +61,7 @@ void Labyrinth::drawLabyrinth()
 				glColor3f(0.f, 0.f, 1.f);
 				//glScalef(1.f, 2.f, 1.f);
 				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
-				glutSolidCube(2.5f);
+				glutSolidCube(2.9f);
 			}
 			else if (maze[i * dim + j] == PORTAL)
 			{

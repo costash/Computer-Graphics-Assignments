@@ -64,6 +64,7 @@ public:
 
 	static Camera camera;						// Camera
 	static float distanceToTPSTarget;			// Distance to the target for TPS camera
+	static float distanceToTop;					// Distance to Top camera
 	static float mouseSensivity;				// Mouse sensivity
 	static float zoomSensivity;					// Sensivity for zooming with scroll
 

@@ -10,7 +10,7 @@ bool WorldDrawer::keyStates[256];
 bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
-Camera WorldDrawer::camera(MODE_FPS);
+Camera WorldDrawer::camera(MODE_TPS);
 Labyrinth WorldDrawer::labyrinth(30);
 
 //add
@@ -24,6 +24,7 @@ void WorldDrawer::init(){
 	Point2d player = labyrinth.generateRandomPosition();
 	labyrinth.setPlayerPos(player);
 
+	distanceToTop = (labyrinth.size * 2.f + 1) * 3.f;
 	camera.init();
 	float distx = (player.x - (labyrinth.size * 2 + 1) / 2) * 3.f;
 	float disty = (player.y - (labyrinth.size * 2 + 1) / 2) * 3.f;
@@ -31,10 +32,14 @@ void WorldDrawer::init(){
 		camera.position = Vector3D(disty - (camera.forward * distanceToTPSTarget).x, 0.f, distx - (camera.forward * distanceToTPSTarget).z);
 	else if (camera.mode == MODE_FPS)
 		camera.position = Vector3D(disty, 0.f, distx);
+	else if (camera.mode == MODE_TOP)
+		camera.position = Vector3D(disty - (camera.forward * distanceToTop).x, 0.f, distx - (camera.forward * distanceToTop).z);
 
 
 	if (camera.mode == MODE_TPS)
 		camera.rotateTPS_OX(float(M_PI_4 / 2), distanceToTPSTarget);
+	else if (camera.mode == MODE_TOP)
+		camera.rotateTPS_OX(float(M_PI), distanceToTop);
 	tick = glutGet(GLUT_ELAPSED_TIME);
 }
 
@@ -115,12 +120,12 @@ void WorldDrawer::keyOperations()
 		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
 		{
 			//viewAngleTpsY -= rotateStep;
-			camera.rotateTPS_OY(-rotateStep, (labyrinth.size * 2.f + 1) * 3.f);
+			camera.rotateTPS_OY(-rotateStep, distanceToTop);
 		}
 		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
 		{
 			//viewAngleTpsY += rotateStep;
-			camera.rotateTPS_OY(rotateStep, (labyrinth.size * 2.f + 1) * 3.f);
+			camera.rotateTPS_OY(rotateStep, distanceToTop);
 		}
 	}
 	//if (keyStates['i'])					// Rotate TPS up
@@ -151,10 +156,15 @@ void WorldDrawer::keyOperations()
 	{
 		//std::cerr << "[ was pressed\n";
 		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
-		if (camera.mode == MODE_TPS)
+		if (camera.mode == MODE_TPS && distanceToTPSTarget - zoomSensivity > 0)
 		{
 			distanceToTPSTarget -= zoomSensivity;
 			camera.translate_ForwardFree(zoomSensivity);
+		}
+		else if (camera.mode == MODE_TOP && distanceToTop - zoomSensivity * 20 > 0)
+		{
+			distanceToTop -= zoomSensivity * 20;
+			camera.translate_ForwardFree(zoomSensivity * 20);
 		}
 	}
 	if (keyStates[']'])
@@ -165,6 +175,11 @@ void WorldDrawer::keyOperations()
 		{
 			distanceToTPSTarget += zoomSensivity;
 			camera.translate_ForwardFree(-zoomSensivity);
+		}
+		else if (camera.mode == MODE_TOP)
+		{
+			distanceToTop += zoomSensivity * 20;
+			camera.translate_ForwardFree(-zoomSensivity * 20);
 		}
 	}
 
@@ -248,10 +263,15 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 {
 	float eyeDistanceStep = 2.f;
 	eyeDistance += eyeDistanceStep * (-direction);
-	if (camera.mode == MODE_TPS)
+	if (camera.mode == MODE_TPS && distanceToTPSTarget + zoomSensivity * 20 * (-direction) > 0)
 	{
 		distanceToTPSTarget += zoomSensivity * 20 * (-direction);
 		camera.translate_ForwardFree(-zoomSensivity * 20 * (-direction));
+	}
+	else if (camera.mode == MODE_TOP && distanceToTop + zoomSensivity * 50 * (-direction) > 0)
+	{
+		distanceToTop += zoomSensivity * 50 * (-direction);
+		camera.translate_ForwardFree(-zoomSensivity * 50 * (-direction));
 	}
 }
 
@@ -266,7 +286,7 @@ void WorldDrawer::switchCameraMode(int mode)
 	else if (camera.mode == MODE_FPS && mode == MODE_TOP)
 	{
 		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
-		camera.translate_ForwardFree(-(labyrinth.size * 2.f + 1) * 3.f);
+		camera.translate_ForwardFree(-distanceToTop);
 	}
 	else if (camera.mode == MODE_TPS && mode == MODE_FPS)
 	{
@@ -278,16 +298,16 @@ void WorldDrawer::switchCameraMode(int mode)
 	{
 		camera.translate_ForwardFree(distanceToTPSTarget);
 		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
-		camera.translate_ForwardFree(-(labyrinth.size * 2.f + 1) * 3.f);
+		camera.translate_ForwardFree(-distanceToTop);
 	}
 	else if (camera.mode == MODE_TOP && mode == MODE_FPS)
 	{
-		camera.translate_ForwardFree((labyrinth.size * 2.f + 1) * 3.f);
+		camera.translate_ForwardFree(distanceToTop);
 		camera.rotateFPS_OX(float(-ANGLE_LIMIT));
 	}
 	else if (camera.mode == MODE_TOP && mode == MODE_TPS)
 	{
-		camera.translate_ForwardFree((labyrinth.size * 2.f + 1) * 3.f);
+		camera.translate_ForwardFree(distanceToTop);
 		camera.rotateFPS_OX(float(-ANGLE_LIMIT + M_PI_4 / 2));
 		camera.translate_ForwardFree(-distanceToTPSTarget);
 	}

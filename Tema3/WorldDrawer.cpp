@@ -11,6 +11,7 @@ float WorldDrawer::viewAngleTpsX = 0.f;			// ViewAngle on OX for TPS camera
 float WorldDrawer::viewAngleTpsY = 0.f;			// ViewAngle on OY for TPS camera
 float WorldDrawer::eyeDistance = 0.f;			// Distance from viewer
 float WorldDrawer::distanceToTPSTarget = 10.f;	// Distance to target for TPS camera
+float WorldDrawer::distanceToTop;	// Distance to top Camera
 float WorldDrawer::mouseSensivity = 100.f;
 float WorldDrawer::zoomSensivity = 0.1f;
 
@@ -140,55 +141,30 @@ void WorldDrawer::displayCallbackFunction(){
 	glColor3f(0.5,0.5,0.5);
 	draw_ground(200, 200, 2, 2, -2);
 
-	////rest scena
-	//for(int i=0;i<4;i++){
-	//	for(int j=0;j<4;j++){
-	//		glPushMatrix();
-
-	//		if((i+j)%5==0) glColor3f( 1,0,0);
-	//		if((i+j)%5==1) glColor3f( 0,1,0);
-	//		if((i+j)%5==2) glColor3f( 0,0,1);
-	//		if((i+j)%5==3) glColor3f( 1,0,1);
-	//		if((i+j)%5==4) glColor3f( 1,1,0);
-	//		glTranslatef((i - 1.5f) * 3.f, j * 3.f, -25.f);
-
-	//		glRotatef(angle*(i+1)*(j+1)/(i+2+j),0,1,0);
-	//		glutSolidCube(2);
-	//		glPopMatrix();
-	//	}
-	//}
-
 	// Labyrinth
 	labyrinth.drawLabyrinth();
 
 	// Player-ul de la punctul de interes
-	/*glPushMatrix();*/
-
 	if (camera.mode == MODE_TPS)
 	{
 		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 		glColor3f(0.f, 1.f, 0.f);
-	//glutSolidCube(2.5);
-	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
 	
-		glutSolidCone(.5f, 1, 100, 10);
+		glutSolidCone(.5f, 1.5f, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
 		glutSolidSphere(.5f, 100, 10);
-	//glPopMatrix();
 	}
 	else if (camera.mode == MODE_TOP)	
 	{
-		Vector3D pos(camera.position + camera.forward * (labyrinth.size * 2.f + 1) * 3.f);
+		Vector3D pos(camera.position + camera.forward * distanceToTop);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 		
 		glColor3f(0.f, 1.f, 0.f);
-	//glutSolidCube(2.5);
-	//std::cerr << "ANGLEY: " << camera.getAngleY() << "\n";
 	
-		glutSolidCone(.5f, 1, 100, 10);
+		glutSolidCone(.5f, 1.5f, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
 		glutSolidSphere(.5f, 100, 10);
 	//glPopMatrix();
