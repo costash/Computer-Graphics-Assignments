@@ -16,11 +16,12 @@
 #define MOUSE_MIDDLE GLUT_MIDDLE_BUTTON
 #define MOUSE_RIGHT GLUT_RIGHT_BUTTON
 
-#define ANGLE_LIMIT (M_PI_2 - 0.1f)
+#define ANGLE_LIMIT (M_PI_2 - 0.1f)	// Angle limit for rotation around OX
 
-#define PLAYER_RADIUS 1.f
-#define HALF_CUBE 1.5f
+#define PLAYER_RADIUS 1.f	// Radius for player
+#define HALF_CUBE 1.5f		// Size for half of a cube
 
+// Modes for camera
 enum CameraModes
 {
 	MODE_FPS = 1,
@@ -28,6 +29,7 @@ enum CameraModes
 	MODE_TOP = 3
 };
 
+// Types for a cell in Maze
 enum CellType
 {
 	PORTAL = 3,

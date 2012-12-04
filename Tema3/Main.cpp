@@ -16,8 +16,9 @@ Labyrinth WorldDrawer::labyrinth(10);
 //add
 void WorldDrawer::init(){
 
+	// Init the labyrinth and set up camera
 	labyrinth.init();
-	std::cerr << labyrinth;
+
 	Point2d portal = labyrinth.generateRandomPosition();
 	labyrinth.setPortal(portal);
 	
@@ -69,26 +70,18 @@ void WorldDrawer::keyOperations()
 	{
 		if (keySpecialStates[KEY_UP])			// Rotate FPS up
 		{
-			//std::cerr << "UP was pressed\n";
-			//viewAngleX -= rotateStep;
 			camera.rotateFPS_OX(-rotateStep);
 		}
 		if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
 		{
-			//std::cerr << "DOWN was pressed\n";
-			//viewAngleX += rotateStep;
 			camera.rotateFPS_OX(rotateStep);
 		}
 		if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
 		{
-			//std::cerr << "LEFT was pressed\n";
-			//viewAngleY -= rotateStep;
 			camera.rotateFPS_OY(-rotateStep);
 		}
 		if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
 		{
-			//std::cerr << "RIGHT was pressed\n";
-			//viewAngleY += rotateStep;
 			camera.rotateFPS_OY(rotateStep);
 		}
 	}
@@ -96,65 +89,38 @@ void WorldDrawer::keyOperations()
 	{
 		if (keySpecialStates[KEY_UP])					// Rotate TPS up
 		{
-			//viewAngleTpsX -= rotateStep;
 			camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
 		}
 		if (keySpecialStates[KEY_DOWN])					// Rotate TPS down
 		{
-			//viewAngleTpsX += rotateStep;
 			camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
 		}
 		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
 		{
-			//viewAngleTpsY -= rotateStep;
 			camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
 		}
 		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
 		{
-			//viewAngleTpsY += rotateStep;
 			camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
 		}
 	}
 	else if (camera.mode == MODE_TOP)
 	{
-		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
+		if (keySpecialStates[KEY_LEFT])					// Rotate left
 		{
-			//viewAngleTpsY -= rotateStep;
 			camera.rotateTPS_OY(-rotateStep, distanceToTop);
 		}
-		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
+		if (keySpecialStates[KEY_RIGHT])				// Rotate right
 		{
-			//viewAngleTpsY += rotateStep;
 			camera.rotateTPS_OY(rotateStep, distanceToTop);
 		}
 	}
-	//if (keyStates['i'])					// Rotate TPS up
-	//{
-	//	//viewAngleTpsX -= rotateStep;
-	//	camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
-	//}
-	//if (keyStates['k'])					// Rotate TPS down
-	//{
-	//	//viewAngleTpsX += rotateStep;
-	//	camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
-	//}
-	//if (keyStates['j'])						// Rotate TPS left
-	//{
-	//	//viewAngleTpsY -= rotateStep;
-	//	camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
-	//}
-	//if (keyStates['l'])						// Rotate TPS right
-	//{
-	//	//viewAngleTpsY += rotateStep;
-	//	camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
-	//}
 
-	// Move the cube forwards and backwards
 	float eyeDistanceStep = 1.f;
 
+	// Zoom closer
 	if (keyStates['['])
 	{
-		//std::cerr << "[ was pressed\n";
 		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
 		if (camera.mode == MODE_TPS && distanceToTPSTarget - zoomSensivity > 0)
 		{
@@ -169,7 +135,6 @@ void WorldDrawer::keyOperations()
 	}
 	if (keyStates[']'])
 	{
-		//std::cerr << "] was pressed\n";
 		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
 		if (camera.mode == MODE_TPS)
 		{
@@ -183,26 +148,14 @@ void WorldDrawer::keyOperations()
 		}
 	}
 
-	if (keyStates['w'])
+	if (keyStates['w'])						// Move forward
 	{
-		//std::cerr << "\nW pressed. Old pos " << getPlayerPosition() << "\n";
 		camera.translate_Forward(moveStep);
 
 		// Check colision
 		
 		Vector3D newPos = getPlayerPosition();
 		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
-
-		////debug:
-		//int dim = labyrinth.size * 2 + 1;
-		//std::cerr << "New pos: " << newPos << " Current cell: " << labyrinth.playerPos << " current cell center: " << Vector3D((labyrinth.playerPos.y - dim / 2) * 3.f, 0.f, (labyrinth.playerPos.x - dim / 2) * 3.f) << "  Neighbours:\n";
-		//for (unsigned int i = 0; i < neighbours.size(); ++i)
-		//{
-		//	std::cerr << "neigh " << i << " " << neighbours[i] << " &pos: " << Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
-		//	std::cerr << "newpos - center" << newPos - Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
-		//}
-		//std::cerr << std::endl;
-		////end debug
 
 		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
 
@@ -224,7 +177,7 @@ void WorldDrawer::keyOperations()
 		}
 
 	}
-	if (keyStates['s'])
+	if (keyStates['s'])						// Move backwards
 	{
 		camera.translate_Forward(-moveStep);
 
@@ -250,7 +203,7 @@ void WorldDrawer::keyOperations()
 				}
 		}
 	}
-	if (keyStates['a'])
+	if (keyStates['a'])						// Move left
 	{
 		camera.translate_Right(-moveStep);
 
@@ -276,7 +229,7 @@ void WorldDrawer::keyOperations()
 				}
 		}
 	}
-	if (keyStates['d'])
+	if (keyStates['d'])						// Move right
 	{
 		camera.translate_Right(moveStep);
 
@@ -331,7 +284,6 @@ void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
 	float eyeDistanceStep = 0.2f;
 	if (mouseLeftState == true)			// Make rotation if left is clicked and moved mouse
 	{
-		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseLeft ";
 		viewAngleX += (y - mousePosY) / mouseSensivity;
 		viewAngleY += (x - mousePosX) / mouseSensivity;
 		mousePosX = float(x);
@@ -339,12 +291,12 @@ void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
 	}
 	if (mouseRightState == true)		// Make zoom in/out if right is clicked and moved
 	{
-		//std::cerr << "(" << mousePosX << "," << mousePosY << ") MouseRight ";
 		eyeDistance -= (y - mousePosY) * eyeDistanceStep;
 		mousePosY = float (y);
 	}
 }
 
+// Execute mouse rotations
 void WorldDrawer::mouseRotations()
 {
 	if (camera.mode == MODE_FPS)

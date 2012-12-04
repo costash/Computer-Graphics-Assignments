@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera(int mode)
-	: anglex(0), angley(0), angleTpsX(M_PI_4 / 2), mode(mode)
+	: anglex(0), angley(0), angleTpsX(float(M_PI_4 / 2)), mode(mode)
 {
 }
 Camera::~Camera()
@@ -12,7 +12,7 @@ void Camera::init()
 {
 	anglex = 0;
 	angley = 0;
-	angleTpsX = M_PI_4 / 2;
+	angleTpsX = float(M_PI_4 / 2);
 	position = Vector3D(0, 0, 3);
 	forward = Vector3D(0, 0, -1);
 	up = Vector3D(0, 1, 0);
@@ -63,8 +63,8 @@ void Camera::translate_RightFree(float dist)
 // Left/right rotation is always relative to the fixed up vector (0, 1, 0)
 void Camera::rotateFPS_OY(float angle)
 {
+	// Make sure that angle is reset to 0 when reached 360 degrees
 	angley += angle;
-	//std::cerr << "angley: " << angley << "\n\n";
 	if (angley > 2 * M_PI)
 		angley -= (float)(2 * M_PI);
 	else if (angley < -2 * M_PI)
@@ -96,7 +96,6 @@ void Camera::rotateFPS_OY(float angle)
 void Camera::rotateFPS_OX(float angle)
 {
 	float newangle = anglex + angle;
-	//std::cerr << "newangle: " << newangle << "anglex: " << anglex << "\n";
 
 	float angleToRotate;
 	// Limit the up/down rotation
@@ -158,11 +157,7 @@ void Camera::render()
 	right.Normalize();
 
 	Vector3D center = position + forward;
-	/*std::cerr << "Position: " << position << " forward: " << forward
-	<< " \ncenter: " << center << " up: " << up << "\n\n";
 
-	std::cerr << "Pos_len: " << position.Length() << " fwd_len: " << forward.Length()
-	<< "\ncent_len: " << center.Length() << " up_len: " << up.Length() << "\n\n";*/
 	gluLookAt(position.x, position.y, position.z, 
 		center.x, center.y, center.z,
 		up.x, up.y, up.z);

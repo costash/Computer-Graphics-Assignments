@@ -5,6 +5,10 @@
 #include "Vector3D.h"
 #include <vector>
 
+//-----------------------------------------------------------------------------------------------------
+//	Labyrinth class holding information of maze
+//-----------------------------------------------------------------------------------------------------
+
 class Labyrinth
 {
 public:
@@ -19,12 +23,12 @@ public:
 	void setPortal(const Point2d p);
 	void setPlayerPos(const Point2d p);
 
-	bool isColision(const Point2d cell, const Vector3D pos);
-	bool isChangingCell(const Point2d cell, const Vector3D pos);
-	std::vector<Point2d> getNeighbours(const Point2d cell);
-	bool updateCell(std::vector<Point2d> cells, const Vector3D pos);
+	bool isColision(const Point2d cell, const Vector3D pos);		// Checks for collision between player and walls
+	bool isChangingCell(const Point2d cell, const Vector3D pos);	// Checks if a player is changing the cell
+	std::vector<Point2d> getNeighbours(const Point2d cell);			// Returns the neighbours of the current cell
+	bool updateCell(std::vector<Point2d> cells, const Vector3D pos);// Updates the cell for player if it is changing
 
-	bool foundPortal();
+	bool foundPortal();												// Checks if player has found the portal
 
 	friend std::ostream& operator<< (std::ostream& os, const Labyrinth &l);
 

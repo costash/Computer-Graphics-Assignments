@@ -131,15 +131,14 @@ void WorldDrawer::displayCallbackFunction(){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-
+	// Render the camera
 	camera.render();
-
 
 	//ground
 	glColor3f(0.165f, 0.039f, 0.039f);
 	draw_ground(200, 200, 2, 2, -2);
 
-	// Labyrinth
+	// Maze
 	labyrinth.drawLabyrinth();
 
 	// Player
@@ -177,13 +176,13 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 		animation = !animation;
 	keyStates[key] = true;
 
-	if (key == '1')
-		switchCameraMode(1);
-	if (key == '2')
-		switchCameraMode(2);
-	if (key == '3')
-		switchCameraMode(3);
-	if (key == '+' && labyrinth.size < 30)
+	if (key == '1')						// Switch to FPS camera
+		switchCameraMode(MODE_FPS);
+	if (key == '2')						// Switch to TPS camera
+		switchCameraMode(MODE_TPS);
+	if (key == '3')						// Switch to TOP camera
+		switchCameraMode(MODE_TOP);
+	if (key == '+' && labyrinth.size < 30)	// Increases maze size
 	{
 		int mode = camera.mode;
 		switchCameraMode(MODE_FPS);
@@ -191,7 +190,7 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 		init();
 		switchCameraMode(mode);
 	}
-	else if (key == '-' && labyrinth.size > 4)
+	else if (key == '-' && labyrinth.size > 4)	// Decreases maze size
 	{
 		int mode = camera.mode;
 		switchCameraMode(MODE_FPS);
@@ -199,7 +198,7 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 		init();
 		switchCameraMode(mode);
 	}
-	else if (key == 'r')
+	else if (key == 'r')						// Resets game
 	{
 		int mode = camera.mode;
 		switchCameraMode(MODE_FPS);

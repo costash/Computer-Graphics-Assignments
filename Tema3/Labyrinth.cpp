@@ -56,13 +56,14 @@ void Labyrinth::drawLabyrinth()
 		{
 			glPushMatrix();
 
+			// Draw walls
 			if (maze[i * dim + j] == WALL)
 			{
 				glColor3f(0.541f, 0.294f, 0.031f);
-				//glScalef(1.f, 2.f, 1.f);
 				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
 				glutSolidCube(2.9f);
 			}
+			// Draw portal
 			else if (maze[i * dim + j] == PORTAL)
 			{
 				glColor3f(1.f, 0.f, 0.f);
@@ -87,7 +88,6 @@ void Labyrinth::drawLabyrinth()
 					glRotatef(90, 0.f, 1.f, 0.f);
 				
 				glutSolidTorus(0.5, 1, 100, 100);
-				//glutSolidCube(3);
 			}
 			glPopMatrix();
 		}
@@ -170,19 +170,19 @@ Point2d Labyrinth::generateRandomPosition()
 		x = rand() % dim;
 		y = rand() % dim;
 		wall = isOnWall(Point2d(x, y));
-		std::cerr << "(x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
 	} while (wall == true);
 	
-	std::cerr << "GOOD (x,y): " << Point2d(x, y) << " " << maze[x * dim + y] << "\n";
 	return Point2d(x, y);
 }
 
+// Sets the portal position in Maze
 void Labyrinth::setPortal(const Point2d p)
 {
 	portalPos = p;
 	maze[p.x * (size * 2 + 1) + p.y] = PORTAL;
 }
 
+// Sets player position in Maze
 void Labyrinth::setPlayerPos(const Point2d p)
 {
 	playerPos = p;
@@ -226,7 +226,6 @@ bool Labyrinth::isMazeClosed(const Point2d p)
 
 void Labyrinth::generateMaze(int stepIndex, int *backX, int *backY, Point2d p, int visited)
 {
-	//std::cerr << "MAZE: \n" << *this << "\n";
     if(visited < size * size)
     {
         int neighbourValid = -1;
