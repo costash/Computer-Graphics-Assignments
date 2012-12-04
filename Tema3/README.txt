@@ -1,6 +1,6 @@
-========EGC - Tema2============================================================
+========EGC - Tema3============================================================
 
-		*Rubik*
+		*Labyrinth*
 		*Serban-Radoi Constantin 333CA*
 
 ******** Cuprins ***************************
@@ -13,64 +13,49 @@
 	7. Functionalitati
 
 ******** 1. Cerinta ************************
-	Se cere implementarea unui joc ce permite rezolvarea cubului lui Rubik.
-Functionalitatile de baza presupun rotirea cubului si a layerelor acestuia.
-Se porneste de la un cub rezolvat, utilizatorul face mai multe rotiri, si
-din momentul in care a apasat o tasta incepe jocul si counter-ul pentru
-numarul de rotiri. Daca a ajuns la o solutie, se afiseaza faptul ca a castigat.
-Oricand poate reseta jocul.
+	Se cere implementarea unui joc numit Labyrinth. In acest joc
+personajul principal se deplaseaza intr-un labirint pentru a gasi
+portalul de scapare. El se poate deplasa in fata/spate, stanga/dreapta,
+respectiv roti.
 
 ******** 2. Utilizare **********************
 	2.1 Consola
-		Se ruleaza Tema2.exe
+		Se ruleaza Tema3.exe
 
 	2.2 Input Tastatura
 	Taste de baza:
-		Space 	- Pauza
 		ESC 	- Terminare aplicatie
-		1		- Resetare joc la starea initiala
-		ENTER	- Incepere joc si numaratoare mutari
-
-	Taste functionale rotire straturi:
-		q 		- Rotire strat selectat in sens trigonometric pe OX
-		a		- Rotire strat selectat in sens invers trig pe OX
-		w		- Rotire strat selectat in sens trigonometric pe OY
-		s		- Rotire strat selectat in sens invers trig pe OY
-		e		- Rotire strat selectat in sens trigonometric pe OZ
-		d		- Rotire strat selectat in sens invers trig pe OZ
-
-	Taste functionale selectie straturi:
-		t		- Creste indicele stratului selectat pe OX
-		g		- Scade indicele stratului selectat pe OX
-		y		- Creste indicele stratului selectat pe OY
-		h		- Scade indicele stratului selectat pe OY
-		u		- Creste indicele stratului selectat pe OZ
-		j		- Scade indicele stratului selectat pe OZ
+		r		- Resetare joc la starea initiala
+		1		- Selectare camera mod FPS
+		2		- Selectare camera mod TPS
+		3		- Selectare camera mod TOP
 
 	Taste functionale rotire cub:
-		UP		- Rotire cub in sus
-		DOWN	- Rotire cub in jos
-		LEFT	- Rotire cub la stanga
-		RIGHT	- Rotire cub la dreapta
+		UP		- Rotire camera in sus
+		DOWN	- Rotire camera in jos
+		LEFT	- Rotire camera la stanga
+		RIGHT	- Rotire camera la dreapta
 
-	Taste functionale marire/micsorare cub
-		[		- Marire cub
-		]		- Micsorare cub
+	Taste functionale deplasare:
+		w		- Deplasare inainte
+		s		- Deplasare inapoi
+		a		- Deplasare la stanga
+		d		- Deplasare la dreapta
+
+	Taste functionale departare/apropiere in mod TPS/TOP
+		[		- Apropiere camera
+		]		- Departare camera
 
 	2.3 Input Mouse
-	Mouse left clicked:
-		Miscare stanga	- Rotire cub la stanga
-		Miscare dreapta - Rotire cub la dreapta
-		Miscare sus		- Rotire cub in sus
-		Miscare jos		- Rotire cub in jos
+	Mouse left clicked: in mod FPS/TPS
+		Miscare stanga	- Rotire camera la stanga
+		Miscare dreapta - Rotire camera la dreapta
+		Miscare sus		- Rotire camera in sus
+		Miscare jos		- Rotire camera in jos
 
-	Mouse right clicked:
-		Miscare sus		- Micsorare cub
-		Miscare jos		- Marire cub
-
-	Mouse scroll/wheel:
-		Miscare sus		- Marire cub
-		Miscare jos		- Micsorare cub
+	Mouse scroll/wheel: in mod TPS/TOP
+		Miscare sus		- Apropiere camera
+		Miscare jos		- Departare camera
 
 ******** 3. Implementare *******************
 	Platforma: Windows 7 x64 SP1, Visual Studio 2012
@@ -82,12 +67,11 @@ Oricand poate reseta jocul.
 		* terminare aplicatie
 
 	3.2 Diagrama Clase
-	+--WorldDrawer3d--+
-	+--Point3d--+
-	+--CoordinateSystem3d--+
-	+--Object3d+----+Cube
-    +--Rubik--+
-	+--Color--+
+	+--WorldDrawer--+
+	+--Point2d--+
+    +--Vector3d--+
+	+--Labyrinth--+
+	+--Camera--+
 
 	3.3 Evenimente
 		Display - Reafisare obiecte in fereastra
@@ -99,46 +83,43 @@ Oricand poate reseta jocul.
 ******** 4. Testare ************************
 	Platforma: Aceeasi ca si cea de implementare
 	
-	Am testat functionalitatile de baza ale jocului (rotiri ale cubului, rotiri
-ale axelor, afisare scor, resetare etc).
+	Am testat functionalitatile de baza ale jocului (rotiri ale camerei, deplasare,
+coliziune cu peretii, generare labirint, zoom, resetare joc etc).
 	De asemeni, am testat afisarea corecta a obiectelor ce compun harta de joc.
 
 ******** 5. Probleme aparute ***************
-	Nu a fost clar in enunt modul de rotire al cubului. Am ales sa rotesc toata
-lumea, desenand dupa rotire, pastrand mereu aceeasi pozitie relativa a axelor.
-	Cel mai dificil de implementat au fost rotirile straturilor cubului,
-datorita necesitatii de a roti linii/coloane/a_treia_dimensiune dintr-o
-matrice tridimensionala liniarizata.
-	Am incercat sa creez ferestre folosind framework-ul glut, dar nu am reusit
-sa afisez nimic in acele ferestre, de aceea am renuntat la ele. Mai mult,
-callback-urile din prima fereastra continuau sa se execute dupa crearea unei
-noi ferestre, si de exemplu daca aveam apasata tasta 'q' cand se crea noua
-fereastra, tasta q ramanea apasata, pana cand ma intorceam in fereastra
-initiala. Acest lucru m-a determinat sa renunt la lucrul cu ferestre pentru
-aceasta tema.
-	Am avut probleme cu evenimentele de tastatura, deoarece am implementat
-key buffering pentru a putea apasa mai multe taste simultan, si din cauza
-acestui lucru, daca doream sa selectez un strat sa zicem, evenimentul de
-apasare era inregistrat de prea multe ori, si a fost nevoie sa pun un timer,
-care sa limiteze trigger-uirea acestui eveniment.
+	Au fost mici probleme cu coliziunile, in sensul ca am gasit greu balansul dimensiunilor
+jucatorului/zidurilor pentru a fi sigur ca nu trece prin zid jucatorul.
 
 ******** 6. Continutul arhivei *************
 	**** Fisiere generate de solutia Visual Studio 2012
 	**** Fisiere ce definesc tema
-	* main.cpp
+	* Main.cpp
 		Sursa principala a aplicatiei
-	* Color.cpp
-		Implementare a clasei o culoare RGB
-	* Color.h
-		Header pentru declaratia clasei Color
-	* Cube.cpp
-		Implementare a clasei ce defineste un un cub si operatiile sale
-	* Cube.h
-		Header pentru declaratia clasei Cube
-	* Rubik.cpp
-		Implementare a clasei ce defineste cubul Rubik
-	* Rubik.h
-		Header pentru declaratia clasei Rubik
+	* camera.cpp
+		Implementare a clasei de camera
+	* camera.h
+		Header pentru clase de camera
+	* ground.h
+		Header pentru desenarea ground-ului
+	* HeadersAndDefines.h
+		Header pentru diverse constante si define-uri
+	* Labyrinth.h
+		Header pentru clasa ce tine un maze
+	* Labyrinth.cpp
+		Implementare a clasei ce tine un maze
+	* Point2d.h
+		Header pentru clasa ce defineste un punct (x, y)
+	* Point2d.cpp
+		Implementare a clasei ce defineste un punct
+	* Vector3D.h
+		Header pentru clasa ce defineste un vector 3d
+	* Vector3D.cpp
+		Implementare pentru clasa vector
+	* WorldDrawer.h
+		Header pentru clasa ce tine informatii de afisare si logica jocului
+	* WorldDrawer.cpp
+		Implementare pentru clasa ce tine informatii de afisare
 	* README.txt
 		Acest fisier
 	**** Alte fisiere din cadrul framework-ului de la laborator
@@ -146,14 +127,14 @@ care sa limiteze trigger-uirea acestui eveniment.
 ******** 7. Functionalitati ****************
 	* Functionalitati standard (ca in enunt)
 		* Plasare harta joc
-		* Afisare cub rezolvat
-		* Forma si culorile cubului
-		* Rotirea cubului
-		* Rotirea straturilor cubului
-		* Afisare scor la castig
+		* Afisare labirint
+		* Afisare player in modurile TPS si TOP
+		* Rotirea camerei cu jucatorul
+		* Deplasarea camerei cu jucatorul
+		* Afisare torus (portal)
 		* Posibilitate resetare joc
 	* Functionalitati bonus
-		* Cub extensibil (chiar si 15 x 15 x 15)
+		* Labirint generat random, automat
+		* Labirintul se modifica la fiecare rulare
 		* Afisare text cu scor sau mesaj de incepere joc
-		* Scorul este reprezentat de numarul de mutari executate
-		* Afisare text in cazul castigului
+		* Posibilitate redimensionare labirint din taste
