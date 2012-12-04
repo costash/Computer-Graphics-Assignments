@@ -58,7 +58,7 @@ void Labyrinth::drawLabyrinth()
 
 			if (maze[i * dim + j] == WALL)
 			{
-				glColor3f(0.f, 0.f, 1.f);
+				glColor3f(0.541f, 0.294f, 0.031f);
 				//glScalef(1.f, 2.f, 1.f);
 				glTranslatef((j - dim / 2) * 3.f, 0.f, (i - dim / 2) * 3.f);
 				glutSolidCube(2.9f);

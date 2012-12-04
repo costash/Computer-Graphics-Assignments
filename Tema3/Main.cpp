@@ -435,19 +435,6 @@ Vector3D WorldDrawer::getPlayerPosition()
 	}
 }
 
-// Draws text on screen
-void WorldDrawer::drawText(float posx, float posy, float posz, Color col, const unsigned char * text)
-{
-	glPushMatrix();						// Save context
-	glColor3f(col.r, col.g, col.b);		// Text color
-	glRasterPos3f(posx, posy, posz);	// Place text
-	char *c = (char *)text;				// Draw each character
-	for (; *c != '\0'; c++)
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
-	
-	glPopMatrix();						// Restore context
-}
-
 int main(int argc, char *argv[]){
 	srand((unsigned int)time(0));
 

@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="Color.cpp" />
     <ClCompile Include="Labyrinth.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Point2d.cpp" />
@@ -150,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
-    <ClInclude Include="Color.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="HeadersAndDefines.h" />
     <ClInclude Include="Labyrinth.h" />

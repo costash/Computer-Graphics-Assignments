@@ -51,7 +51,7 @@ WorldDrawer::WorldDrawer
 	glutMouseWheelFunc(mouseWheelCallbackFunction);
 
 	// Background color
-	glClearColor(0.2f, 0.2f, 0.2f, 1.f);
+	glClearColor(0.776f, 0.89f, 1.f, 1.f);
 
 	//zbuff
 	glEnable(GL_DEPTH_TEST);
@@ -136,7 +136,7 @@ void WorldDrawer::displayCallbackFunction(){
 
 
 	//ground
-	glColor3f(0.5,0.5,0.5);
+	glColor3f(0.165f, 0.039f, 0.039f);
 	draw_ground(200, 200, 2, 2, -2);
 
 	// Labyrinth
