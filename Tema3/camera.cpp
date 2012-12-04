@@ -10,6 +10,9 @@ Camera::~Camera()
 
 void Camera::init()
 {
+	anglex = 0;
+	angley = 0;
+	angleTpsX = M_PI_4 / 2;
 	position = Vector3D(0, 0, 3);
 	forward = Vector3D(0, 0, -1);
 	up = Vector3D(0, 1, 0);

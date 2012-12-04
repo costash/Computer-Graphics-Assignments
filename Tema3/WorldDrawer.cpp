@@ -121,8 +121,6 @@ void WorldDrawer::reshapeCallbackFunction(int w, int h){
 	gluPerspective(45.0f, aspect, 0.2f, 400.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	//gluLookAt(0.0, 0.0, 30.0, 0.0, 0.0, 0.0, 0.0, 0.1, 0.0);	// Looking at (0, 0, 0) from (0, 0, 30)
 }
 
 void WorldDrawer::displayCallbackFunction(){
@@ -185,6 +183,29 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 		switchCameraMode(2);
 	if (key == '3')
 		switchCameraMode(3);
+	if (key == '+' && labyrinth.size < 30)
+	{
+		int mode = camera.mode;
+		switchCameraMode(MODE_FPS);
+		labyrinth.size += 1;
+		init();
+		switchCameraMode(mode);
+	}
+	else if (key == '-' && labyrinth.size > 4)
+	{
+		int mode = camera.mode;
+		switchCameraMode(MODE_FPS);
+		labyrinth.size -= 1;
+		init();
+		switchCameraMode(mode);
+	}
+	else if (key == 'r')
+	{
+		int mode = camera.mode;
+		switchCameraMode(MODE_FPS);
+		init();
+		switchCameraMode(mode);
+	}
 }
 
 // Unbuffer keys on release

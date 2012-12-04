@@ -11,7 +11,7 @@ bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
 Camera WorldDrawer::camera(MODE_TPS);
-Labyrinth WorldDrawer::labyrinth(30);
+Labyrinth WorldDrawer::labyrinth(10);
 
 //add
 void WorldDrawer::init(){
@@ -185,7 +185,7 @@ void WorldDrawer::keyOperations()
 
 	if (keyStates['w'])
 	{
-		std::cerr << "\nW pressed. Old pos " << getPlayerPosition() << "\n";
+		//std::cerr << "\nW pressed. Old pos " << getPlayerPosition() << "\n";
 		camera.translate_Forward(moveStep);
 
 		// Check colision
@@ -193,23 +193,27 @@ void WorldDrawer::keyOperations()
 		Vector3D newPos = getPlayerPosition();
 		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
 
-		//debug:
-		int dim = labyrinth.size * 2 + 1;
-		std::cerr << "New pos: " << newPos << " Current cell: " << labyrinth.playerPos << " current cell center: " << Vector3D((labyrinth.playerPos.y - dim / 2) * 3.f, 0.f, (labyrinth.playerPos.x - dim / 2) * 3.f) << "  Neighbours:\n";
-		for (unsigned int i = 0; i < neighbours.size(); ++i)
-		{
-			std::cerr << "neigh " << i << " " << neighbours[i] << " &pos: " << Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
-			std::cerr << "newpos - center" << newPos - Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
-			glPushMatrix();
-			glColor3f(1.f, 0.f, 0.f);
-			glTranslatef((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f);
-			glutSolidSphere(4.f, 100, 10);
-			glPopMatrix();
-		}
-		std::cerr << std::endl;
-		//end debug
+		////debug:
+		//int dim = labyrinth.size * 2 + 1;
+		//std::cerr << "New pos: " << newPos << " Current cell: " << labyrinth.playerPos << " current cell center: " << Vector3D((labyrinth.playerPos.y - dim / 2) * 3.f, 0.f, (labyrinth.playerPos.x - dim / 2) * 3.f) << "  Neighbours:\n";
+		//for (unsigned int i = 0; i < neighbours.size(); ++i)
+		//{
+		//	std::cerr << "neigh " << i << " " << neighbours[i] << " &pos: " << Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
+		//	std::cerr << "newpos - center" << newPos - Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
+		//}
+		//std::cerr << std::endl;
+		////end debug
 
 		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+
+		if (labyrinth.foundPortal())
+		{
+			Sleep(1000);
+			int mode = camera.mode;
+			switchCameraMode(MODE_FPS);
+			init();
+			switchCameraMode(mode);
+		}
 		if (!updatedCell)
 		{
 			for (unsigned int i = 0; i < neighbours.size(); ++i)
@@ -224,52 +228,79 @@ void WorldDrawer::keyOperations()
 	{
 		camera.translate_Forward(-moveStep);
 
-		//// Check colision
-		//Vector3D newPos = getPlayerPosition();
-		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
-		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
-		//if (!updatedCell)
-		//{
-		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
-		//		if (labyrinth.isColision(neighbours[i], newPos))
-		//		{
-		//			camera.translate_Forward(moveStep);
-		//		}
-		//}
+		// Check colision
+		Vector3D newPos = getPlayerPosition();
+		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+
+		if (labyrinth.foundPortal())
+		{
+			Sleep(1000);
+			int mode = camera.mode;
+			switchCameraMode(MODE_FPS);
+			init();
+			switchCameraMode(mode);
+		}
+		if (!updatedCell)
+		{
+			for (unsigned int i = 0; i < neighbours.size(); ++i)
+				if (labyrinth.isColision(neighbours[i], newPos))
+				{
+					camera.translate_Forward(moveStep);
+				}
+		}
 	}
 	if (keyStates['a'])
 	{
 		camera.translate_Right(-moveStep);
 
-		//// Check colision
-		//Vector3D newPos = getPlayerPosition();
-		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
-		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
-		//if (!updatedCell)
-		//{
-		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
-		//		if (labyrinth.isColision(neighbours[i], newPos))
-		//		{
-		//			camera.translate_Right(moveStep);
-		//		}
-		//}
+		// Check colision
+		Vector3D newPos = getPlayerPosition();
+		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+
+		if (labyrinth.foundPortal())
+		{
+			Sleep(1000);
+			int mode = camera.mode;
+			switchCameraMode(MODE_FPS);
+			init();
+			switchCameraMode(mode);
+		}
+		if (!updatedCell)
+		{
+			for (unsigned int i = 0; i < neighbours.size(); ++i)
+				if (labyrinth.isColision(neighbours[i], newPos))
+				{
+					camera.translate_Right(moveStep);
+				}
+		}
 	}
 	if (keyStates['d'])
 	{
 		camera.translate_Right(moveStep);
 
-		//// Check colision
-		//Vector3D newPos = getPlayerPosition();
-		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
-		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
-		//if (!updatedCell)
-		//{
-		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
-		//		if (labyrinth.isColision(neighbours[i], newPos))
-		//		{
-		//			camera.translate_Right(-moveStep);
-		//		}
-		//}
+		// Check colision
+		Vector3D newPos = getPlayerPosition();
+		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+
+		if (labyrinth.foundPortal())
+		{
+			Sleep(1000);
+			int mode = camera.mode;
+			switchCameraMode(MODE_FPS);
+			init();
+			switchCameraMode(mode);
+		}
+		if (!updatedCell)
+		{
+			for (unsigned int i = 0; i < neighbours.size(); ++i)
+				if (labyrinth.isColision(neighbours[i], newPos))
+				{
+					camera.translate_Right(-moveStep);
+				}
+		}
 	}
 }
 
@@ -402,6 +433,19 @@ Vector3D WorldDrawer::getPlayerPosition()
 		switchCameraMode(mode);
 		return temp;
 	}
+}
+
+// Draws text on screen
+void WorldDrawer::drawText(float posx, float posy, float posz, Color col, const unsigned char * text)
+{
+	glPushMatrix();						// Save context
+	glColor3f(col.r, col.g, col.b);		// Text color
+	glRasterPos3f(posx, posy, posz);	// Place text
+	char *c = (char *)text;				// Draw each character
+	for (; *c != '\0'; c++)
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+	
+	glPopMatrix();						// Restore context
 }
 
 int main(int argc, char *argv[]){

@@ -24,6 +24,8 @@ public:
 	std::vector<Point2d> getNeighbours(const Point2d cell);
 	bool updateCell(std::vector<Point2d> cells, const Vector3D pos);
 
+	bool foundPortal();
+
 	friend std::ostream& operator<< (std::ostream& os, const Labyrinth &l);
 
 public:

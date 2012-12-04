@@ -3,6 +3,7 @@
 #include "Vector3D.h"
 #include "camera.h"
 #include "Labyrinth.h"
+#include "Color.h"
 
 class WorldDrawer{
 public:
@@ -46,6 +47,7 @@ public:
 	static void mouseRotations();
 	static void switchCameraMode(int mode);
 	static Vector3D getPlayerPosition();
+	static void drawText(float posx, float posy, float posz, Color col, const unsigned char * text);
 
 public:
 	static bool animation;

@@ -19,6 +19,9 @@
     <ClCompile Include="Vector3D.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -40,6 +43,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Point2d.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

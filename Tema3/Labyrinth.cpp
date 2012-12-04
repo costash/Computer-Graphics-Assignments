@@ -112,8 +112,8 @@ bool Labyrinth::isChangingCell(const Point2d cell, const Vector3D pos)
 	int dim = size * 2 + 1;
 	int cellType = maze[cell.x * dim + cell.y];
 	if (cellType != WALL)
-		if (abs((cell.y - dim / 2) * 3.f - pos.x) < PLAYER_RADIUS + HALF_CUBE && 
-			abs((cell.x - dim / 2) * 3.f - pos.z) < PLAYER_RADIUS + HALF_CUBE)
+		if (abs((cell.y - dim / 2) * 3.f - pos.x) < HALF_CUBE && 
+			abs((cell.x - dim / 2) * 3.f - pos.z) < HALF_CUBE)
 			return true;
 
 	return false;
@@ -150,6 +150,15 @@ bool Labyrinth::updateCell(std::vector<Point2d> cells, const Vector3D pos)
 	return false;
 }
 
+// Checks if the player has found the portal
+bool Labyrinth::foundPortal()
+{
+	int dim = size * 2 + 1;
+	if (maze[playerPos.x * dim + playerPos.y] == PORTAL)
+		return true;
+	return false;
+}
+
 // Generates a random position for portal
 Point2d Labyrinth::generateRandomPosition()
 {
@@ -177,7 +186,9 @@ void Labyrinth::setPortal(const Point2d p)
 void Labyrinth::setPlayerPos(const Point2d p)
 {
 	playerPos = p;
-	maze[p.x * (size * 2 + 1) + p.y] = PLAYER;
+	int index = p.x * (size * 2 + 1) + p.y;
+	if (maze[index] != PORTAL)
+		maze[index] = PLAYER;
 }
 
 bool Labyrinth::isOnWall(const Point2d p)
