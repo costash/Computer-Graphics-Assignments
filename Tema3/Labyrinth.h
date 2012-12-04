@@ -2,6 +2,8 @@
 #include "HeadersAndDefines.h"
 #include "Point2d.h"
 #include <ctime>
+#include "Vector3D.h"
+#include <vector>
 
 class Labyrinth
 {
@@ -17,7 +19,12 @@ public:
 	void setPortal(const Point2d p);
 	void setPlayerPos(const Point2d p);
 
-	friend std::ostream& operator<< (std::ostream& os, const Labyrinth &p);
+	bool isColision(const Point2d cell, const Vector3D pos);
+	bool isChangingCell(const Point2d cell, const Vector3D pos);
+	std::vector<Point2d> getNeighbours(const Point2d cell);
+	bool updateCell(std::vector<Point2d> cells, const Vector3D pos);
+
+	friend std::ostream& operator<< (std::ostream& os, const Labyrinth &l);
 
 public:
 	int size;				// Size of maze. Actual size is size * 2 + 1

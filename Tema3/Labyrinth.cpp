@@ -93,6 +93,63 @@ void Labyrinth::drawLabyrinth()
 		}
 }
 
+// Checks for colision with Walls given a position for the player and a cell to check
+bool Labyrinth::isColision(const Point2d cell, const Vector3D pos)
+{
+	int dim = size * 2 + 1;
+	int cellType = maze[cell.x * dim + cell.y];
+	if (cellType == WALL)
+		if (abs((cell.y - dim / 2) * 3.f - pos.x) < PLAYER_RADIUS + HALF_CUBE && 
+			abs((cell.x - dim / 2) * 3.f - pos.z) < PLAYER_RADIUS + HALF_CUBE)
+			return true;
+
+	return false;
+}
+
+// Player is about to change a cell
+bool Labyrinth::isChangingCell(const Point2d cell, const Vector3D pos)
+{
+	int dim = size * 2 + 1;
+	int cellType = maze[cell.x * dim + cell.y];
+	if (cellType != WALL)
+		if (abs((cell.y - dim / 2) * 3.f - pos.x) < PLAYER_RADIUS + HALF_CUBE && 
+			abs((cell.x - dim / 2) * 3.f - pos.z) < PLAYER_RADIUS + HALF_CUBE)
+			return true;
+
+	return false;
+}
+
+// Returns the neighbours of a cell
+std::vector<Point2d> Labyrinth::getNeighbours(const Point2d cell)
+{
+	std::vector<Point2d> vec;
+	vec.push_back(cell - Point2d(1, 0));	// Left
+	vec.push_back(cell - Point2d(0, 1));	// Up
+	vec.push_back(cell + Point2d(1, 0));	// Right
+	vec.push_back(cell + Point2d(0, 1));	// Down
+
+	vec.push_back(cell - Point2d(1, 1));	// Left, Up
+	vec.push_back(cell + Point2d(-1, 1));	// Up, Right
+	vec.push_back(cell + Point2d(1, 1));	// Right, Down
+	vec.push_back(cell - Point2d(-1, 1));	// Down, Left
+
+	return vec;
+}
+
+// Updates cell if it is changin. Returns false if it did not change
+bool Labyrinth::updateCell(std::vector<Point2d> cells, const Vector3D pos)
+{
+	for (unsigned int i = 0; i < cells.size(); ++i)
+	{
+		if (isChangingCell(cells[i], pos))
+		{
+			setPlayerPos(cells[i]);
+			return true;
+		}
+	}
+	return false;
+}
+
 // Generates a random position for portal
 Point2d Labyrinth::generateRandomPosition()
 {

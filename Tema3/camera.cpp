@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera(int mode)
-	: anglex(0), angley(0), mode(mode)
+	: anglex(0), angley(0), angleTpsX(M_PI_4 / 2), mode(mode)
 {
 }
 Camera::~Camera()

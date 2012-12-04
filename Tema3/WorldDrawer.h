@@ -45,6 +45,7 @@ public:
 	// Mouse rotations helper
 	static void mouseRotations();
 	static void switchCameraMode(int mode);
+	static Vector3D getPlayerPosition();
 
 public:
 	static bool animation;

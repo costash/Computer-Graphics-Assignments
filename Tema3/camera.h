@@ -35,6 +35,7 @@ public:
 	Vector3D right;
 	Vector3D position;
 	short int mode;
+	float angleTpsX;
 private:
 	float anglex;
 	float angley;

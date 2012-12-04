@@ -144,7 +144,7 @@ void WorldDrawer::displayCallbackFunction(){
 	// Labyrinth
 	labyrinth.drawLabyrinth();
 
-	// Player-ul de la punctul de interes
+	// Player
 	if (camera.mode == MODE_TPS)
 	{
 		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
@@ -152,9 +152,9 @@ void WorldDrawer::displayCallbackFunction(){
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 		glColor3f(0.f, 1.f, 0.f);
 	
-		glutSolidCone(.5f, 1.5f, 100, 10);
+		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
-		glutSolidSphere(.5f, 100, 10);
+		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
 	}
 	else if (camera.mode == MODE_TOP)	
 	{
@@ -164,10 +164,9 @@ void WorldDrawer::displayCallbackFunction(){
 		
 		glColor3f(0.f, 1.f, 0.f);
 	
-		glutSolidCone(.5f, 1.5f, 100, 10);
+		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
-		glutSolidSphere(.5f, 100, 10);
-	//glPopMatrix();
+		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
 	}
 	//swap buffers
 	glutSwapBuffers();

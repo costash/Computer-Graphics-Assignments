@@ -18,6 +18,9 @@
 
 #define ANGLE_LIMIT (M_PI_2 - 0.1f)
 
+#define PLAYER_RADIUS 1.f
+#define HALF_CUBE 1.5f
+
 enum CameraModes
 {
 	MODE_FPS = 1,

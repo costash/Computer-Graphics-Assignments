@@ -185,19 +185,91 @@ void WorldDrawer::keyOperations()
 
 	if (keyStates['w'])
 	{
+		std::cerr << "\nW pressed. Old pos " << getPlayerPosition() << "\n";
 		camera.translate_Forward(moveStep);
+
+		// Check colision
+		
+		Vector3D newPos = getPlayerPosition();
+		std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+
+		//debug:
+		int dim = labyrinth.size * 2 + 1;
+		std::cerr << "New pos: " << newPos << " Current cell: " << labyrinth.playerPos << " current cell center: " << Vector3D((labyrinth.playerPos.y - dim / 2) * 3.f, 0.f, (labyrinth.playerPos.x - dim / 2) * 3.f) << "  Neighbours:\n";
+		for (unsigned int i = 0; i < neighbours.size(); ++i)
+		{
+			std::cerr << "neigh " << i << " " << neighbours[i] << " &pos: " << Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
+			std::cerr << "newpos - center" << newPos - Vector3D((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f) << "\n";
+			glPushMatrix();
+			glColor3f(1.f, 0.f, 0.f);
+			glTranslatef((neighbours[i].y - dim / 2) * 3.f, 0.f, (neighbours[i].x - dim / 2) * 3.f);
+			glutSolidSphere(4.f, 100, 10);
+			glPopMatrix();
+		}
+		std::cerr << std::endl;
+		//end debug
+
+		bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+		if (!updatedCell)
+		{
+			for (unsigned int i = 0; i < neighbours.size(); ++i)
+				if (labyrinth.isColision(neighbours[i], newPos))
+				{
+					camera.translate_Forward(-moveStep);
+				}
+		}
+
 	}
 	if (keyStates['s'])
 	{
 		camera.translate_Forward(-moveStep);
+
+		//// Check colision
+		//Vector3D newPos = getPlayerPosition();
+		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+		//if (!updatedCell)
+		//{
+		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
+		//		if (labyrinth.isColision(neighbours[i], newPos))
+		//		{
+		//			camera.translate_Forward(moveStep);
+		//		}
+		//}
 	}
 	if (keyStates['a'])
 	{
 		camera.translate_Right(-moveStep);
+
+		//// Check colision
+		//Vector3D newPos = getPlayerPosition();
+		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+		//if (!updatedCell)
+		//{
+		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
+		//		if (labyrinth.isColision(neighbours[i], newPos))
+		//		{
+		//			camera.translate_Right(moveStep);
+		//		}
+		//}
 	}
 	if (keyStates['d'])
 	{
 		camera.translate_Right(moveStep);
+
+		//// Check colision
+		//Vector3D newPos = getPlayerPosition();
+		//std::vector<Point2d> neighbours = labyrinth.getNeighbours(labyrinth.playerPos);
+		//bool updatedCell = labyrinth.updateCell(neighbours, newPos);
+		//if (!updatedCell)
+		//{
+		//	for (unsigned int i = 0; i < neighbours.size(); ++i)
+		//		if (labyrinth.isColision(neighbours[i], newPos))
+		//		{
+		//			camera.translate_Right(-moveStep);
+		//		}
+		//}
 	}
 }
 
@@ -275,12 +347,13 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 	}
 }
 
+// Switches the camera mode
 void WorldDrawer::switchCameraMode(int mode)
 {
 	if (camera.mode == MODE_FPS && mode == MODE_TPS)
 	{
 		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
-		camera.rotateFPS_OX(float(-ANGLE_LIMIT + M_PI_4 / 2));
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT + camera.angleTpsX));
 		camera.translate_ForwardFree(-distanceToTPSTarget);
 	}
 	else if (camera.mode == MODE_FPS && mode == MODE_TOP)
@@ -290,12 +363,14 @@ void WorldDrawer::switchCameraMode(int mode)
 	}
 	else if (camera.mode == MODE_TPS && mode == MODE_FPS)
 	{
+		camera.angleTpsX = camera.getAngleX();
 		camera.translate_ForwardFree(distanceToTPSTarget);
 		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
 		camera.rotateFPS_OX(float(-ANGLE_LIMIT));
 	}
 	else if (camera.mode == MODE_TPS && mode == MODE_TOP)
 	{
+		camera.angleTpsX = camera.getAngleX();
 		camera.translate_ForwardFree(distanceToTPSTarget);
 		camera.rotateFPS_OX(float(ANGLE_LIMIT * 2));
 		camera.translate_ForwardFree(-distanceToTop);
@@ -308,10 +383,25 @@ void WorldDrawer::switchCameraMode(int mode)
 	else if (camera.mode == MODE_TOP && mode == MODE_TPS)
 	{
 		camera.translate_ForwardFree(distanceToTop);
-		camera.rotateFPS_OX(float(-ANGLE_LIMIT + M_PI_4 / 2));
+		camera.rotateFPS_OX(float(-ANGLE_LIMIT + camera.angleTpsX));
 		camera.translate_ForwardFree(-distanceToTPSTarget);
 	}
 	camera.mode = mode;
+}
+
+// Gets the position of the player in world space
+Vector3D WorldDrawer::getPlayerPosition()
+{
+	if (camera.mode == MODE_FPS)
+		return camera.position;
+	else
+	{
+		int mode = camera.mode;
+		switchCameraMode(MODE_FPS);
+		Vector3D temp(camera.position);
+		switchCameraMode(mode);
+		return temp;
+	}
 }
 
 int main(int argc, char *argv[]){
