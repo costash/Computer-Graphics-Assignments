@@ -1,5 +1,6 @@
 #include "WorldDrawer.h"
 #include "ground.h"
+#include "Vector4D.h"
 
 bool WorldDrawer::mouseLeftState = false;		// Left click not pressed
 bool WorldDrawer::mouseRightState = false;	// Right click not pressed
@@ -17,6 +18,9 @@ float WorldDrawer::zoomSensivity = 0.1f;
 
 int WorldDrawer::mainWindow = 0;				// Main window ID
 float WorldDrawer::angle = 0;
+
+float *Vector3D::arr;
+float *Vector4D::arr;
 
 
 WorldDrawer::WorldDrawer

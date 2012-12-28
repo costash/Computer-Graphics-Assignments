@@ -16,6 +16,18 @@
     <ClCompile Include="Vector3D.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Object3D.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -34,6 +46,24 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Point2d.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Object3D.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4D.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

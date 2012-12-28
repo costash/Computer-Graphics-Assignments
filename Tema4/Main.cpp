@@ -3,6 +3,7 @@
 #include "camera.h"
 
 #include "Point2d.h"
+#include "Mesh.h"
 
 bool WorldDrawer::animation = true;
 bool WorldDrawer::keyStates[256];
@@ -293,6 +294,14 @@ int main(int argc, char *argv[]){
 
 	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 4: SpaceEscape 2012"));
 	wd.init();
+
+	mesh = ReadOffFile("m300.off");
+
+	if (!mesh)
+		std::cerr << "Could not load mesh\n";
+	else
+		PrintStats(mesh);
+
 	wd.run();
 	
 	return 0;

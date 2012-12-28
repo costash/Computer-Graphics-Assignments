@@ -29,12 +29,3 @@ enum CameraModes
 	MODE_TPS = 2,
 	MODE_TOP = 3
 };
-
-// Types for a cell in Maze
-enum CellType
-{
-	PORTAL = 3,
-	PLAYER = 2,
-	WALL = 1,
-	PATH = 0
-};

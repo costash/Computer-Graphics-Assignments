@@ -141,17 +141,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Object3D.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="Vector3D.cpp" />
     <ClCompile Include="WorldDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="ground.h" />
     <ClInclude Include="HeadersAndDefines.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Object3D.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Point2d.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Vector4D.h" />
     <ClInclude Include="WorldDrawer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
