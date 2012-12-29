@@ -61,6 +61,8 @@ public:
 	// cu pozitie, rotatie, scalare
 	Object3D(Vector3D *,Vector3D *,Vector3D *);
 
+	virtual ~Object3D();
+
 // functie de desenare
 	void virtual Draw();
 

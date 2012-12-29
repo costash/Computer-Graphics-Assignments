@@ -3,6 +3,11 @@
 #include "Vector3D.h"
 #include "camera.h"
 
+
+#include "Cube.h"
+#include "Light.h"
+#include "CustomObject3D.h"
+
 class WorldDrawer{
 public:
 	WorldDrawer(int argc, char **argv, int windowWidth, int windowHeight,
@@ -43,6 +48,9 @@ public:
 	static void switchCameraMode(int mode);
 	static Vector3D getPlayerPosition();
 
+	// Draw main axis
+	static void drawAxis();
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -66,4 +74,10 @@ public:
 	static float zoomSensivity;					// Sensivity for zooming with scroll
 
 	static float angle;							// Angle for cubes rotating
+
+
+	static CustomObject3D *aircraft;
+	static Cube *cub1;
+	// Omnidirectional light
+	static Light *light_o;
 };

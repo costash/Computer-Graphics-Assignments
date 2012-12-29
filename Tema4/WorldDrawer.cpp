@@ -1,6 +1,7 @@
 #include "WorldDrawer.h"
 #include "ground.h"
 #include "Vector4D.h"
+#include "CustomObject3D.h"
 
 bool WorldDrawer::mouseLeftState = false;		// Left click not pressed
 bool WorldDrawer::mouseRightState = false;	// Right click not pressed
@@ -138,13 +139,22 @@ void WorldDrawer::displayCallbackFunction(){
 	// Render the camera
 	camera.render();
 
+	// Activate omnidirectional light
+	//light_o->Render();
+
+	drawAxis();
+
 	//ground
 	glColor3f(0.165f, 0.039f, 0.039f);
 	draw_ground(200, 200, 2, 2, -2);
 
 	// Cube and square for test
-	glColor3f(0.5f, 0.8f, 0.03f);
-	glutSolidCube(3);
+	//glColor3f(0.5f, 0.8f, 0.03f);
+	//glutSolidCube(3);
+
+	aircraft->Draw();
+	//glColor4f(1.f, 0.f, 0.f, 0.7f);
+	//cub1->Draw();
 
 	std::cerr << "camera pos: " << camera.position << "\n";
 

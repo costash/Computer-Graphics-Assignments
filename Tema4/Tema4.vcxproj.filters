@@ -28,6 +28,12 @@
     <ClCompile Include="Cube.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="CustomObject3D.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -64,6 +70,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Mesh.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomObject3D.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,16 +4,44 @@
 
 #include "Point2d.h"
 #include "Mesh.h"
+#include "CustomObject3D.h"
+#include "Cube.h"
+#include "Light.h"
 
 bool WorldDrawer::animation = true;
 bool WorldDrawer::keyStates[256];
 bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
-Camera WorldDrawer::camera(MODE_TOP);
+Camera WorldDrawer::camera(MODE_TPS);
+
+CustomObject3D *WorldDrawer::aircraft;
+Cube *WorldDrawer::cub1;
+// Omnidirectional light
+Light *WorldDrawer::light_o;
+
 
 //add
 void WorldDrawer::init(){
+
+	// Initialize vector arrays
+	Vector3D::arr = new float[3];
+	Vector4D::arr = new float[4];
+
+	aircraft = new CustomObject3D(mesh);
+	aircraft->SetScale(new Vector3D(15.f, 15.f, 15.f));
+	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
+	//aircraft->SetRotation(new Vector3D(-90.f, 0.f, 90.f));
+	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 90.f));
+
+	cub1 = new Cube();
+
+	cub1->SetDiffuse(new Vector4D(0.0,0.0,1.0,0.7));
+
+	// initializam o noua lumina omnidirectionala
+	light_o = new Light();
+	// setam pozitia
+	light_o->SetPosition(new Vector3D(-2, 0, 3));
 
 	// Set up camera
 	camera.init();
@@ -289,18 +317,44 @@ Vector3D WorldDrawer::getPlayerPosition()
 	}
 }
 
+void WorldDrawer::drawAxis()
+{
+	float size = 100;
+
+	glLineWidth(5);
+
+	glBegin(GL_LINES);
+	// Draw X
+	glColor3f(1, 0, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(size, 0, 0);
+
+	// Draw Y
+	glColor3f(0, 1, 0);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, size, 0);
+
+	// Draw Z
+	glColor3f(0, 0, 1);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 0, size);
+	glEnd();
+}
+
 int main(int argc, char *argv[]){
 	srand((unsigned int)time(0));
 
-	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 4: SpaceEscape 2012"));
-	wd.init();
-
-	mesh = ReadOffFile("m300.off");
+	mesh = ReadOffFile("m1365.off");
 
 	if (!mesh)
 		std::cerr << "Could not load mesh\n";
 	else
 		PrintStats(mesh);
+
+	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 4: SpaceEscape 2012"));
+	wd.init();
+
+	
 
 	wd.run();
 	

@@ -48,6 +48,10 @@ Object3D::Object3D(Vector3D *_translation, Vector3D *_rotation, Vector3D *_scale
 	this->SetScale(_scale);	
 }
 
+Object3D::~Object3D()
+{
+}
+
 // seteaza toti parametrii la valorile lor default
 void Object3D::defaultSettings()
 {
