@@ -6,6 +6,7 @@
 
 #include "Cube.h"
 #include "Light.h"
+#include "Plane.h"
 #include "CustomObject3D.h"
 
 class WorldDrawer{
@@ -51,6 +52,9 @@ public:
 	// Draw main axis
 	static void drawAxis();
 
+	// Init display lists
+	static void initDisplayLists();
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -76,8 +80,8 @@ public:
 	static float angle;							// Angle for cubes rotating
 
 
-	static CustomObject3D *aircraft;
-	static Cube *cub1;
+	static CustomObject3D *aircraft;			// Aircraft object
+	static Object3D *gameBox;					// The box surrounding the game
 	// Omnidirectional light
 	static Light *light_o;
 };

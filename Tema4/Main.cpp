@@ -16,7 +16,7 @@ unsigned int WorldDrawer::tick = 0;
 Camera WorldDrawer::camera(MODE_TPS);
 
 CustomObject3D *WorldDrawer::aircraft;
-Cube *WorldDrawer::cub1;
+Object3D *WorldDrawer::gameBox;
 // Omnidirectional light
 Light *WorldDrawer::light_o;
 
@@ -31,12 +31,15 @@ void WorldDrawer::init(){
 	aircraft = new CustomObject3D(mesh);
 	aircraft->SetScale(new Vector3D(15.f, 15.f, 15.f));
 	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
-	//aircraft->SetRotation(new Vector3D(-90.f, 0.f, 90.f));
-	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 90.f));
+	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
+	aircraft->SetPosition(new Vector3D(10.f, 0.f, -30.f));
 
-	cub1 = new Cube();
+	
 
-	cub1->SetDiffuse(new Vector4D(0.0,0.0,1.0,0.7));
+	gameBox = new Object3D(GlutCube);
+	gameBox->Wireframe = true;
+	gameBox->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
+	gameBox->SetScale(new Vector3D(PLANE_SIZE, PLANE_SIZE, PLANE_SIZE));
 
 	// initializam o noua lumina omnidirectionala
 	light_o = new Light();
@@ -46,15 +49,32 @@ void WorldDrawer::init(){
 	// Set up camera
 	camera.init();
 
-	if (camera.mode == MODE_TPS) {
+	if (camera.mode == MODE_TPS)
+	{
 		camera.position = Vector3D(0, 0, distanceToTPSTarget);
 		camera.rotateTPS_OX(float(M_PI_4 / 2), distanceToTPSTarget);
 	}
-	else if (camera.mode == MODE_TOP) {
+	else if (camera.mode == MODE_TOP)
+	{
 		camera.position = Vector3D(0, 0, distanceToTop);
 		camera.rotateTPS_OX(float(M_PI), distanceToTop);
 	}
 	tick = glutGet(GLUT_ELAPSED_TIME);
+}
+
+void WorldDrawer::initDisplayLists()
+{
+	// Construieste listele de display
+	//glNewList(BACK_PLANE, GL_COMPILE);
+	//backPlane->Draw();
+	//glEndList();
+
+	// pregatim o scena noua in opengl
+	glClearColor(0.0, 0.0, 0.0, 0.0);	// stergem tot
+	glEnable(GL_DEPTH_TEST);			// activam verificarea distantei fata de camera (a adancimii)
+	glShadeModel(GL_SMOOTH);			// mod de desenare SMOOTH
+	glEnable(GL_LIGHTING);				// activam iluminarea
+	glEnable(GL_NORMALIZE);				// activam normalizarea normalelor
 }
 
 // Is called in glut main loop by the system on idle

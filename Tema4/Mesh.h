@@ -12,6 +12,7 @@
 #include <ctype.h>
 #include <assert.h>
 #include <math.h>
+#include "Vector3D.h"
 
 
 ////////////////////////////////////////////////////////////
@@ -68,6 +69,11 @@ void
 PrintStats(Mesh *mesh);
 
 
+// Compute Mesh Center
+Vector3D computeMeshCenter(Mesh *mesh);
+
+// Centrate Mesh to (0, 0, 0)
+void centrateMesh(Mesh *mesh, Vector3D center);
 
 ////////////////////////////////////////////////////////////
 // PROGRAM ARGUMENT PARSING

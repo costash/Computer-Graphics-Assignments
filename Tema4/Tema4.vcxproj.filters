@@ -39,9 +39,6 @@
     <ClInclude Include="camera.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ground.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Vector3D.h">
       <Filter>Headers</Filter>
     </ClInclude>

@@ -21,6 +21,7 @@
 
 #define PLAYER_RADIUS 1.f	// Radius for player
 #define HALF_CUBE 1.5f		// Size for half of a cube
+#define PLANE_SIZE 200.f	// Size of a plane
 
 // Modes for camera
 enum CameraModes

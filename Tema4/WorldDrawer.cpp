@@ -1,5 +1,4 @@
 #include "WorldDrawer.h"
-#include "ground.h"
 #include "Vector4D.h"
 #include "CustomObject3D.h"
 
@@ -56,7 +55,7 @@ WorldDrawer::WorldDrawer
 	glutMouseWheelFunc(mouseWheelCallbackFunction);
 
 	// Background color
-	glClearColor(0.776f, 0.89f, 1.f, 1.f);
+	glClearColor(0.098f, 0.09f, 0.157f, 1.f);
 
 	//zbuff
 	glEnable(GL_DEPTH_TEST);
@@ -123,7 +122,7 @@ void WorldDrawer::reshapeCallbackFunction(int w, int h){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float aspect = (float)w/(float)h;
-	gluPerspective(45.0f, aspect, 0.2f, 400.0f);
+	gluPerspective(45.0f, aspect, 0.2f, 600.0f);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -142,11 +141,10 @@ void WorldDrawer::displayCallbackFunction(){
 	// Activate omnidirectional light
 	//light_o->Render();
 
-	drawAxis();
+	// Draw game box
+	gameBox->Draw();
 
-	//ground
-	glColor3f(0.165f, 0.039f, 0.039f);
-	draw_ground(200, 200, 2, 2, -2);
+	drawAxis();
 
 	// Cube and square for test
 	//glColor3f(0.5f, 0.8f, 0.03f);
@@ -161,17 +159,21 @@ void WorldDrawer::displayCallbackFunction(){
 	// Player
 	if (camera.mode == MODE_TPS)
 	{
+		glPushMatrix();
 		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+		
 		glColor3f(0.f, 1.f, 0.f);
-	
 		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
 		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
+
+		glPopMatrix();
 	}
 	else if (camera.mode == MODE_TOP)	
 	{
+		glPushMatrix();
 		Vector3D pos(camera.position + camera.forward * distanceToTop);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
@@ -181,6 +183,8 @@ void WorldDrawer::displayCallbackFunction(){
 		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
 		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
+		
+		glPopMatrix();
 	}
 	//swap buffers
 	glutSwapBuffers();

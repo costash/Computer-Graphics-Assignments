@@ -134,6 +134,9 @@ ReadOffFile(const char *filename)
   // Close file
   fclose(fp);
 
+	Vector3D center = computeMeshCenter(mesh);
+	centrateMesh(mesh, center);
+
   // Return mesh 
   return mesh;
 }
@@ -175,6 +178,39 @@ PrintStats(Mesh *mesh)
   printf("Bounding box = %g %g   %g %g   %g %g\n", xmin, xmax, ymin, ymax, zmin, zmax);
 }
 
+// Compute Mesh Center
+Vector3D computeMeshCenter(Mesh *mesh)
+{
+	Vector3D center;
+	// Compute bounding box
+	float xmin = 1.0E30f, ymin = 1.0E30f, zmin = 1.0E30f;
+	float xmax = -1.0E30f, ymax = -1.0E30f, zmax = -1.0E30f;
+	for (int i = 0; i < mesh->nverts; ++i)
+	{
+		Vertex& v = mesh->verts[i];
+		if (v.x < xmin) xmin = v.x;
+		if (v.y < ymin) ymin = v.y;
+		if (v.z < zmin) zmin = v.z;
+		if (v.x > xmax) xmax = v.x;
+		if (v.y > ymax) ymax = v.y;
+		if (v.z > zmax) zmax = v.z;
+	}
+	center.x = (xmax - xmin) / 2;
+	center.y = (ymax - ymin) / 2;
+	center.z = (zmax - zmin) / 2;
+	return center;
+}
+
+// Centrate Mesh to (0, 0, 0)
+void centrateMesh(Mesh *mesh, Vector3D center)
+{
+	for (int i = 0; i < mesh->nverts; ++i)
+	{
+		mesh->verts[i].x -= center.x;
+		mesh->verts[i].y -= center.y;
+		mesh->verts[i].z -= center.z;
+	}
+}
 
 
 ////////////////////////////////////////////////////////////

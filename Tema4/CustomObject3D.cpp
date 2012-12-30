@@ -4,10 +4,7 @@
 CustomObject3D::CustomObject3D(Mesh *mesh)
 	: mesh(mesh)
 {
-	meshCenter = computeMeshCenter();
-	
-	// By default, position should be centered to (0, 0, 0)
-	translation = -meshCenter;
+	//meshCenter = computeMeshCenter();
 
 	// Default lighting
 	diffuse = Vector4D(1,1,1,1);
@@ -74,6 +71,7 @@ void CustomObject3D::Draw()
 	// Scale
 	glScalef( scale.x , scale.y , scale.z);
 
+	// Translate to (0, 0, 0)
 	glTranslatef(-meshCenter.x, -meshCenter.y, -meshCenter.z);
 
 	// Material settings :
