@@ -74,7 +74,7 @@ void Object3D::Draw ()
 {
 	// daca nu este vizibil, nu-l desenam
 	if(!Visible)
-	return;
+		return;
 
 	glPushMatrix();
 
@@ -112,9 +112,9 @@ void Object3D::Draw ()
 	{
 		// cub wireframe
 		case GlutCube :	glutWireCube(1.0f); break;
-		// sfera wireframe
+			// sfera wireframe
 		case GlutSphere : glutWireSphere(1.0f, (GLint)levelOfDetail, (GLint)levelOfDetail); break;
-		// orice alt obiect, specificat de programator
+			// orice alt obiect, specificat de programator
 		case Custom : customDraw();
 	}
 	// daca nu este wireframe
@@ -123,9 +123,9 @@ void Object3D::Draw ()
 	{
 		// cub solid
 		case GlutCube :	glutSolidCube(1.0f); break;
-		// sfera solida
+			// sfera solida
 		case GlutSphere : glutSolidSphere(1.0f, (GLint)levelOfDetail, (GLint)levelOfDetail); break;
-		// orice alt obiect, specificat de programator
+			// orice alt obiect, specificat de programator
 		case Custom : customDraw();
 	}
 

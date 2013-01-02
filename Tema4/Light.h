@@ -12,21 +12,21 @@ enum IlluminationType
 };
 
 /*
-	Light
-	Clasa pentru desenarea si activarea unei lumini
+Light
+Clasa pentru desenarea si activarea unei lumini
 */
 
 // derivata din object3D
 class Light : public Object3D
 {
 
-// VARIABILE STATICE
-//-------------------------------------------------
+	// VARIABILE STATICE
+	//-------------------------------------------------
 private:
 	static int baseId;
 
-// VARIABILE
-//-------------------------------------------------
+	// VARIABILE
+	//-------------------------------------------------
 public:
 	// tipul luminii - nu este folosit, inca
 	IlluminationType LightType;
@@ -40,12 +40,12 @@ private:
 	Vector4D ambient;
 	// lumina speculara
 	Vector4D specular;
-	
+
 
 	// pentru spot :
 
-// FUNCTII
-//-------------------------------------------------
+	// FUNCTII
+	//-------------------------------------------------
 public:
 	// constructor fara parametri
 	Light();

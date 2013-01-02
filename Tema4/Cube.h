@@ -19,7 +19,7 @@ public:
 	void SetLatura(GLfloat latura);
 	// Seteaza culoare difuza ( atentie , la testul alfa se foloseste componenta A din culoarea difuza !!!_
 	void SetDiffuse(Vector4D *color);
-	
+
 private:
 	// latura cubului
 	GLfloat latura;

@@ -4,22 +4,22 @@
 #include "Object3D.h"
 
 /*
-	Clasa Plane
-	deseneaza un plan cu numar variabil de quaduri in XOZ
+Clasa Plane
+deseneaza un plan cu numar variabil de quaduri in XOZ
 */
 
 // derivata din Object3D
 class Plane : public Object3D
 {
 
-// VARIABILE
-//-------------------------------------------------
+	// VARIABILE
+	//-------------------------------------------------
 private:
 	// dimensiunea unei laturi
 	float size;
 
-// FUNCTII
-//-------------------------------------------------
+	// FUNCTII
+	//-------------------------------------------------
 public:
 	// constructor fara parametri
 	Plane();

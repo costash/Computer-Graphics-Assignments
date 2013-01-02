@@ -13,7 +13,7 @@ Cube::Cube() : Object3D()
 	specular = Vector4D(1,1,1,1);
 	color = Vector3D(1,1,1);
 	scale = Vector3D(1.0,1.0,1.0);
-	
+
 	// default , nu este wireframe
 	Wireframe = false;
 
@@ -39,10 +39,10 @@ void Cube::SetDiffuse(Vector4D *color)
 //-------------------------------------------------
 void Cube::Draw ()
 {
-	
+
 	// daca nu este vizibil, nu-l desenam
 	if(!Visible)
-	return;
+		return;
 
 	glPushMatrix();
 

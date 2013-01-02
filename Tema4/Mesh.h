@@ -20,22 +20,37 @@
 ////////////////////////////////////////////////////////////
 
 typedef struct Vertex {
-  float x, y, z;
+	float x, y, z;
 } Vertex;
 
 typedef struct Face {
-  Face(void) : nverts(0), verts(0) {};
-  int nverts;
-  Vertex **verts;
-  float normal[3];
+	Face(void) : nverts(0), verts(0) {};
+	int nverts;
+	Vertex **verts;
+	float normal[3];
 } Face;
 
 typedef struct Mesh {
-  Mesh(void) : nverts(0), verts(0), nfaces(0), faces(0) {};
-  int nverts;
-  Vertex *verts;
-  int nfaces;
-  Face *faces;
+	Mesh(void) : nverts(0), verts(0), nfaces(0), faces(0), center(Vector3D()), radius(0) {};
+	int nverts;
+	Vertex *verts;
+	int nfaces;
+	Face *faces;
+
+	Vector3D center;
+	float radius;
+
+	// OFF file reading
+	int ReadOffFile(const char *filename);
+
+	// Initialize Mesh
+	void Init(const char *filename);
+
+	// Compute Mesh Center (and also radius)
+	Vector3D computeMeshCenter();
+
+	// Centrate Mesh to (0, 0, 0)
+	void centrateMesh();
 } Mesh;
 
 
@@ -46,18 +61,8 @@ typedef struct Mesh {
 // GLOBAL VARIABLES
 ////////////////////////////////////////////////////////////
 
-static char *filename = 0;
-static Mesh *mesh = 0;
-
-
-
-
-////////////////////////////////////////////////////////////
-// OFF FILE READING CODE
-////////////////////////////////////////////////////////////
-
-Mesh *
-ReadOffFile(const char *filename);
+//static char *filename = 0;
+//static Mesh *mesh = 0;
 
 
 
@@ -66,41 +71,4 @@ ReadOffFile(const char *filename);
 ////////////////////////////////////////////////////////////
 
 void
-PrintStats(Mesh *mesh);
-
-
-// Compute Mesh Center
-Vector3D computeMeshCenter(Mesh *mesh);
-
-// Centrate Mesh to (0, 0, 0)
-void centrateMesh(Mesh *mesh, Vector3D center);
-
-////////////////////////////////////////////////////////////
-// PROGRAM ARGUMENT PARSING
-////////////////////////////////////////////////////////////
-
-int 
-ParseArgs(int argc, char **argv);
-
-
-
-////////////////////////////////////////////////////////////
-// MAIN
-////////////////////////////////////////////////////////////
-
-//int 
-//main(int argc, char **argv)
-//{
-//  // Parse program arguments
-//  if (!ParseArgs(argc, argv)) exit(1);
-//
-//  // Read mesh
-//  mesh = ReadOffFile(filename);
-//  if (!mesh) exit(-1);
-//
-//  // Print statistics
-//  PrintStats(mesh);
-//
-//  // Return success 
-//  return 0;
-//}
+	PrintStats(Mesh *mesh);

@@ -63,23 +63,23 @@ WorldDrawer::WorldDrawer
 	// Enable and init lighting
 	glEnable(GL_LIGHTING);
 	// Track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
-	
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
 
 	// Set up light colors (ambient, diffuse, specular)
-    GLfloat lightKa[] = {.2f, .2f, .2f, 1.0f};  // Ambient light
-    GLfloat lightKd[] = {.7f, .7f, .7f, 1.0f};  // Diffuse light
-    GLfloat lightKs[] = {1, 1, 1, 1};           // Specular light
-    glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
+	GLfloat lightKa[] = {.2f, .2f, .2f, 1.0f};  // Ambient light
+	GLfloat lightKd[] = {.7f, .7f, .7f, 1.0f};  // Diffuse light
+	GLfloat lightKs[] = {1, 1, 1, 1};           // Specular light
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
 
-    // position the light
-    float lightPos[4] = {0, 0, 20, 1}; // positional light
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+	// position the light
+	float lightPos[4] = {0, 0, 20, 1}; // positional light
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-    glEnable(GL_LIGHT0);  // MUST enable each light source after configuration
+	glEnable(GL_LIGHT0);  // MUST enable each light source after configuration
 
 }
 
@@ -89,7 +89,7 @@ WorldDrawer::~WorldDrawer()
 }
 
 void WorldDrawer::idleCallbackFunction(){
-	
+
 	unsigned int diff = getTimeDifference();
 	// Limit to 50 frames per second
 	if (diff >= 20)
@@ -153,8 +153,9 @@ void WorldDrawer::displayCallbackFunction(){
 	aircraft->Draw();
 	//glColor4f(1.f, 0.f, 0.f, 0.7f);
 	//cub1->Draw();
+	//std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
 
-	std::cerr << "camera pos: " << camera.position << "\n";
+	//std::cerr << "camera pos: " << camera.position << "\n";
 
 	// Player
 	if (camera.mode == MODE_TPS)
@@ -163,7 +164,7 @@ void WorldDrawer::displayCallbackFunction(){
 		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
-		
+
 		glColor3f(0.f, 1.f, 0.f);
 		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
@@ -177,13 +178,13 @@ void WorldDrawer::displayCallbackFunction(){
 		Vector3D pos(camera.position + camera.forward * distanceToTop);
 		glTranslatef(pos.x, pos.y, pos.z);
 		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
-		
+
 		glColor3f(0.f, 1.f, 0.f);
-	
+
 		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
 		glColor3f(0.f, 0.9f, 0.f);
 		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
-		
+
 		glPopMatrix();
 	}
 	//swap buffers

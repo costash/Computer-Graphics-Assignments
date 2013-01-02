@@ -15,20 +15,20 @@ enum ObjectType
 };
 
 /*
-	OBJECT3D
-	Clasa pentru desenare si modificare a unui obiect 3d.
+OBJECT3D
+Clasa pentru desenare si modificare a unui obiect 3d.
 */
 class Object3D
 {
-// VARIABILE STATICE ::
-//-------------------------------------------------
+	// VARIABILE STATICE ::
+	//-------------------------------------------------
 public:
 	static Vector3D SelectedColor;
 	static Vector3D ColorIncrement;
 
-// VARIABILE
-//-------------------------------------------------
-// publice
+	// VARIABILE
+	//-------------------------------------------------
+	// publice
 public :
 	// incep cu litera mare
 	ObjectType Type;	// tipul obiectuliu
@@ -36,7 +36,7 @@ public :
 	bool Visible;		// daca va fi sau nu desenat
 	bool Lighted;		// daca este sau nu luminat
 
-// private
+	// private
 protected:
 	// incep cu litera mica
 	Vector3D translation;	// pozitie
@@ -48,10 +48,10 @@ protected:
 	bool selected;			// daca este sau nu selectat
 
 
-// FUNCTII ::
-//-------------------------------------------------
+	// FUNCTII ::
+	//-------------------------------------------------
 public:
-// constructor
+	// constructor
 	// fara parametri
 	Object3D();		
 	// doar cu tip
@@ -63,10 +63,10 @@ public:
 
 	virtual ~Object3D();
 
-// functie de desenare
+	// functie de desenare
 	void virtual Draw();
 
-// setters 
+	// setters 
 	// pentru toate variabilele care nu sunt publice
 	void Select();
 	void Deselect();
@@ -75,7 +75,7 @@ public:
 	void SetScale(Vector3D *);
 	void SetColor(Vector3D *);
 	void SetLevelOfDetail(float);
-// getters
+	// getters
 	// pentru toate variabilele care nu sunt publice, si pot fi modificate din exterior
 	Vector3D GetRotation();
 	Vector3D GetScale();
@@ -87,5 +87,5 @@ protected:
 	void virtual customDraw();
 	// seteaza valorile default 
 	void defaultSettings();
-	
+
 };

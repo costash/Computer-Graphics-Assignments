@@ -17,6 +17,8 @@ Camera WorldDrawer::camera(MODE_TPS);
 
 CustomObject3D *WorldDrawer::aircraft;
 Object3D *WorldDrawer::gameBox;
+Mesh *WorldDrawer::aircraftMesh;					// Mesh for aircraft
+Mesh *WorldDrawer::asteroidMesh;					// Mesh for asteroid
 // Omnidirectional light
 Light *WorldDrawer::light_o;
 
@@ -28,13 +30,19 @@ void WorldDrawer::init(){
 	Vector3D::arr = new float[3];
 	Vector4D::arr = new float[4];
 
-	aircraft = new CustomObject3D(mesh);
+	aircraftMesh = new Mesh();
+	aircraftMesh->Init("m1365.off");
+	//aircraftMesh->Init("asteroid.off");
+
+	std::cerr << "Aircraft radius " << aircraftMesh->radius << " center: " << aircraftMesh->center << "\n";
+
+	aircraft = new CustomObject3D(aircraftMesh);
 	aircraft->SetScale(new Vector3D(15.f, 15.f, 15.f));
 	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
 	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
-	aircraft->SetPosition(new Vector3D(10.f, 0.f, -30.f));
+	//aircraft->SetPosition(new Vector3D(10.f, 0.f, -30.f));
 
-	
+
 
 	gameBox = new Object3D(GlutCube);
 	gameBox->Wireframe = true;
@@ -81,11 +89,11 @@ void WorldDrawer::initDisplayLists()
 void WorldDrawer::onIdle(){	//per frame
 	keyOperations();			// Operations for buffered keys
 	mouseRotations();
-	
+
 	if(animation){
 		// Do nothing here
 		angle = angle+1;
-	
+
 		if(angle > 360) angle = angle-360;
 	}
 }
@@ -95,7 +103,7 @@ void WorldDrawer::keyOperations()
 {
 	if (keyStates[KEY_ESC])			// On Escape, program exits
 		glutExit();
-	
+
 	float rotateStep = 0.04f;
 	float moveStep = 0.25f;
 
@@ -364,19 +372,20 @@ void WorldDrawer::drawAxis()
 int main(int argc, char *argv[]){
 	srand((unsigned int)time(0));
 
-	mesh = ReadOffFile("m1365.off");
+	//mesh = ReadOffFile("m1365.off");
+	/*mesh = ReadOffFile("asteroid.off");
 
 	if (!mesh)
-		std::cerr << "Could not load mesh\n";
+	std::cerr << "Could not load mesh\n";
 	else
-		PrintStats(mesh);
+	PrintStats(mesh);*/
 
 	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 4: SpaceEscape 2012"));
 	wd.init();
 
-	
+
 
 	wd.run();
-	
+
 	return 0;
 }

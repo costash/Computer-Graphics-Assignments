@@ -82,6 +82,8 @@ public:
 
 	static CustomObject3D *aircraft;			// Aircraft object
 	static Object3D *gameBox;					// The box surrounding the game
+	static Mesh *aircraftMesh;					// Mesh for aircraft
+	static Mesh *asteroidMesh;					// Mesh for asteroid
 	// Omnidirectional light
 	static Light *light_o;
 };

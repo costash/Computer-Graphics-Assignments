@@ -2,17 +2,15 @@
 
 // Constructor
 CustomObject3D::CustomObject3D(Mesh *mesh)
-	: mesh(mesh)
+	: mesh(mesh), meshCenter(0.f, 0.f, 0.f)
 {
-	//meshCenter = computeMeshCenter();
-
 	// Default lighting
 	diffuse = Vector4D(1,1,1,1);
 	ambient = Vector4D(0,0,0,0);
 	specular = Vector4D(1,1,1,1);
 	color = Vector3D(1,1,1);
 	scale = Vector3D(1.0,1.0,1.0);
-	
+
 	// Default, it's not wireframe
 	Wireframe = false;
 }
@@ -71,9 +69,6 @@ void CustomObject3D::Draw()
 	// Scale
 	glScalef( scale.x , scale.y , scale.z);
 
-	// Translate to (0, 0, 0)
-	glTranslatef(-meshCenter.x, -meshCenter.y, -meshCenter.z);
-
 	// Material settings :
 	// If not selected
 	if( !selected )
@@ -113,7 +108,7 @@ void CustomObject3D::Draw()
 			glVertex3f(vert->x, vert->y, vert->z);
 		}
 
-		
+
 	}
 	glEnd();
 

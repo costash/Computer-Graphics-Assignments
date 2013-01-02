@@ -20,7 +20,7 @@ Light::Light() : Object3D(GlutSphere)
 
 	// id-ul este unic, id-ul de baza incrementat
 	id = baseId++;
-	
+
 	// sfera plasata in locul luminii nu este wireframe
 	Wireframe = false;
 
