@@ -45,16 +45,9 @@ void WorldDrawer::init(){
 	std::cerr << "Aircraft radius " << aircraftMesh->radius << " center: " << aircraftMesh->center << "\n";
 	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
 
-	aircraft = new CustomObject3D(aircraftMesh);
-	aircraft->SetScale(new Vector3D(15.f, 15.f, 15.f));
-	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
-	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
-	//aircraft->SetPosition(new Vector3D(10.f, 0.f, -30.f));
-
-	// Create display list for aircraft
-	glNewList(AIRCRAFT, GL_COMPILE);
-	aircraft->Draw();
-	glEndList();
+	aircraft = new CustomObject3D(aircraftMesh, AIRCRAFT);
+	
+	initScene();
 
 	// Create asteroids
 	for (int i = 0; i < NUM_ASTEROIDS; ++i)
@@ -64,7 +57,7 @@ void WorldDrawer::init(){
 		else
 			asteroids.push_back(new Asteroid(asteroidMesh, ASTEROID, false));
 		
-		float rand_scale = genRandomFloat(0.5f, 2.f);
+		float rand_scale = genRandomFloat(0.2f, 1.f);
 		asteroids[i]->SetScale(new Vector3D(rand_scale, rand_scale, rand_scale));
 		asteroids[i]->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
 
@@ -86,6 +79,22 @@ void WorldDrawer::init(){
 	// setam pozitia
 	light_o->SetPosition(new Vector3D(-2, 0, 3));
 
+	tick = glutGet(GLUT_ELAPSED_TIME);
+}
+
+// Init scene
+void WorldDrawer::initScene()
+{
+	aircraft->SetScale(new Vector3D(25.f, 25.f, 25.f));
+	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
+	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
+	aircraft->SetPosition(new Vector3D(0.f, 0.f, 0.f));
+
+	//// Create display list for aircraft
+	//glNewList(AIRCRAFT, GL_COMPILE);
+	//aircraft->Draw();
+	//glEndList();
+
 	// Set up camera
 	camera.init();
 
@@ -99,7 +108,6 @@ void WorldDrawer::init(){
 		camera.position = Vector3D(0, 0, distanceToTop);
 		camera.rotateTPS_OX(float(M_PI), distanceToTop);
 	}
-	tick = glutGet(GLUT_ELAPSED_TIME);
 }
 
 // Is called in glut main loop by the system on idle
@@ -228,6 +236,8 @@ void WorldDrawer::keyOperations()
 		camera.translate_Forward(moveStep);
 
 		// Check colision
+		std::cerr << "aircraft position: " << aircraft->GetPosition() << "\n";
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, moveStep, 0.f)));
 	}
 	if (keyStates['s'])						// Move backwards
 	{
@@ -487,6 +497,7 @@ void WorldDrawer::pick(int x, int y)
 				
 }
 
+// Draw 3D Scene
 void WorldDrawer::drawScene()
 {
 	//setup view
@@ -505,7 +516,8 @@ void WorldDrawer::drawScene()
 	drawAxis();
 
 	//aircraft->Draw();
-	glCallList(AIRCRAFT);
+	//glCallList(AIRCRAFT);
+	aircraft->Draw();
 
 	//std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
 

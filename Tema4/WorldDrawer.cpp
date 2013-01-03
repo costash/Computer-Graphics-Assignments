@@ -33,6 +33,7 @@ WorldDrawer::WorldDrawer
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glEnable(GLUT_MULTISAMPLE);							// Enable multisampling
+	glShadeModel(GL_SMOOTH);
 
 	glutInitWindowSize(windowWidth,windowHeight);		// Window size
 	glutInitWindowPosition(windowStartX,windowStartY);	// Window position
@@ -131,74 +132,6 @@ void WorldDrawer::displayCallbackFunction(){
 	//Render objects
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-	////setup view
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
-
-	//// Render the camera
-	//camera.render();
-
-	//// Activate omnidirectional light
-	////light_o->Render();
-
-	//// Draw game box
-	//gameBox->Draw();
-
-	//drawAxis();
-
-	//// Cube and square for test
-	////glColor3f(0.5f, 0.8f, 0.03f);
-	////glutSolidCube(3);
-
-	////aircraft->Draw();
-	//glCallList(AIRCRAFT);
-
-	////glColor4f(1.f, 0.f, 0.f, 0.7f);
-	////cub1->Draw();
-	////std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
-
-	////std::cerr << "camera pos: " << camera.position << "\n";
-
-	//for (int i = 0; i < asteroids.size(); ++i)
-	//{
-	//	asteroids[i]->Draw();
-	//}
-	///*for (unsigned int i = 0; i < asteroids.size(); ++i)
-	//{
-	//	glCallList(ASTEROID + i);
-	//}*/
-
-	//// Player
-	//if (camera.mode == MODE_TPS)
-	//{
-	//	glPushMatrix();
-	//	Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
-	//	glTranslatef(pos.x, pos.y, pos.z);
-	//	glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
-
-	//	glColor3f(0.f, 1.f, 0.f);
-	//	glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
-	//	glColor3f(0.f, 0.9f, 0.f);
-	//	glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
-
-	//	glPopMatrix();
-	//}
-	//else if (camera.mode == MODE_TOP)	
-	//{
-	//	glPushMatrix();
-	//	Vector3D pos(camera.position + camera.forward * distanceToTop);
-	//	glTranslatef(pos.x, pos.y, pos.z);
-	//	glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
-
-	//	glColor3f(0.f, 1.f, 0.f);
-
-	//	glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
-	//	glColor3f(0.f, 0.9f, 0.f);
-	//	glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
-
-	//	glPopMatrix();
-	//}
-
 	// TODO : implementati mecanismul de transparenta folosind ALPHA TESTING / BLENDING
 	// First Pass - alpha test
 	glEnable(GL_ALPHA_TEST);
@@ -237,7 +170,7 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 	{
 		int mode = camera.mode;
 		switchCameraMode(MODE_FPS);
-		init();
+		initScene();
 		switchCameraMode(mode);
 	}
 }

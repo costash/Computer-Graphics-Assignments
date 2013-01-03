@@ -6,8 +6,10 @@
 class CustomObject3D : public Object3D
 {
 public:
-	// Constructor
+	// Constructor default
 	CustomObject3D(Mesh *mesh);
+	// Constructor with callList
+	CustomObject3D(Mesh *mesh, int id);
 
 	// Destructor
 	virtual ~CustomObject3D();
@@ -21,6 +23,10 @@ public:
 protected:
 	// Computers Mesh center
 	Vector3D computeMeshCenter();
+	// Custom draw method
+	void customDraw();
+	// Sets default settings for a custom object
+	void setDefault();
 
 protected:
 	// Object mesh
@@ -34,4 +40,9 @@ protected:
 	Vector4D ambient;
 	// Specular color
 	Vector4D specular;
+
+	// CallList id (it should be -1 if not using callLists)
+	int callListId;
+	// Has created the callList
+	bool createdCallList;
 };

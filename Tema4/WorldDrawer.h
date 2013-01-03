@@ -65,7 +65,10 @@ public:
 	// functia care proceseaza hitrecordurile pentru a vedea daca s-a click pe un obiect din scena
 	static void processhits (GLint hits, GLuint buffer[]);
 
+	// Draw 3D scene
 	static void drawScene();
+	// Init scene
+	static void initScene();
 
 public:
 	static bool animation;

@@ -2,7 +2,23 @@
 
 // Constructor
 CustomObject3D::CustomObject3D(Mesh *mesh)
-	: mesh(mesh), meshCenter(0.f, 0.f, 0.f)
+	: mesh(mesh), meshCenter(0.f, 0.f, 0.f), callListId(-1), createdCallList(false)
+{
+	setDefault();
+}
+
+CustomObject3D::CustomObject3D(Mesh *mesh, int id)
+	: mesh(mesh), meshCenter(0.f, 0.f, 0.f), callListId(id), createdCallList(false)
+{
+	setDefault();
+}
+
+// Destructor
+CustomObject3D::~CustomObject3D()
+{
+}
+
+void CustomObject3D::setDefault()
 {
 	// Default lighting
 	diffuse = Vector4D(1,1,1,1);
@@ -13,11 +29,6 @@ CustomObject3D::CustomObject3D(Mesh *mesh)
 
 	// Default, it's not wireframe
 	Wireframe = false;
-}
-
-// Destructor
-CustomObject3D::~CustomObject3D()
-{
 }
 
 // Sets diffuse color (alpha test uses A value from diffuse)
@@ -97,6 +108,28 @@ void CustomObject3D::Draw()
 		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 	}
 
+	if (callListId > -1)
+	{
+		if (createdCallList == false)
+		{
+			glNewList(callListId, GL_COMPILE_AND_EXECUTE);
+			customDraw();
+			glEndList();
+			createdCallList = true;
+		}
+		else
+		{
+			glCallList(callListId);
+		}
+	}
+	else
+		customDraw();
+
+	glPopMatrix();
+}
+
+void CustomObject3D::customDraw()
+{
 	// Draw each face
 	glBegin(GL_TRIANGLES);
 	for (int i = 0; i < mesh->nfaces; ++i)
@@ -111,6 +144,4 @@ void CustomObject3D::Draw()
 
 	}
 	glEnd();
-
-	glPopMatrix();
 }
