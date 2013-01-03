@@ -59,6 +59,14 @@ public:
 	// Random Asteroid position
 	static Vector3D genRandomPosition(float minY, float maxY, float minZ, float maxZ);
 
+	// Picking
+	// functie ce realizeaza picking la pozitia la care s-a dat click cu mouse-ul
+	static void pick(int x, int y);
+	// functia care proceseaza hitrecordurile pentru a vedea daca s-a click pe un obiect din scena
+	static void processhits (GLint hits, GLuint buffer[]);
+
+	static void drawScene();
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -93,4 +101,7 @@ public:
 	static std::vector<Asteroid *> asteroids;	// Asteroid objects
 	// Omnidirectional light
 	static Light *light_o;
+
+	static int selectedObject;					// Selected object id
+	static int selectedIndex;					// Selected index
 };

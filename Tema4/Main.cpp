@@ -25,6 +25,9 @@ std::vector<Asteroid *> WorldDrawer::asteroids;		// Asteroid objects
 // Omnidirectional light
 Light *WorldDrawer::light_o;
 
+int WorldDrawer::selectedObject = 0;				// Selected object
+int WorldDrawer::selectedIndex = -1;				// Selected index
+
 //add
 void WorldDrawer::init(){
 
@@ -53,6 +56,7 @@ void WorldDrawer::init(){
 	aircraft->Draw();
 	glEndList();
 
+	// Create asteroids
 	for (int i = 0; i < NUM_ASTEROIDS; ++i)
 	{
 		if (i == 0)
@@ -71,17 +75,6 @@ void WorldDrawer::init(){
 
 		asteroids[i]->angleStep = Vector3D(genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f));
 	}
-
-	/*glNewList(ASTEROID, GL_COMPILE);
-	for (int i = 0; i < NUM_ASTEROIDS; ++i)
-		asteroids[i]->Draw();
-	glEndList();*/
-	/*for (unsigned int i = 0; i < asteroids.size(); ++i)
-	{
-		glNewList(ASTEROID + i, GL_COMPILE);
-		asteroids[i]->Draw();
-		glEndList();
-	}*/
 
 	gameBox = new Object3D(GlutCube);
 	gameBox->Wireframe = true;
@@ -271,7 +264,13 @@ void WorldDrawer::mouseCallbackFunction(int button, int state, int x, int y)
 	else if (button == MOUSE_RIGHT)		// Buffer right clicks
 	{
 		if (state == GLUT_DOWN)
+		{
+			selectedObject = 0;
+
+			pick(x,y);
+
 			mouseRightState = true;
+		}
 		else if (state == GLUT_UP)
 			mouseRightState = false;
 	}
@@ -401,6 +400,166 @@ Vector3D WorldDrawer::genRandomPosition(float minY, float maxY, float minZ, floa
 	return Vector3D(-PLANE_SIZE /2, y, z);
 }
 
+// functia care proceseaza hitrecordurile pentru a vedea daca s-a click pe un obiect din scena
+void WorldDrawer::processhits (GLint hits, GLuint buffer[])
+{
+   int i;
+   GLuint names, *ptr, minZ,*ptrNames, numberOfNames;
+
+   // pointer la inceputul bufferului ce contine hit recordurile
+   ptr = (GLuint *) buffer;
+   // se doreste selectarea obiectului cel mai aproape de observator
+   minZ = 0xffffffff;
+   for (i = 0; i < hits; i++) 
+   {
+      // numarul de nume numele asociate din stiva de nume
+      names = *ptr;
+	  ptr++;
+	  // Z-ul asociat hitului - se retine 
+	  if (*ptr < minZ) {
+		  numberOfNames = names;
+		  minZ = *ptr;
+		  // primul nume asociat obiectului
+		  ptrNames = ptr+2;
+	  }
+	  
+	  // salt la urmatorul hitrecord
+	  ptr += names+2;
+  }
+
+  // identificatorul asociat obiectului
+  ptr = ptrNames;
+  
+  selectedObject = *ptr;
+     
+}
+
+// functie ce realizeaza picking la pozitia la care s-a dat click cu mouse-ul
+void WorldDrawer::pick(int x, int y)
+{
+	// buffer de selectie
+	GLuint buffer[1024];
+
+	// numar hituri
+	GLint nhits;
+
+	// coordonate viewport curent
+	GLint	viewport[4];
+
+	// se obtin coordonatele viewportului curent
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	// se initializeaza si se seteaza bufferul de selectie
+	memset(buffer,0x0,1024);
+	glSelectBuffer(1024, buffer);
+	
+	// intrarea in modul de selectie
+	glRenderMode(GL_SELECT);
+
+	// salvare matrice de proiectie curenta
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	// se va randa doar intr-o zona din jurul cursorului mouseului de [1,1]
+	glGetIntegerv(GL_VIEWPORT,viewport);
+	gluPickMatrix(x,viewport[3]-y,1.0f,1.0f,viewport);
+
+	gluPerspective(45,(viewport[2]-viewport[0])/(GLfloat) (viewport[3]-viewport[1]),0.1,1000);
+	glMatrixMode(GL_MODELVIEW);
+
+	// se "deseneaza" scena : de fapt nu se va desena nimic in framebuffer ci se va folosi bufferul de selectie
+	drawScene();
+
+	// restaurare matrice de proiectie initiala
+	glMatrixMode(GL_PROJECTION);						
+	glPopMatrix();				
+
+	glMatrixMode(GL_MODELVIEW);
+	// restaurarea modului de randare uzual si obtinerea numarului de hituri
+	nhits=glRenderMode(GL_RENDER);	
+	
+	// procesare hituri
+	if(nhits != 0)
+		processhits(nhits,buffer);
+	else
+		selectedObject = 0;
+
+				
+}
+
+void WorldDrawer::drawScene()
+{
+	//setup view
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	// Render the camera
+	camera.render();
+
+	// Activate omnidirectional light
+	//light_o->Render();
+
+	// Draw game box
+	gameBox->Draw();
+
+	drawAxis();
+
+	//aircraft->Draw();
+	glCallList(AIRCRAFT);
+
+	//std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
+
+	//std::cerr << "camera pos: " << camera.position << "\n";
+
+	for (unsigned int i = 0; i < asteroids.size(); ++i)
+	{
+		asteroids[i]->Deselect();
+	}
+	if (selectedObject > 0 && selectedObject <= (int)asteroids.size())
+		asteroids[selectedObject - 1]->Select();
+
+	for (unsigned int i = 0; i < asteroids.size(); ++i)
+	{
+		glPushName(i + 1);
+		asteroids[i]->Draw();
+		glPopName();
+
+		//asteroids[i]->Draw();
+	}
+
+	// Player
+	if (camera.mode == MODE_TPS)
+	{
+		glPushMatrix();
+		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
+		glTranslatef(pos.x, pos.y, pos.z);
+		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+
+		glColor3f(0.f, 1.f, 0.f);
+		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
+		glColor3f(0.f, 0.9f, 0.f);
+		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
+
+		glPopMatrix();
+	}
+	else if (camera.mode == MODE_TOP)	
+	{
+		glPushMatrix();
+		Vector3D pos(camera.position + camera.forward * distanceToTop);
+		glTranslatef(pos.x, pos.y, pos.z);
+		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+
+		glColor3f(0.f, 1.f, 0.f);
+
+		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
+		glColor3f(0.f, 0.9f, 0.f);
+		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
+
+		glPopMatrix();
+	}
+}
+
+// Draw main axis
 void WorldDrawer::drawAxis()
 {
 	float size = 100;
