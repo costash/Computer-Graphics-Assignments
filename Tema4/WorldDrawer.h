@@ -2,12 +2,14 @@
 #include "HeadersAndDefines.h"
 #include "Vector3D.h"
 #include "camera.h"
+#include <vector>
 
 
 #include "Cube.h"
 #include "Light.h"
 #include "Plane.h"
 #include "CustomObject3D.h"
+#include "Asteroid.h"
 
 class WorldDrawer{
 public:
@@ -52,8 +54,10 @@ public:
 	// Draw main axis
 	static void drawAxis();
 
-	// Init display lists
-	static void initDisplayLists();
+	// Random helper
+	static float genRandomFloat(float min, float max);
+	// Random Asteroid position
+	static Vector3D genRandomPosition(float minY, float maxY, float minZ, float maxZ);
 
 public:
 	static bool animation;
@@ -84,6 +88,9 @@ public:
 	static Object3D *gameBox;					// The box surrounding the game
 	static Mesh *aircraftMesh;					// Mesh for aircraft
 	static Mesh *asteroidMesh;					// Mesh for asteroid
+	//static CustomObject3D *asteroids;			// Asteroids objects
+	//static std::vector<CustomObject3D *> asteroids;	// Asteroid objects
+	static std::vector<Asteroid *> asteroids;	// Asteroid objects
 	// Omnidirectional light
 	static Light *light_o;
 };

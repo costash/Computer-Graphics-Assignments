@@ -140,6 +140,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CustomObject3D.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="WorldDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CustomObject3D.h" />

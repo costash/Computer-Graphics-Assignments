@@ -214,7 +214,6 @@ void Mesh::Init(const char *filename)
 	if (err_code != 0)
 	{
 		std::cerr << "Could not parse file " << filename << "\n";
-		exit(1);
 	}
 }
 

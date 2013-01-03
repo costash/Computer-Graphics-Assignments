@@ -34,6 +34,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Asteroid.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -70,6 +73,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="CustomObject3D.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Asteroid.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

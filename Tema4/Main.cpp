@@ -19,9 +19,11 @@ CustomObject3D *WorldDrawer::aircraft;
 Object3D *WorldDrawer::gameBox;
 Mesh *WorldDrawer::aircraftMesh;					// Mesh for aircraft
 Mesh *WorldDrawer::asteroidMesh;					// Mesh for asteroid
+//CustomObject3D *WorldDrawer::asteroids;				// Asteroids objects
+//std::vector<CustomObject3D *> WorldDrawer::asteroids;	// Asteroid objects
+std::vector<Asteroid *> WorldDrawer::asteroids;		// Asteroid objects
 // Omnidirectional light
 Light *WorldDrawer::light_o;
-
 
 //add
 void WorldDrawer::init(){
@@ -32,9 +34,13 @@ void WorldDrawer::init(){
 
 	aircraftMesh = new Mesh();
 	aircraftMesh->Init("m1365.off");
-	//aircraftMesh->Init("asteroid.off");
+
+	asteroidMesh = new Mesh();
+	//asteroidMesh->Init("asteroid.off");
+	asteroidMesh->Init("asteroid_small.off");
 
 	std::cerr << "Aircraft radius " << aircraftMesh->radius << " center: " << aircraftMesh->center << "\n";
+	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
 
 	aircraft = new CustomObject3D(aircraftMesh);
 	aircraft->SetScale(new Vector3D(15.f, 15.f, 15.f));
@@ -42,7 +48,40 @@ void WorldDrawer::init(){
 	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
 	//aircraft->SetPosition(new Vector3D(10.f, 0.f, -30.f));
 
+	// Create display list for aircraft
+	glNewList(AIRCRAFT, GL_COMPILE);
+	aircraft->Draw();
+	glEndList();
 
+	for (int i = 0; i < NUM_ASTEROIDS; ++i)
+	{
+		if (i == 0)
+			asteroids.push_back(new Asteroid(asteroidMesh, ASTEROID, true));
+		else
+			asteroids.push_back(new Asteroid(asteroidMesh, ASTEROID, false));
+		
+		float rand_scale = genRandomFloat(0.5f, 2.f);
+		asteroids[i]->SetScale(new Vector3D(rand_scale, rand_scale, rand_scale));
+		asteroids[i]->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
+
+		// Move
+		Vector3D randPos = WorldDrawer::genRandomPosition(-PLANE_SIZE/2, PLANE_SIZE/2, -PLANE_SIZE/2, PLANE_SIZE/2);
+		asteroids[i]->SetPosition(new Vector3D(randPos));
+		asteroids[i]->moveStep = genRandomFloat(0.3f, 0.9f);
+
+		asteroids[i]->angleStep = Vector3D(genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f));
+	}
+
+	/*glNewList(ASTEROID, GL_COMPILE);
+	for (int i = 0; i < NUM_ASTEROIDS; ++i)
+		asteroids[i]->Draw();
+	glEndList();*/
+	/*for (unsigned int i = 0; i < asteroids.size(); ++i)
+	{
+		glNewList(ASTEROID + i, GL_COMPILE);
+		asteroids[i]->Draw();
+		glEndList();
+	}*/
 
 	gameBox = new Object3D(GlutCube);
 	gameBox->Wireframe = true;
@@ -70,21 +109,6 @@ void WorldDrawer::init(){
 	tick = glutGet(GLUT_ELAPSED_TIME);
 }
 
-void WorldDrawer::initDisplayLists()
-{
-	// Construieste listele de display
-	//glNewList(BACK_PLANE, GL_COMPILE);
-	//backPlane->Draw();
-	//glEndList();
-
-	// pregatim o scena noua in opengl
-	glClearColor(0.0, 0.0, 0.0, 0.0);	// stergem tot
-	glEnable(GL_DEPTH_TEST);			// activam verificarea distantei fata de camera (a adancimii)
-	glShadeModel(GL_SMOOTH);			// mod de desenare SMOOTH
-	glEnable(GL_LIGHTING);				// activam iluminarea
-	glEnable(GL_NORMALIZE);				// activam normalizarea normalelor
-}
-
 // Is called in glut main loop by the system on idle
 void WorldDrawer::onIdle(){	//per frame
 	keyOperations();			// Operations for buffered keys
@@ -95,6 +119,23 @@ void WorldDrawer::onIdle(){	//per frame
 		angle = angle+1;
 
 		if(angle > 360) angle = angle-360;
+
+		for (unsigned int i = 0; i < asteroids.size(); ++i)
+		{
+			Vector3D pos = asteroids[i]->GetPosition();
+			pos.x += asteroids[i]->moveStep;
+
+			if (pos.x >= PLANE_SIZE / 2)
+			{
+				pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
+			}
+			asteroids[i]->SetPosition(new Vector3D(pos));
+			
+			Vector3D rot = asteroids[i]->GetRotation();
+			rot += asteroids[i]->angleStep;
+			asteroids[i]->SetRotation(new Vector3D(rot));
+		}
+
 	}
 }
 
@@ -345,6 +386,21 @@ Vector3D WorldDrawer::getPlayerPosition()
 	}
 }
 
+// Random helper
+float WorldDrawer::genRandomFloat(float min, float max)
+{
+	return ((float(rand()) / float(RAND_MAX)) * (max - min)) + min;
+}
+
+// Random Asteroid position
+Vector3D WorldDrawer::genRandomPosition(float minY, float maxY, float minZ, float maxZ)
+{
+	float x = genRandomFloat(-PLANE_SIZE /2, 0.f);
+	float y = genRandomFloat(minY, maxY);
+	float z = genRandomFloat(minZ, maxZ);
+	return Vector3D(-PLANE_SIZE /2, y, z);
+}
+
 void WorldDrawer::drawAxis()
 {
 	float size = 100;
@@ -372,19 +428,8 @@ void WorldDrawer::drawAxis()
 int main(int argc, char *argv[]){
 	srand((unsigned int)time(0));
 
-	//mesh = ReadOffFile("m1365.off");
-	/*mesh = ReadOffFile("asteroid.off");
-
-	if (!mesh)
-	std::cerr << "Could not load mesh\n";
-	else
-	PrintStats(mesh);*/
-
 	WorldDrawer wd(argc, argv, 800, 600, 200, 200, std::string("Tema 4: SpaceEscape 2012"));
 	wd.init();
-
-
-
 	wd.run();
 
 	return 0;

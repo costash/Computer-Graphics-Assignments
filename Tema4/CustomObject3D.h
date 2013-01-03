@@ -18,11 +18,11 @@ public:
 	// Sets diffuse color (alpha test uses A value from diffuse)
 	void SetDiffuse(Vector4D *color);
 
-private:
+protected:
 	// Computers Mesh center
 	Vector3D computeMeshCenter();
 
-private:
+protected:
 	// Object mesh
 	Mesh *mesh;
 	// Bounding Box Center

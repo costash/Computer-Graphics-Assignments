@@ -150,12 +150,23 @@ void WorldDrawer::displayCallbackFunction(){
 	//glColor3f(0.5f, 0.8f, 0.03f);
 	//glutSolidCube(3);
 
-	aircraft->Draw();
+	//aircraft->Draw();
+	glCallList(AIRCRAFT);
+
 	//glColor4f(1.f, 0.f, 0.f, 0.7f);
 	//cub1->Draw();
 	//std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
 
 	//std::cerr << "camera pos: " << camera.position << "\n";
+
+	for (int i = 0; i < asteroids.size(); ++i)
+	{
+		asteroids[i]->Draw();
+	}
+	/*for (unsigned int i = 0; i < asteroids.size(); ++i)
+	{
+		glCallList(ASTEROID + i);
+	}*/
 
 	// Player
 	if (camera.mode == MODE_TPS)

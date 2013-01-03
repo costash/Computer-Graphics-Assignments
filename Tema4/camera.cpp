@@ -38,6 +38,18 @@ void Camera::translate_ForwardFree(float dist)
 
 void Camera::translate_Up(float dist)
 {
+	// Translate up, with fixed X position
+	Vector3D temp(up);
+	temp.x = 0;
+	temp.Normalize();
+	temp = temp * dist;
+	position.y += temp.y;
+	position.z += temp.z;
+}
+
+// Move Up free roaming style
+void Camera::translate_UpFree(float dist)
+{
 	position += up * dist;
 }
 
@@ -49,6 +61,17 @@ void Camera::translate_Right(float dist)
 	temp.Normalize();
 	temp = temp * dist;
 	position.x += temp.x;
+	position.z += temp.z;
+}
+
+void Camera::translate_RightYoZ(float dist)
+{
+	//Translate right, with fixed X position
+	Vector3D temp(right);
+	temp.x = 0;
+	temp.Normalize();
+	temp = temp * dist;
+	position.y += temp.y;
 	position.z += temp.z;
 }
 

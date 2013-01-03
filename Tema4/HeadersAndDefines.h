@@ -23,6 +23,11 @@
 #define HALF_CUBE 1.5f		// Size for half of a cube
 #define PLANE_SIZE 200.f	// Size of a plane
 
+#define NUM_ASTEROIDS 150	// Number of asteroids
+
+#define AIRCRAFT 1			// ID for aircraft call list
+#define ASTEROID 2			// ID for asteroid call list
+
 // Modes for camera
 enum CameraModes
 {

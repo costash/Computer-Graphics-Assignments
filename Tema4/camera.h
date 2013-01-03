@@ -12,8 +12,10 @@ public:
 	// Translations
 	void translate_Forward(float dist);		// Translation projected on XoZ
 	void translate_ForwardFree(float dist);
-	void translate_Up(float dist);
+	void translate_Up(float dist);			// Translation projected on YoZ
+	void translate_UpFree(float dist);
 	void translate_Right(float dist);
+	void translate_RightYoZ(float dist);	// Translation projected on YoZ
 	void translate_RightFree(float dist);	// Translation projected on XoZ
 
 	// Rotations
