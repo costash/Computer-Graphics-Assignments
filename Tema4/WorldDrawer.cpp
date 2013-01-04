@@ -63,24 +63,21 @@ WorldDrawer::WorldDrawer
 
 	// Enable and init lighting
 	glEnable(GL_LIGHTING);
-	// Track material ambient and diffuse from surface color, call it before glEnable(GL_COLOR_MATERIAL)
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_NORMALIZE);
 
+	//// Set up light colors (ambient, diffuse, specular)
+	//GLfloat lightKa[] = {.2f, .2f, .2f, 1.0f};  // Ambient light
+	//GLfloat lightKd[] = {.7f, .7f, .7f, 1.0f};  // Diffuse light
+	//GLfloat lightKs[] = {1, 1, 1, 1};           // Specular light
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
 
-	// Set up light colors (ambient, diffuse, specular)
-	GLfloat lightKa[] = {.2f, .2f, .2f, 1.0f};  // Ambient light
-	GLfloat lightKd[] = {.7f, .7f, .7f, 1.0f};  // Diffuse light
-	GLfloat lightKs[] = {1, 1, 1, 1};           // Specular light
-	glLightfv(GL_LIGHT0, GL_AMBIENT, lightKa);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightKd);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, lightKs);
+	//// position the light
+	//float lightPos[4] = {0, 0, 20, 1}; // positional light
+	//glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-	// position the light
-	float lightPos[4] = {0, 0, 20, 1}; // positional light
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-	glEnable(GL_LIGHT0);  // MUST enable each light source after configuration
+	//glEnable(GL_LIGHT0);  // MUST enable each light source after configuration
 
 }
 

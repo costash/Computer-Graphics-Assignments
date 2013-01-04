@@ -84,6 +84,11 @@ public:
 	// Collision logic
 	static void collision();
 
+	// Update light position
+	static void updateLight();
+	// Draw shield
+	static void drawShield(float alpha);
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys

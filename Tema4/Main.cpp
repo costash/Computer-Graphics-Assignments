@@ -64,6 +64,7 @@ void WorldDrawer::init(){
 		float rand_scale = genRandomFloat(0.2f, 1.f);
 		asteroids[i]->SetScale(new Vector3D(rand_scale, rand_scale, rand_scale));
 		asteroids[i]->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
+		asteroids[i]->SetDiffuse(new Vector4D(0.5f, 0.5f, 0.5f, 1.f));
 
 		// Move
 		Vector3D randPos = WorldDrawer::genRandomPosition(-PLANE_SIZE/2, PLANE_SIZE/2, -PLANE_SIZE/2, PLANE_SIZE/2);
@@ -81,7 +82,7 @@ void WorldDrawer::init(){
 	gameBox->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
 	gameBox->SetScale(new Vector3D(PLANE_SIZE, PLANE_SIZE, PLANE_SIZE));
 
-	// Ambiental light1
+	// Ambiental lights
 	light_o1 = new Light();
 	// Init
 	light_o1->SetPosition(new Vector3D(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2));
@@ -103,6 +104,7 @@ void WorldDrawer::initScene()
 {
 	aircraft->SetScale(new Vector3D(25.f, 25.f, 25.f));
 	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
+	aircraft->SetDiffuse(new Vector4D(1.f, 0.f, 0.f, 1.f));
 	aircraft->SetRotation(new Vector3D(-90.f, 0.f, -90.f));
 	aircraft->SetPosition(new Vector3D(0.f, 0.f, 0.f));
 
@@ -141,12 +143,26 @@ void WorldDrawer::initScene()
 	{
 		asteroids[i]->Deselect();
 	}
+
+	// Spot lights
+	light_s1 = new Light();
+	// Init
+	light_s1->SetLightType(IlluminationType::Spot);
+	float radius = aircraft->getRadius();
+	Vector3D aircraftPos = aircraft->GetPosition();
+	light_s1->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, -radius / 3)));
+
+	light_s2 = new Light();
+	light_s2->SetLightType(IlluminationType::Spot);
+	light_s2->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, radius / 3)));
 }
 
 // Is called in glut main loop by the system on idle
 void WorldDrawer::onIdle(){	//per frame
 	keyOperations();			// Operations for buffered keys
 	mouseRotations();
+
+	updateLight();
 
 	if(animation){
 		// Do nothing here
@@ -634,18 +650,20 @@ void WorldDrawer::drawScene()
 	light_o1->Render();
 	light_o2->Render();
 
+	// Activate spot lights
+	light_s1->Render();
+	light_s2->Render();
+
 	// Draw game box
 	gameBox->Draw();
 
 	drawAxis();
 
-	//aircraft->Draw();
-	//glCallList(AIRCRAFT);
+	// Draw aircraft
 	aircraft->Draw();
 
-	//std::cerr << "Aircraft center: " << aircraft->GetPosition() << " ";
-
-	//std::cerr << "camera pos: " << camera.position << "\n";
+	// Draw shield
+	drawShield(0.99);
 
 	for (unsigned int i = 0; i < asteroids.size(); ++i)
 	{
@@ -695,10 +713,14 @@ void WorldDrawer::drawScene()
 	// Draw the sphere where the light comes from
 	light_o1->Draw();
 	light_o2->Draw();
+	light_s1->Draw();
+	light_s2->Draw();
 
 	// Disable light
 	light_o1->Disable();
 	light_o2->Disable();
+	light_s1->Disable();
+	light_s2->Disable();
 }
 
 // Render Asteroid Camera
@@ -729,7 +751,7 @@ bool WorldDrawer::objectToObjectCollision(CustomObject3D *obj1, CustomObject3D *
 // Collision logic
 void WorldDrawer::collision()
 {
-	for (int i = 0; i < asteroids.size(); ++i)
+	for (unsigned int i = 0; i < asteroids.size(); ++i)
 	{
 		if (objectToObjectCollision(asteroids[i], aircraft))
 		{
@@ -738,6 +760,32 @@ void WorldDrawer::collision()
 			asteroids[i]->SetPosition(new Vector3D(pos));
 		}
 	}
+}
+
+// Update light position
+void WorldDrawer::updateLight()
+{
+	float radius = aircraft->getRadius();
+	Vector3D aircraftPos = aircraft->GetPosition();
+	light_s1->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, -radius / 3)));
+	light_s2->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, radius / 3)));
+}
+
+// Draw shield for aircraft
+void WorldDrawer::drawShield(float alpha)
+{
+	glPushMatrix();
+	Vector3D pos = aircraft->GetPosition();
+	glTranslatef(pos.x, pos.y, pos.z);
+	
+	glColor3f(0.8f, 0.8f, 0.8f);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(Vector4D(0.8f, 0.8f, 0.8f, alpha)).Array());
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(Vector4D(0.1f,0.1f,0.1f,1.f)).Array());
+	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+
+	glutSolidSphere(aircraft->getRadius(), 100, 100);
+
+	glPopMatrix();
 }
 
 // Draw main axis

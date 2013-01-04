@@ -54,7 +54,7 @@ void Light::Render()
 	if(LightType == IlluminationType::Spot)
 	{
 		// directia spotului va fi in jos
-		glLightfv(GL_LIGHT0 + id , GL_SPOT_DIRECTION, (Vector3D(0.0,-1.0,0.0)).Array());      
+		glLightfv(GL_LIGHT0 + id , GL_SPOT_DIRECTION, (Vector3D(-1.0,0.0,0.0)).Array());      
 		// deschidere de 45 de grade
 		glLightf(GL_LIGHT0 + id , GL_SPOT_CUTOFF, 45.0);
 		glLightf(GL_LIGHT0 + id , GL_SPOT_EXPONENT, 2);
