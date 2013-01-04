@@ -67,10 +67,11 @@ void Asteroid::Draw()
 		glBegin(GL_TRIANGLES);
 		for (int i = 0; i < mesh->nfaces; ++i)
 		{
-			glNormal3f(mesh->faces[i].normal[0], mesh->faces[i].normal[1], mesh->faces[i].normal[2]);
+			/*glNormal3f(mesh->faces[i].normal[0], mesh->faces[i].normal[1], mesh->faces[i].normal[2]);*/
 			for (int j = 0; j < mesh->faces[i].nverts; ++j)
 			{
 				Vertex *vert = mesh->faces[i].verts[j];
+				glNormal3f(mesh->faces[i].normal[0], mesh->faces[i].normal[1], mesh->faces[i].normal[2]);
 				glVertex3f(vert->x, vert->y, vert->z);
 			}
 

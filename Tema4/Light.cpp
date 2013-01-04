@@ -34,12 +34,12 @@ void Light::SetLightType(IlluminationType _LightType)
 	LightType  = _LightType;
 }
 
-// functie care plaseaza efectivl umina in scena
+// functie care plaseaza efectiv lumina in scena
 void Light::Render()
 {
 	// atenuari standard
 	glLightf(GL_LIGHT0 + id,GL_CONSTANT_ATTENUATION,1);
-	glLightf(GL_LIGHT0 + id,GL_LINEAR_ATTENUATION,0.2f);
+	glLightf(GL_LIGHT0 + id,GL_LINEAR_ATTENUATION,0.02f);
 
 	// culoarea luminii 
 	glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, Vector4D(diffuse.x, diffuse.y, diffuse.z, diffuse.a).Array());
@@ -68,4 +68,22 @@ void Light::Render()
 void Light::Disable()
 {
 	glDisable(GL_LIGHT0 + id);
+}
+
+// Set diffuze light
+void Light::setDiffuse(Vector4D diffuse)
+{
+	this->diffuse = diffuse;
+}
+
+// Set ambient light
+void Light::setAmbient(Vector4D ambient)
+{
+	this->ambient = ambient;
+}
+
+// Set specular light
+void Light::setSpecular(Vector4D specular)
+{
+	this->specular = specular;
 }

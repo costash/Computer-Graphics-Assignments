@@ -57,4 +57,10 @@ public:
 	// seteaza tipul de lumina
 	void SetLightType(IlluminationType LightType);
 
+	// Set diffuze light
+	void setDiffuse(Vector4D diffuse);
+	// Set ambient light
+	void setAmbient(Vector4D ambient);
+	// Set specular light
+	void setSpecular(Vector4D specular);
 };

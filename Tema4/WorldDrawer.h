@@ -79,6 +79,11 @@ public:
 	// Render Asteroid Camera
 	static void asteroidCameraRender(Asteroid *asteroid, Vector3D *target);
 
+	// Checks for collision between two objects
+	static bool objectToObjectCollision(CustomObject3D *obj1, CustomObject3D *obj2);
+	// Collision logic
+	static void collision();
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -112,8 +117,11 @@ public:
 	//static CustomObject3D *asteroids;			// Asteroids objects
 	//static std::vector<CustomObject3D *> asteroids;	// Asteroid objects
 	static std::vector<Asteroid *> asteroids;	// Asteroid objects
-	// Omnidirectional light
-	static Light *light_o;
+	
+	static Light *light_o1;						// Omnidirectional light1
+	static Light *light_o2;						// Omnidirectional light2
+	static Light *light_s1;						// Spot light1
+	static Light *light_s2;						// Spot light2
 
 	static int selectedObject;					// Selected object id
 	static int selectedIndex;					// Selected index
