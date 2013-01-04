@@ -34,6 +34,8 @@ int WorldDrawer::selectedIndex = -1;				// Selected index
 
 int WorldDrawer::cameraType = Dynamic;				// Default camera mode is Dynamic
 
+Shield *WorldDrawer::shield;						// Aircraft shield
+
 //add
 void WorldDrawer::init(){
 
@@ -52,6 +54,8 @@ void WorldDrawer::init(){
 	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
 
 	aircraft = new CustomObject3D(aircraftMesh, AIRCRAFT);
+
+	shield = new Shield(0.9f, aircraft);
 
 	// Create asteroids
 	for (int i = 0; i < NUM_ASTEROIDS; ++i)
@@ -606,7 +610,9 @@ void WorldDrawer::pick(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 
 	// se "deseneaza" scena : de fapt nu se va desena nimic in framebuffer ci se va folosi bufferul de selectie
+	shield->disable();
 	drawScene();
+	shield->enable();
 
 	// restaurare matrice de proiectie initiala
 	glMatrixMode(GL_PROJECTION);						
@@ -663,7 +669,7 @@ void WorldDrawer::drawScene()
 	aircraft->Draw();
 
 	// Draw shield
-	drawShield(0.99);
+	shield->Draw();
 
 	for (unsigned int i = 0; i < asteroids.size(); ++i)
 	{
@@ -677,8 +683,6 @@ void WorldDrawer::drawScene()
 		glPushName(i + 1);
 		asteroids[i]->Draw();
 		glPopName();
-
-		//asteroids[i]->Draw();
 	}
 
 	// Player
@@ -769,23 +773,6 @@ void WorldDrawer::updateLight()
 	Vector3D aircraftPos = aircraft->GetPosition();
 	light_s1->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, -radius / 3)));
 	light_s2->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, radius / 3)));
-}
-
-// Draw shield for aircraft
-void WorldDrawer::drawShield(float alpha)
-{
-	glPushMatrix();
-	Vector3D pos = aircraft->GetPosition();
-	glTranslatef(pos.x, pos.y, pos.z);
-	
-	glColor3f(0.8f, 0.8f, 0.8f);
-	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(Vector4D(0.8f, 0.8f, 0.8f, alpha)).Array());
-	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(Vector4D(0.1f,0.1f,0.1f,1.f)).Array());
-	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-
-	glutSolidSphere(aircraft->getRadius(), 100, 100);
-
-	glPopMatrix();
 }
 
 // Draw main axis

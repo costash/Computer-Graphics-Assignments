@@ -37,6 +37,9 @@
     <ClCompile Include="Asteroid.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Shield.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h">
@@ -76,6 +79,9 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="Asteroid.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Shield.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>

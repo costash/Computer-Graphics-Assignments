@@ -10,6 +10,7 @@
 #include "Plane.h"
 #include "CustomObject3D.h"
 #include "Asteroid.h"
+#include "Shield.h"
 
 // Game camera types
 enum CameraRenderType {
@@ -86,8 +87,6 @@ public:
 
 	// Update light position
 	static void updateLight();
-	// Draw shield
-	static void drawShield(float alpha);
 
 public:
 	static bool animation;
@@ -132,4 +131,5 @@ public:
 	static int selectedIndex;					// Selected index
 
 	static int cameraType;						// Type of rendered camera
+	static Shield *shield;						// Aircraft shield
 };
