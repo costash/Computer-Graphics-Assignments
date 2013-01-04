@@ -76,6 +76,8 @@ public:
 	static void drawScene();
 	// Init scene
 	static void initScene();
+	// Render Asteroid Camera
+	static void asteroidCameraRender(Asteroid *asteroid, Vector3D *target);
 
 public:
 	static bool animation;

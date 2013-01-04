@@ -184,7 +184,7 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 	}
 	if (key == '\t')
 	{
-		cameraType = (cameraType + 1) % 2;
+		cameraType = (cameraType + 1) % 3;
 	}
 
 }

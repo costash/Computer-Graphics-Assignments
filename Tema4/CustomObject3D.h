@@ -20,6 +20,9 @@ public:
 	// Sets diffuse color (alpha test uses A value from diffuse)
 	void SetDiffuse(Vector4D *color);
 
+	// Return object radius
+	float getRadius();
+
 protected:
 	// Computers Mesh center
 	Vector3D computeMeshCenter();

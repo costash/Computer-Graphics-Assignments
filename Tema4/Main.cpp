@@ -93,11 +93,6 @@ void WorldDrawer::initScene()
 	aircraft->SetRotation(new Vector3D(-90.f, 0.f, 180.f));
 	aircraft->SetPosition(new Vector3D(0.f, 0.f, 0.f));
 
-	//// Create display list for aircraft
-	//glNewList(AIRCRAFT, GL_COMPILE);
-	//aircraft->Draw();
-	//glEndList();
-
 	// Set up camera
 	cameraDynamic.init();
 
@@ -604,6 +599,14 @@ void WorldDrawer::drawScene()
 		cameraDynamic.render();
 	else if (cameraType == OnBoard)
 		cameraOnBoard.render();
+	else if (cameraType == OnAsteroid)
+	{
+		if (selectedObject > 0 && selectedObject <= (int)asteroids.size())
+			asteroidCameraRender(asteroids[selectedObject - 1], &(aircraft->GetPosition()));
+		else
+			asteroidCameraRender(asteroids[0], &(aircraft->GetPosition()));
+
+	}
 
 	// Activate omnidirectional light
 	//light_o->Render();
@@ -665,6 +668,19 @@ void WorldDrawer::drawScene()
 			glPopMatrix();
 		}
 	}
+}
+
+// Render Asteroid Camera
+void WorldDrawer::asteroidCameraRender(Asteroid *asteroid, Vector3D *target)
+{
+	Vector3D position = asteroid->GetPosition();
+	Vector3D forward = (*target - position).Normalize();
+	//Vector3D center = position + forward;
+	Vector3D newPos = position + forward * asteroid->getRadius();
+
+	gluLookAt(newPos.x, newPos.y, newPos.z, 
+		target->x, target->y, target->z,
+		0.f, 1.f, 0.f);
 }
 
 // Draw main axis

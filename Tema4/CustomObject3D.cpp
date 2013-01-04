@@ -60,6 +60,12 @@ Vector3D CustomObject3D::computeMeshCenter()
 	return center;
 }
 
+// Return object radius
+float CustomObject3D::getRadius()
+{
+	return mesh->radius * scale.x;
+}
+
 // Overridden Draw
 void CustomObject3D::Draw()
 {
