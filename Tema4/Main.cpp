@@ -13,7 +13,8 @@ bool WorldDrawer::keyStates[256];
 bool WorldDrawer::keySpecialStates[256];
 
 unsigned int WorldDrawer::tick = 0;
-Camera WorldDrawer::camera(MODE_TPS);
+Camera WorldDrawer::cameraDynamic(MODE_TPS);
+Camera WorldDrawer::cameraOnBoard(MODE_FPS);
 
 CustomObject3D *WorldDrawer::aircraft;
 Object3D *WorldDrawer::gameBox;
@@ -27,6 +28,8 @@ Light *WorldDrawer::light_o;
 
 int WorldDrawer::selectedObject = 0;				// Selected object
 int WorldDrawer::selectedIndex = -1;				// Selected index
+
+int WorldDrawer::cameraType = Dynamic;				// Default camera mode is Dynamic
 
 //add
 void WorldDrawer::init(){
@@ -46,7 +49,7 @@ void WorldDrawer::init(){
 	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
 
 	aircraft = new CustomObject3D(aircraftMesh, AIRCRAFT);
-	
+
 	initScene();
 
 	// Create asteroids
@@ -56,7 +59,7 @@ void WorldDrawer::init(){
 			asteroids.push_back(new Asteroid(asteroidMesh, ASTEROID, true));
 		else
 			asteroids.push_back(new Asteroid(asteroidMesh, ASTEROID, false));
-		
+
 		float rand_scale = genRandomFloat(0.2f, 1.f);
 		asteroids[i]->SetScale(new Vector3D(rand_scale, rand_scale, rand_scale));
 		asteroids[i]->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
@@ -96,17 +99,33 @@ void WorldDrawer::initScene()
 	//glEndList();
 
 	// Set up camera
-	camera.init();
+	cameraDynamic.init();
 
-	if (camera.mode == MODE_TPS)
+	if (cameraDynamic.mode == MODE_TPS)
 	{
-		camera.position = Vector3D(0, 0, distanceToTPSTarget);
-		camera.rotateTPS_OX(float(M_PI_4 / 2), distanceToTPSTarget);
+		cameraDynamic.position = Vector3D(0, 0, distanceToTPSTarget);
 	}
-	else if (camera.mode == MODE_TOP)
+	else if (cameraDynamic.mode == MODE_TOP)
 	{
-		camera.position = Vector3D(0, 0, distanceToTop);
-		camera.rotateTPS_OX(float(M_PI), distanceToTop);
+		cameraDynamic.position = Vector3D(0, 0, distanceToTop);
+		cameraDynamic.rotateTPS_OX(float(M_PI), distanceToTop);
+	}
+	cameraDynamic.position += Vector3D(0, 0, 260);
+
+	cameraOnBoard.init();
+	if (cameraOnBoard.mode == MODE_TPS)
+	{
+		cameraOnBoard.position = Vector3D(15, 0, 0);
+		cameraOnBoard.forward = Vector3D(-1, 0, 0);
+		cameraOnBoard.right = Vector3D(0, 0, -1);
+		cameraOnBoard.up = Vector3D(0, 1, 0);
+	}
+	else if (cameraOnBoard.mode == MODE_FPS)
+	{
+		cameraOnBoard.position = Vector3D(-3, 0, 0);
+		cameraOnBoard.forward = Vector3D(-1, 0, 0);
+		cameraOnBoard.right = Vector3D(0, 0, -1);
+		cameraOnBoard.up = Vector3D(0, 1, 0);
 	}
 }
 
@@ -131,7 +150,7 @@ void WorldDrawer::onIdle(){	//per frame
 				pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
 			}
 			asteroids[i]->SetPosition(new Vector3D(pos));
-			
+
 			Vector3D rot = asteroids[i]->GetRotation();
 			rot += asteroids[i]->angleStep;
 			asteroids[i]->SetRotation(new Vector3D(rot));
@@ -147,115 +166,165 @@ void WorldDrawer::keyOperations()
 		glutExit();
 
 	float rotateStep = 0.04f;
-	float moveStep = 0.25f;
+	float moveStep = 3.f;
 
-	if (camera.mode == MODE_FPS)
+	Camera *camera = NULL;
+	if (cameraType == Dynamic)
 	{
-		if (keySpecialStates[KEY_UP])			// Rotate FPS up
-		{
-			camera.rotateFPS_OX(-rotateStep);
-		}
-		if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
-		{
-			camera.rotateFPS_OX(rotateStep);
-		}
-		if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
-		{
-			camera.rotateFPS_OY(-rotateStep);
-		}
-		if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
-		{
-			camera.rotateFPS_OY(rotateStep);
-		}
+		camera = &cameraDynamic;
 	}
-	else if (camera.mode == MODE_TPS)
+	else if (cameraType == OnBoard)
 	{
-		if (keySpecialStates[KEY_UP])					// Rotate TPS up
-		{
-			camera.rotateTPS_OX(-rotateStep, distanceToTPSTarget);
-		}
-		if (keySpecialStates[KEY_DOWN])					// Rotate TPS down
-		{
-			camera.rotateTPS_OX(rotateStep, distanceToTPSTarget);
-		}
-		if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
-		{
-			camera.rotateTPS_OY(-rotateStep, distanceToTPSTarget);
-		}
-		if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
-		{
-			camera.rotateTPS_OY(rotateStep, distanceToTPSTarget);
-		}
+		camera = &cameraOnBoard;
 	}
-	else if (camera.mode == MODE_TOP)
+
+	if (camera)
 	{
-		if (keySpecialStates[KEY_LEFT])					// Rotate left
+		if (camera->mode == MODE_FPS)
 		{
-			camera.rotateTPS_OY(-rotateStep, distanceToTop);
+			if (keySpecialStates[KEY_UP])			// Rotate FPS up
+			{
+				camera->rotateFPS_OX(-rotateStep);
+			}
+			if (keySpecialStates[KEY_DOWN])			// Rotate FPS down
+			{
+				camera->rotateFPS_OX(rotateStep);
+			}
+			if (keySpecialStates[KEY_LEFT])			// Rotate FPS left
+			{
+				camera->rotateFPS_OY(-rotateStep);
+			}
+			if (keySpecialStates[KEY_RIGHT])		// Rotate FPS right
+			{
+				camera->rotateFPS_OY(rotateStep);
+			}
 		}
-		if (keySpecialStates[KEY_RIGHT])				// Rotate right
+		else if (camera->mode == MODE_TPS)
 		{
-			camera.rotateTPS_OY(rotateStep, distanceToTop);
+			if (keySpecialStates[KEY_UP])					// Rotate TPS up
+			{
+				camera->rotateTPS_OX(-rotateStep, distanceToTPSTarget);
+			}
+			if (keySpecialStates[KEY_DOWN])					// Rotate TPS down
+			{
+				camera->rotateTPS_OX(rotateStep, distanceToTPSTarget);
+			}
+			if (keySpecialStates[KEY_LEFT])					// Rotate TPS left
+			{
+				camera->rotateTPS_OY(-rotateStep, distanceToTPSTarget);
+			}
+			if (keySpecialStates[KEY_RIGHT])				// Rotate TPS right
+			{
+				camera->rotateTPS_OY(rotateStep, distanceToTPSTarget);
+			}
+		}
+		else if (camera->mode == MODE_TOP)
+		{
+			if (keySpecialStates[KEY_LEFT])					// Rotate left
+			{
+				camera->rotateTPS_OY(-rotateStep, distanceToTop);
+			}
+			if (keySpecialStates[KEY_RIGHT])				// Rotate right
+			{
+				camera->rotateTPS_OY(rotateStep, distanceToTop);
+			}
 		}
 	}
 
 	float eyeDistanceStep = 1.f;
 
-	// Zoom closer
-	if (keyStates['['])
+	if (camera)
 	{
-		eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
-		if (camera.mode == MODE_TPS && distanceToTPSTarget - zoomSensivity > 0)
+		// Zoom closer
+		if (keyStates['['])
 		{
-			distanceToTPSTarget -= zoomSensivity;
-			camera.translate_ForwardFree(zoomSensivity);
+			eyeDistance -= eyeDistanceStep;		// Move closer to the viewer
+			if (camera->mode == MODE_TPS && distanceToTPSTarget - zoomSensivity > 0)
+			{
+				distanceToTPSTarget -= zoomSensivity;
+				camera->translate_ForwardFree(zoomSensivity);
+			}
+			else if (camera->mode == MODE_TOP && distanceToTop - zoomSensivity * 20 > 0)
+			{
+				distanceToTop -= zoomSensivity * 20;
+				camera->translate_ForwardFree(zoomSensivity * 20);
+			}
 		}
-		else if (camera.mode == MODE_TOP && distanceToTop - zoomSensivity * 20 > 0)
+		if (keyStates[']'])
 		{
-			distanceToTop -= zoomSensivity * 20;
-			camera.translate_ForwardFree(zoomSensivity * 20);
-		}
-	}
-	if (keyStates[']'])
-	{
-		eyeDistance += eyeDistanceStep;		// Move farther from the viewer
-		if (camera.mode == MODE_TPS)
-		{
-			distanceToTPSTarget += zoomSensivity;
-			camera.translate_ForwardFree(-zoomSensivity);
-		}
-		else if (camera.mode == MODE_TOP)
-		{
-			distanceToTop += zoomSensivity * 20;
-			camera.translate_ForwardFree(-zoomSensivity * 20);
+			eyeDistance += eyeDistanceStep;		// Move farther from the viewer
+			if (camera->mode == MODE_TPS)
+			{
+				distanceToTPSTarget += zoomSensivity;
+				camera->translate_ForwardFree(-zoomSensivity);
+			}
+			else if (camera->mode == MODE_TOP)
+			{
+				distanceToTop += zoomSensivity * 20;
+				camera->translate_ForwardFree(-zoomSensivity * 20);
+			}
 		}
 	}
 
 	if (keyStates['w'])						// Move forward
 	{
-		camera.translate_Forward(moveStep);
+		if (cameraType == Dynamic)
+			cameraDynamic.translate_ForwardFree(moveStep);
 
 		// Check colision
-		std::cerr << "aircraft position: " << aircraft->GetPosition() << "\n";
-		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, moveStep, 0.f)));
 	}
 	if (keyStates['s'])						// Move backwards
 	{
-		camera.translate_Forward(-moveStep);
+		if (cameraType == Dynamic)
+			cameraDynamic.translate_ForwardFree(-moveStep);
 
 		// Check colision
 	}
 	if (keyStates['a'])						// Move left
 	{
-		camera.translate_Right(-moveStep);
+		if (cameraType == Dynamic)
+			cameraDynamic.translate_RightFree(-moveStep);
 
 		// Check colision
 	}
 	if (keyStates['d'])						// Move right
 	{
-		camera.translate_Right(moveStep);
+		if (cameraType == Dynamic)
+			cameraDynamic.translate_RightFree(moveStep);
 
 		// Check colision
+	}
+
+	float aircraftStep = 0.9f;
+	if (keyStates['8'])						// Move aircraft up
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, aircraftStep, 0.f)));
+		cameraOnBoard.position += Vector3D(0.f, aircraftStep, 0.f);
+	}
+	if (keyStates['5'])						// Move aircraft down
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, -aircraftStep, 0.f)));
+		cameraOnBoard.position += Vector3D(0.f, -aircraftStep, 0.f);
+	}
+	if (keyStates['4'])						// Move aircraft left
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, 0.f, aircraftStep)));
+		cameraOnBoard.position += Vector3D(0.f, 0.f, aircraftStep);
+	}
+	if (keyStates['6'])						// Move aircraft right
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(0.f, 0.f, -aircraftStep)));
+		cameraOnBoard.position += Vector3D(0.f, 0.f, -aircraftStep);
+	}
+	if (keyStates['9'])						// Move aircraft forward
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(-aircraftStep, 0.f, 0.f)));
+		cameraOnBoard.position += Vector3D(-aircraftStep, 0.f, 0.f);
+	}
+	if (keyStates['7'])						// Move aircraft backward
+	{
+		aircraft->SetPosition(&(aircraft->GetPosition() + Vector3D(aircraftStep, 0.f, 0.f)));
+		cameraOnBoard.position += Vector3D(aircraftStep, 0.f, 0.f);
 	}
 }
 
@@ -307,17 +376,26 @@ void WorldDrawer::mouseMotionCallbackFunction(int x, int y)
 // Execute mouse rotations
 void WorldDrawer::mouseRotations()
 {
-	if (camera.mode == MODE_FPS)
+	Camera *camera = NULL;
+	if (cameraType == Dynamic)
+		camera = &cameraDynamic;
+	else if (cameraType == OnBoard)
+		camera = &cameraOnBoard;
+
+	if (camera)
 	{
-		camera.rotateFPS_OX(viewAngleX);
-		camera.rotateFPS_OY(viewAngleY);
-		viewAngleX = viewAngleY = 0.f;
-	}
-	else if (camera.mode == MODE_TPS)
-	{
-		camera.rotateTPS_OX(viewAngleX, distanceToTPSTarget);
-		camera.rotateTPS_OY(viewAngleY, distanceToTPSTarget);
-		viewAngleX = viewAngleY = 0.f;
+		if (camera->mode == MODE_FPS)
+		{
+			camera->rotateFPS_OX(viewAngleX);
+			camera->rotateFPS_OY(viewAngleY);
+			viewAngleX = viewAngleY = 0.f;
+		}
+		else if (camera->mode == MODE_TPS)
+		{
+			camera->rotateTPS_OX(viewAngleX, distanceToTPSTarget);
+			camera->rotateTPS_OY(viewAngleY, distanceToTPSTarget);
+			viewAngleX = viewAngleY = 0.f;
+		}
 	}
 }
 
@@ -326,20 +404,29 @@ void WorldDrawer::mouseWheelCallbackFunction(int wheel, int direction, int x, in
 {
 	float eyeDistanceStep = 2.f;
 	eyeDistance += eyeDistanceStep * (-direction);
-	if (camera.mode == MODE_TPS && distanceToTPSTarget + zoomSensivity * 20 * (-direction) > 0)
+	Camera *camera = NULL;
+	if (cameraType == Dynamic)
+		camera = &cameraDynamic;
+	else if (cameraType == OnBoard)
+		camera = &cameraOnBoard;
+
+	if (camera)
 	{
-		distanceToTPSTarget += zoomSensivity * 20 * (-direction);
-		camera.translate_ForwardFree(-zoomSensivity * 20 * (-direction));
-	}
-	else if (camera.mode == MODE_TOP && distanceToTop + zoomSensivity * 50 * (-direction) > 0)
-	{
-		distanceToTop += zoomSensivity * 50 * (-direction);
-		camera.translate_ForwardFree(-zoomSensivity * 50 * (-direction));
+		if (camera->mode == MODE_TPS && distanceToTPSTarget + zoomSensivity * 20 * (-direction) > 0)
+		{
+			distanceToTPSTarget += zoomSensivity * 20 * (-direction);
+			camera->translate_ForwardFree(-zoomSensivity * 20 * (-direction));
+		}
+		else if (camera->mode == MODE_TOP && distanceToTop + zoomSensivity * 50 * (-direction) > 0)
+		{
+			distanceToTop += zoomSensivity * 50 * (-direction);
+			camera->translate_ForwardFree(-zoomSensivity * 50 * (-direction));
+		}
 	}
 }
 
 // Switches the camera mode
-void WorldDrawer::switchCameraMode(int mode)
+void WorldDrawer::switchCameraMode(int mode, Camera &camera)
 {
 	if (camera.mode == MODE_FPS && mode == MODE_TPS)
 	{
@@ -383,16 +470,24 @@ void WorldDrawer::switchCameraMode(int mode)
 // Gets the position of the player in world space
 Vector3D WorldDrawer::getPlayerPosition()
 {
-	if (camera.mode == MODE_FPS)
-		return camera.position;
-	else
+	Camera *camera = NULL;
+	if (cameraType == Dynamic)
+		camera = &cameraDynamic;
+
+	if (camera)
 	{
-		int mode = camera.mode;
-		switchCameraMode(MODE_FPS);
-		Vector3D temp(camera.position);
-		switchCameraMode(mode);
-		return temp;
+		if (camera->mode == MODE_FPS)
+			return camera->position;
+		else
+		{
+			int mode = camera->mode;
+			switchCameraMode(MODE_FPS, *camera);
+			Vector3D temp(camera->position);
+			switchCameraMode(mode, *camera);
+			return temp;
+		}
 	}
+	return Vector3D(0, 0, 0);
 }
 
 // Random helper
@@ -413,35 +508,35 @@ Vector3D WorldDrawer::genRandomPosition(float minY, float maxY, float minZ, floa
 // functia care proceseaza hitrecordurile pentru a vedea daca s-a click pe un obiect din scena
 void WorldDrawer::processhits (GLint hits, GLuint buffer[])
 {
-   int i;
-   GLuint names, *ptr, minZ,*ptrNames, numberOfNames;
+	int i;
+	GLuint names, *ptr, minZ,*ptrNames, numberOfNames;
 
-   // pointer la inceputul bufferului ce contine hit recordurile
-   ptr = (GLuint *) buffer;
-   // se doreste selectarea obiectului cel mai aproape de observator
-   minZ = 0xffffffff;
-   for (i = 0; i < hits; i++) 
-   {
-      // numarul de nume numele asociate din stiva de nume
-      names = *ptr;
-	  ptr++;
-	  // Z-ul asociat hitului - se retine 
-	  if (*ptr < minZ) {
-		  numberOfNames = names;
-		  minZ = *ptr;
-		  // primul nume asociat obiectului
-		  ptrNames = ptr+2;
-	  }
-	  
-	  // salt la urmatorul hitrecord
-	  ptr += names+2;
-  }
+	// pointer la inceputul bufferului ce contine hit recordurile
+	ptr = (GLuint *) buffer;
+	// se doreste selectarea obiectului cel mai aproape de observator
+	minZ = 0xffffffff;
+	for (i = 0; i < hits; i++) 
+	{
+		// numarul de nume numele asociate din stiva de nume
+		names = *ptr;
+		ptr++;
+		// Z-ul asociat hitului - se retine 
+		if (*ptr < minZ) {
+			numberOfNames = names;
+			minZ = *ptr;
+			// primul nume asociat obiectului
+			ptrNames = ptr+2;
+		}
 
-  // identificatorul asociat obiectului
-  ptr = ptrNames;
-  
-  selectedObject = *ptr;
-     
+		// salt la urmatorul hitrecord
+		ptr += names+2;
+	}
+
+	// identificatorul asociat obiectului
+	ptr = ptrNames;
+
+	selectedObject = *ptr;
+
 }
 
 // functie ce realizeaza picking la pozitia la care s-a dat click cu mouse-ul
@@ -461,7 +556,7 @@ void WorldDrawer::pick(int x, int y)
 	// se initializeaza si se seteaza bufferul de selectie
 	memset(buffer,0x0,1024);
 	glSelectBuffer(1024, buffer);
-	
+
 	// intrarea in modul de selectie
 	glRenderMode(GL_SELECT);
 
@@ -487,14 +582,14 @@ void WorldDrawer::pick(int x, int y)
 	glMatrixMode(GL_MODELVIEW);
 	// restaurarea modului de randare uzual si obtinerea numarului de hituri
 	nhits=glRenderMode(GL_RENDER);	
-	
+
 	// procesare hituri
 	if(nhits != 0)
 		processhits(nhits,buffer);
 	else
 		selectedObject = 0;
 
-				
+
 }
 
 // Draw 3D Scene
@@ -505,7 +600,10 @@ void WorldDrawer::drawScene()
 	glLoadIdentity();
 
 	// Render the camera
-	camera.render();
+	if (cameraType == Dynamic)
+		cameraDynamic.render();
+	else if (cameraType == OnBoard)
+		cameraOnBoard.render();
 
 	// Activate omnidirectional light
 	//light_o->Render();
@@ -540,34 +638,32 @@ void WorldDrawer::drawScene()
 	}
 
 	// Player
-	if (camera.mode == MODE_TPS)
+	if (cameraType == Dynamic)
 	{
-		glPushMatrix();
-		Vector3D pos(camera.position + camera.forward * distanceToTPSTarget);
-		glTranslatef(pos.x, pos.y, pos.z);
-		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+		if (cameraDynamic.mode == MODE_TPS)
+		{
+			glPushMatrix();
+			Vector3D pos(cameraDynamic.position + cameraDynamic.forward * distanceToTPSTarget);
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotatef(float(-cameraDynamic.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 
-		glColor3f(0.f, 1.f, 0.f);
-		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
-		glColor3f(0.f, 0.9f, 0.f);
-		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
+			glColor3f(0.f, 0.9f, 0.f);
+			glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
 
-		glPopMatrix();
-	}
-	else if (camera.mode == MODE_TOP)	
-	{
-		glPushMatrix();
-		Vector3D pos(camera.position + camera.forward * distanceToTop);
-		glTranslatef(pos.x, pos.y, pos.z);
-		glRotatef(float(-camera.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
+			glPopMatrix();
+		}
+		else if (cameraDynamic.mode == MODE_TOP)	
+		{
+			glPushMatrix();
+			Vector3D pos(cameraDynamic.position + cameraDynamic.forward * distanceToTop);
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotatef(float(-cameraDynamic.getAngleY() * 180 / M_PI) + 180, 0.f, 1.f, 0.f);
 
-		glColor3f(0.f, 1.f, 0.f);
+			glColor3f(0.f, 0.9f, 0.f);
+			glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
 
-		glutSolidCone(PLAYER_RADIUS / 2, PLAYER_RADIUS, 100, 10);
-		glColor3f(0.f, 0.9f, 0.f);
-		glutSolidSphere(PLAYER_RADIUS / 2, 100, 10);
-
-		glPopMatrix();
+			glPopMatrix();
+		}
 	}
 }
 

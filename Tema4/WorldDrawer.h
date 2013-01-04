@@ -11,6 +11,13 @@
 #include "CustomObject3D.h"
 #include "Asteroid.h"
 
+// Game camera types
+enum CameraRenderType {
+	Dynamic,	// Free roam camera
+	OnBoard,	// Camera from aircraft
+	OnAsteroid	// Camera from asteroid
+};
+
 class WorldDrawer{
 public:
 	WorldDrawer(int argc, char **argv, int windowWidth, int windowHeight,
@@ -48,7 +55,7 @@ public:
 
 	// Mouse rotations helper
 	static void mouseRotations();
-	static void switchCameraMode(int mode);
+	static void switchCameraMode(int mode, Camera &camera);
 	static Vector3D getPlayerPosition();
 
 	// Draw main axis
@@ -86,7 +93,8 @@ public:
 	static bool windowCreated;					// Wether a new window has been created or not
 	static int secondaryWindow;					// The ID for a secondary window
 
-	static Camera camera;						// Camera
+	static Camera cameraDynamic;				// Dynamic camera
+	static Camera cameraOnBoard;				// Onboard camera
 	static float distanceToTPSTarget;			// Distance to the target for TPS camera
 	static float distanceToTop;					// Distance to Top camera
 	static float mouseSensivity;				// Mouse sensivity
@@ -107,4 +115,6 @@ public:
 
 	static int selectedObject;					// Selected object id
 	static int selectedIndex;					// Selected index
+
+	static int cameraType;						// Type of rendered camera
 };

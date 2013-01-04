@@ -3,6 +3,13 @@
 #include "HeadersAndDefines.h"
 #include "Vector3D.h"
 
+// Modes for camera
+enum CameraModes
+{
+	MODE_FPS = 1,
+	MODE_TPS = 2,
+	MODE_TOP = 3
+};
 
 class Camera{
 public:

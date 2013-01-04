@@ -1,7 +1,7 @@
 #include "camera.h"
 
 Camera::Camera(int mode)
-	: anglex(0), angley(0), angleTpsX(float(M_PI_4 / 2)), mode(mode)
+	: anglex(0), angley(0), angleTpsX(0.f), mode(mode)
 {
 }
 Camera::~Camera()
@@ -12,7 +12,7 @@ void Camera::init()
 {
 	anglex = 0;
 	angley = 0;
-	angleTpsX = float(M_PI_4 / 2);
+	angleTpsX = 0.f;
 	position = Vector3D(0, 0, 0);
 	forward = Vector3D(0, 0, -1);
 	up = Vector3D(0, 1, 0);

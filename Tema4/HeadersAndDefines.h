@@ -19,7 +19,7 @@
 
 #define ANGLE_LIMIT (M_PI_2 - 0.1f)	// Angle limit for rotation around OX
 
-#define PLAYER_RADIUS 1.f	// Radius for player
+#define PLAYER_RADIUS 0.25f	// Radius for player
 #define HALF_CUBE 1.5f		// Size for half of a cube
 #define PLANE_SIZE 200.f	// Size of a plane
 
@@ -27,11 +27,3 @@
 
 #define AIRCRAFT 1			// ID for aircraft call list
 #define ASTEROID 2			// ID for asteroid call list
-
-// Modes for camera
-enum CameraModes
-{
-	MODE_FPS = 1,
-	MODE_TPS = 2,
-	MODE_TOP = 3
-};

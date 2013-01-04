@@ -11,7 +11,7 @@ float WorldDrawer::viewAngleY = 0.f;			// ViewAngle on OY
 float WorldDrawer::viewAngleTpsX = 0.f;			// ViewAngle on OX for TPS camera
 float WorldDrawer::viewAngleTpsY = 0.f;			// ViewAngle on OY for TPS camera
 float WorldDrawer::eyeDistance = 0.f;			// Distance from viewer
-float WorldDrawer::distanceToTPSTarget = 10.f;	// Distance to target for TPS camera
+float WorldDrawer::distanceToTPSTarget = 30.f;	// Distance to target for TPS camera
 float WorldDrawer::distanceToTop = 50.f;	// Distance to top Camera
 float WorldDrawer::mouseSensivity = 100.f;
 float WorldDrawer::zoomSensivity = 0.1f;
@@ -137,14 +137,14 @@ void WorldDrawer::displayCallbackFunction(){
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_EQUAL, GL_ONE);
 	drawScene();
-	
+
 	// Second Pass - blending
 	glAlphaFunc(GL_LESS, GL_ONE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_DST_ALPHA);
 	glDepthMask(GL_FALSE);
 	drawScene();
-	
+
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
 
@@ -160,19 +160,33 @@ void WorldDrawer::keyDownCallbackFunction(unsigned char key, int posx, int posy)
 		animation = !animation;
 	keyStates[key] = true;
 
-	if (key == '1')						// Switch to FPS camera
-		switchCameraMode(MODE_FPS);
-	if (key == '2')						// Switch to TPS camera
-		switchCameraMode(MODE_TPS);
-	if (key == '3')						// Switch to TOP camera
-		switchCameraMode(MODE_TOP);
-	else if (key == 'r')						// Resets game
+	Camera *camera = NULL;
+	if (cameraType == Dynamic)
+		camera = &cameraDynamic;
+	else if (cameraType == OnBoard)
+		camera = &cameraOnBoard;
+
+	if (camera)
 	{
-		int mode = camera.mode;
-		switchCameraMode(MODE_FPS);
-		initScene();
-		switchCameraMode(mode);
+		if (key == '1')								// Switch to FPS camera
+			switchCameraMode(MODE_FPS, *camera);
+		else if (key == '2')						// Switch to TPS camera
+			switchCameraMode(MODE_TPS, *camera);
+		else if (key == '3')						// Switch to TOP camera
+			switchCameraMode(MODE_TOP, *camera);
+		else if (key == 'r')						// Resets game
+		{
+			int mode = camera->mode;
+			switchCameraMode(MODE_FPS, *camera);
+			initScene();
+			switchCameraMode(mode, *camera);
+		}
 	}
+	if (key == '\t')
+	{
+		cameraType = (cameraType + 1) % 2;
+	}
+
 }
 
 // Unbuffer keys on release
