@@ -46,14 +46,14 @@ void WorldDrawer::init(){
 	Vector4D::arr = new float[4];
 
 	aircraftMesh = new Mesh();
-	aircraftMesh->Init("m1400.off");
+	aircraftMesh->Init("aircraft.off");
 
 	asteroidMesh = new Mesh();
 	//asteroidMesh->Init("asteroid.off");
 	asteroidMesh->Init("asteroid_small.off");
 
 	wrenchMesh = new Mesh();
-	wrenchMesh->Init("m1106.off");
+	wrenchMesh->Init("wrench.off");
 
 	std::cerr << "Aircraft radius " << aircraftMesh->radius << " center: " << aircraftMesh->center << "\n";
 	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
@@ -236,7 +236,7 @@ void WorldDrawer::onIdle(){	//per frame
 			rot += repair[i]->angleStep;
 			repair[i]->SetRotation(new Vector3D(rot));
 		}
-		
+
 		// Collision logic
 		collision();
 
@@ -436,7 +436,7 @@ void WorldDrawer::mouseCallbackFunction(int button, int state, int x, int y)
 			{
 				asteroids[selectedObject - 1]->Select();
 			}
-			std::cerr << "selected object " << selectedObject;
+			std::cerr << "selected object " << selectedObject << "\n";
 
 
 			mouseRightState = true;
@@ -640,8 +640,6 @@ void WorldDrawer::processhits (GLint hits, GLuint buffer[])
 	ptr = ptrNames;
 
 	selectedObject = *ptr;
-
-	std::cerr << "selObj " << selectedObject << "\n";
 }
 
 // functie ce realizeaza picking la pozitia la care s-a dat click cu mouse-ul
@@ -695,8 +693,6 @@ void WorldDrawer::pick(int x, int y)
 		processhits(nhits,buffer);
 	else
 		selectedObject = 0;
-
-
 }
 
 // Draw 3D Scene
@@ -896,7 +892,6 @@ void WorldDrawer::drawLaser(Vector3D pos1, Vector3D pos2)
 
 	glColor3f(0, 1, 1);
 	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(Vector4D(0.f, 1.f, 1.f, 1.f)).Array());
-	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 	glVertex3fv(pos1.Array());
 	glVertex3fv(pos2.Array());
 	glEnd();
@@ -916,10 +911,8 @@ void WorldDrawer::output(GLfloat x, GLfloat y, char *format,...)
 	va_end(args);
 
 	glPushMatrix();
-	
-	glTranslatef(x,y,-15);
 
-	//glRotatef(180,0,1,0);
+	glTranslatef(x,y,-15);
 
 	glScalef(0.035, 0.035, 0.0); /* 0.1 to 0.001 as required */
 

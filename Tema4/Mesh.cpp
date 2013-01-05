@@ -216,25 +216,3 @@ void Mesh::Init(const char *filename)
 		std::cerr << "Could not parse file " << filename << "\n";
 	}
 }
-
-
-////////////////////////////////////////////////////////////
-// MAIN
-////////////////////////////////////////////////////////////
-
-//int 
-//main(int argc, char **argv)
-//{
-//  // Parse program arguments
-//  if (!ParseArgs(argc, argv)) exit(1);
-//
-//  // Read mesh
-//  mesh = ReadOffFile(filename);
-//  if (!mesh) exit(-1);
-//
-//  // Print statistics
-//  PrintStats(mesh);
-//
-//  // Return success 
-//  return 0;
-//}

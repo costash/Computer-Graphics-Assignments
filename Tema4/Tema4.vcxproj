@@ -93,7 +93,8 @@
       <OutputFile>.\Debug/lab6.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y /D "$(ProjectDir)\glut\*.dll" "$(OutDir)"</Command>
+      <Command>xcopy /y /D "$(ProjectDir)glut\*.dll" "$(OutDir)"
+xcopy /y /D "$(ProjectDir)*.off" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -136,7 +137,8 @@
       <OutputFile>.\Release/lab4.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>xcopy /y /D "$(ProjectDir)\glut\*.dll" "$(OutDir)"</Command>
+      <Command>xcopy /y /D "$(ProjectDir)glut\*.dll" "$(OutDir)"
+xcopy /y /D "$(ProjectDir)*.off" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
