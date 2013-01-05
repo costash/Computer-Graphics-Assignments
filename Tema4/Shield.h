@@ -16,6 +16,9 @@ public:
 
 	void setAlpha(float alpha);
 	float getAlpha();
+	void incrementAlpha(float step);
+	void decrementAlpha(float step);
+
 	inline void enable()
 	{
 		draw = true;

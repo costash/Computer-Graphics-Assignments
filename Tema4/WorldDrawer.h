@@ -88,6 +88,12 @@ public:
 	// Update light position
 	static void updateLight();
 
+	// Draw laser between two points
+	static void drawLaser(Vector3D pos1, Vector3D pos2);
+
+	// functie pentru output text
+	static void output(GLfloat x, GLfloat y, char *format,...);
+
 public:
 	static bool animation;
 	static bool keyStates[256];					// Key Buffer for standard keys
@@ -118,9 +124,10 @@ public:
 	static Object3D *gameBox;					// The box surrounding the game
 	static Mesh *aircraftMesh;					// Mesh for aircraft
 	static Mesh *asteroidMesh;					// Mesh for asteroid
-	//static CustomObject3D *asteroids;			// Asteroids objects
-	//static std::vector<CustomObject3D *> asteroids;	// Asteroid objects
+	static Mesh *wrenchMesh;					// Mesh for wrench
+
 	static std::vector<Asteroid *> asteroids;	// Asteroid objects
+	static std::vector<Asteroid *> repair;		// Shield repairing tools
 	
 	static Light *light_o1;						// Omnidirectional light1
 	static Light *light_o2;						// Omnidirectional light2
@@ -132,4 +139,5 @@ public:
 
 	static int cameraType;						// Type of rendered camera
 	static Shield *shield;						// Aircraft shield
+	static bool gameInPlay;						// Game is in play
 };

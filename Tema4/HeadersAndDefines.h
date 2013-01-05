@@ -24,6 +24,10 @@
 #define PLANE_SIZE 200.f	// Size of a plane
 
 #define NUM_ASTEROIDS 150	// Number of asteroids
+#define NUM_WRENCHES 10		// Number of wrenches
+
+#define SHIELD_STEP 0.1f	// Step for the shield to be modified
 
 #define AIRCRAFT 1			// ID for aircraft call list
 #define ASTEROID 2			// ID for asteroid call list
+#define WRENCH 3			// ID for wrench call list

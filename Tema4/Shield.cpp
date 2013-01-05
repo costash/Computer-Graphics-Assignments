@@ -22,7 +22,6 @@ void Shield::Draw()
 		Vector3D pos = aircraft->GetPosition();
 		glTranslatef(pos.x, pos.y, pos.z);
 
-		//glColor3f(0.8f, 0.8f, 0.8f);
 		glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(Vector4D(0.8f, 0.8f, 0.8f, alpha)).Array());
 		glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(Vector4D(0.1f,0.1f,0.1f,1.f)).Array());
 		glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
@@ -41,4 +40,18 @@ void Shield::setAlpha(float alpha)
 float Shield::getAlpha()
 {
 	return alpha;
+}
+
+void Shield::incrementAlpha(float step)
+{
+	alpha += step;
+	if (alpha > 1)
+		alpha = 1;
+}
+
+void Shield::decrementAlpha(float step)
+{
+	alpha -= step;
+	if (alpha < 0)
+		alpha = 0;
 }

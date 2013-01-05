@@ -20,9 +20,10 @@ CustomObject3D *WorldDrawer::aircraft;
 Object3D *WorldDrawer::gameBox;
 Mesh *WorldDrawer::aircraftMesh;					// Mesh for aircraft
 Mesh *WorldDrawer::asteroidMesh;					// Mesh for asteroid
-//CustomObject3D *WorldDrawer::asteroids;				// Asteroids objects
-//std::vector<CustomObject3D *> WorldDrawer::asteroids;	// Asteroid objects
+Mesh *WorldDrawer::wrenchMesh;						// Mesh for wrench
+
 std::vector<Asteroid *> WorldDrawer::asteroids;		// Asteroid objects
+std::vector<Asteroid *> WorldDrawer::repair;		// Shield repairing tools
 
 Light *WorldDrawer::light_o1;						// Omnidirectional light
 Light *WorldDrawer::light_o2;						// Omnidirectional light2
@@ -35,6 +36,7 @@ int WorldDrawer::selectedIndex = -1;				// Selected index
 int WorldDrawer::cameraType = Dynamic;				// Default camera mode is Dynamic
 
 Shield *WorldDrawer::shield;						// Aircraft shield
+bool WorldDrawer::gameInPlay = true;				// Game is in play
 
 //add
 void WorldDrawer::init(){
@@ -50,8 +52,12 @@ void WorldDrawer::init(){
 	//asteroidMesh->Init("asteroid.off");
 	asteroidMesh->Init("asteroid_small.off");
 
+	wrenchMesh = new Mesh();
+	wrenchMesh->Init("m1106.off");
+
 	std::cerr << "Aircraft radius " << aircraftMesh->radius << " center: " << aircraftMesh->center << "\n";
 	std::cerr << "Asteroid radius " << asteroidMesh->radius << " center: " << asteroidMesh->center << "\n";
+	std::cerr << "Wrench radius " << wrenchMesh->radius << " center: " << wrenchMesh->center << "\n";
 
 	aircraft = new CustomObject3D(aircraftMesh, AIRCRAFT);
 
@@ -68,7 +74,7 @@ void WorldDrawer::init(){
 		float rand_scale = genRandomFloat(0.2f, 1.f);
 		asteroids[i]->SetScale(new Vector3D(rand_scale, rand_scale, rand_scale));
 		asteroids[i]->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
-		asteroids[i]->SetDiffuse(new Vector4D(0.5f, 0.5f, 0.5f, 1.f));
+		asteroids[i]->SetDiffuse(new Vector4D(0.25f, 0.25f, 0.3f, 1.f));
 
 		// Move
 		Vector3D randPos = WorldDrawer::genRandomPosition(-PLANE_SIZE/2, PLANE_SIZE/2, -PLANE_SIZE/2, PLANE_SIZE/2);
@@ -78,24 +84,45 @@ void WorldDrawer::init(){
 		asteroids[i]->angleStep = Vector3D(genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f));
 	}
 
+	// Create repairing tools
+	for (int i = 0; i < NUM_WRENCHES; ++i)
+	{
+		if (i == 0)
+			repair.push_back(new Asteroid(wrenchMesh, WRENCH, true));
+		else
+			repair.push_back(new Asteroid(wrenchMesh, WRENCH, false));
+
+		float scale = 10.f;
+		repair[i]->SetScale(new Vector3D(scale, scale, scale));
+		repair[i]->SetColor(new Vector3D(0.9f, 0.1f, 0.f));
+		repair[i]->SetDiffuse(new Vector4D(0.9f, 0.1f, 0.f, 1.f));
+
+		// Move
+		Vector3D randPos = WorldDrawer::genRandomPosition(-PLANE_SIZE/2, PLANE_SIZE/2, -PLANE_SIZE/2, PLANE_SIZE/2);
+		repair[i]->SetPosition(new Vector3D(randPos));
+		repair[i]->moveStep = genRandomFloat(0.3f, 0.9f);
+
+		repair[i]->angleStep = Vector3D(genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f), genRandomFloat(0.5f, 1.f));
+	}
+
 	// Inits objects on scene
 	initScene();
 
 	gameBox = new Object3D(GlutCube);
 	gameBox->Wireframe = true;
-	gameBox->SetColor(new Vector3D(0.5f, 0.5f, 0.5f));
+	gameBox->SetColor(new Vector3D(0.8f, 0.8f, 0.8f));
 	gameBox->SetScale(new Vector3D(PLANE_SIZE, PLANE_SIZE, PLANE_SIZE));
 
 	// Ambiental lights
 	light_o1 = new Light();
 	// Init
-	light_o1->SetPosition(new Vector3D(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2));
+	light_o1->SetPosition(new Vector3D(-PLANE_SIZE / 2 + 1.f, PLANE_SIZE / 2 - 1.f, -PLANE_SIZE / 2 + 1.f));
 	light_o1->setDiffuse(Vector4D(1.f, 1.f, 0.f, 1.f));
 	light_o1->setAmbient(Vector4D(0.1f, 0.02f, 0.05f, 1.f));
 	light_o1->setSpecular(Vector4D(0.f, 1.f, 0.f, 1.f));
 
 	light_o2 = new Light();
-	light_o2->SetPosition(new Vector3D(PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2));
+	light_o2->SetPosition(new Vector3D(PLANE_SIZE / 2 - 1.f, -PLANE_SIZE / 2 + 1.f, PLANE_SIZE / 2 - 1.f));
 	light_o2->setDiffuse(Vector4D(0.f, 1.f, 1.f, 1.f));
 	light_o2->setAmbient(Vector4D(0.05f, 0.02f, 0.1f, 1.f));
 	light_o2->setSpecular(Vector4D(0.f, 0.f, 1.f, 1.f));
@@ -106,6 +133,7 @@ void WorldDrawer::init(){
 // Init scene
 void WorldDrawer::initScene()
 {
+	gameInPlay = true;
 	aircraft->SetScale(new Vector3D(25.f, 25.f, 25.f));
 	aircraft->SetColor(new Vector3D(1.f, 0.f, 0.f));
 	aircraft->SetDiffuse(new Vector4D(1.f, 0.f, 0.f, 1.f));
@@ -148,6 +176,9 @@ void WorldDrawer::initScene()
 		asteroids[i]->Deselect();
 	}
 
+	shield->setAlpha(0.9f);
+	cameraType = Dynamic;
+
 	// Spot lights
 	light_s1 = new Light();
 	// Init
@@ -188,6 +219,22 @@ void WorldDrawer::onIdle(){	//per frame
 			Vector3D rot = asteroids[i]->GetRotation();
 			rot += asteroids[i]->angleStep;
 			asteroids[i]->SetRotation(new Vector3D(rot));
+		}
+
+		for (unsigned int i = 0; i < repair.size(); ++i)
+		{
+			Vector3D pos = repair[i]->GetPosition();
+			pos.x += repair[i]->moveStep;
+
+			if (pos.x >= PLANE_SIZE / 2)
+			{
+				pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
+			}
+			repair[i]->SetPosition(new Vector3D(pos));
+
+			Vector3D rot = repair[i]->GetRotation();
+			rot += repair[i]->angleStep;
+			repair[i]->SetRotation(new Vector3D(rot));
 		}
 		
 		// Collision logic
@@ -385,10 +432,30 @@ void WorldDrawer::mouseCallbackFunction(int button, int state, int x, int y)
 
 			pick(x,y);
 
+			if (cameraType != OnAsteroid && selectedObject > 0 && selectedObject <= (int)asteroids.size())
+			{
+				asteroids[selectedObject - 1]->Select();
+			}
+			std::cerr << "selected object " << selectedObject;
+
+
 			mouseRightState = true;
 		}
 		else if (state == GLUT_UP)
+		{
+			if (cameraType != OnAsteroid)
+			{
+				if (selectedObject > 0 && selectedObject <= (int)asteroids.size())
+				{
+					asteroids[selectedObject - 1]->Deselect();
+					Vector3D pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
+					asteroids[selectedObject - 1]->SetPosition(new Vector3D(pos));
+				}
+				selectedObject = 0;
+			}
+
 			mouseRightState = false;
+		}
 	}
 }
 
@@ -574,6 +641,7 @@ void WorldDrawer::processhits (GLint hits, GLuint buffer[])
 
 	selectedObject = *ptr;
 
+	std::cerr << "selObj " << selectedObject << "\n";
 }
 
 // functie ce realizeaza picking la pozitia la care s-a dat click cu mouse-ul
@@ -652,6 +720,19 @@ void WorldDrawer::drawScene()
 
 	}
 
+	if (!gameInPlay)
+	{
+		glDisable(GL_LIGHTING);
+		glLineWidth(1.0);
+		output(-50,10,"You lost! Pres R to restart.");
+		if (keyStates['r'])
+		{
+			initScene();
+		}
+
+		glEnable(GL_LIGHTING);
+	}
+
 	// Activate omnidirectional lights
 	light_o1->Render();
 	light_o2->Render();
@@ -676,13 +757,26 @@ void WorldDrawer::drawScene()
 		asteroids[i]->Deselect();
 	}
 	if (selectedObject > 0 && selectedObject <= (int)asteroids.size())
+	{
 		asteroids[selectedObject - 1]->Select();
+		if (cameraType != OnAsteroid)
+		{
+			drawLaser(asteroids[selectedObject - 1]->GetPosition(), aircraft->GetPosition() + Vector3D(-aircraft->getRadius(), 0.f, 0.f));
+		}
+	}
 
 	for (unsigned int i = 0; i < asteroids.size(); ++i)
 	{
 		glPushName(i + 1);
 		asteroids[i]->Draw();
 		glPopName();
+
+		//asteroids[i]->Draw();
+	}
+
+	for (unsigned int i = 0; i < repair.size(); ++i)
+	{
+		repair[i]->Draw();
 	}
 
 	// Player
@@ -732,7 +826,6 @@ void WorldDrawer::asteroidCameraRender(Asteroid *asteroid, Vector3D *target)
 {
 	Vector3D position = asteroid->GetPosition();
 	Vector3D forward = (*target - position).Normalize();
-	//Vector3D center = position + forward;
 	Vector3D newPos = position + forward * asteroid->getRadius();
 
 	gluLookAt(newPos.x, newPos.y, newPos.z, 
@@ -762,6 +855,25 @@ void WorldDrawer::collision()
 			std::cerr << "Asteroid number " << i << " collided with aircraft \n";
 			Vector3D pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
 			asteroids[i]->SetPosition(new Vector3D(pos));
+
+			if (shield->getAlpha() <= 0)
+			{
+				gameInPlay = false;
+			}
+			shield->decrementAlpha(SHIELD_STEP);
+
+		}
+	}
+	for (unsigned int i = 0; i < repair.size(); ++i)
+	{
+		if (objectToObjectCollision(repair[i], aircraft))
+		{
+			std::cerr << "Wrench number " << i << " collided with aircraft \n";
+			Vector3D pos = genRandomPosition(-PLANE_SIZE / 2, PLANE_SIZE / 2, -PLANE_SIZE / 2, PLANE_SIZE / 2);
+			repair[i]->SetPosition(new Vector3D(pos));
+
+			if (shield->getAlpha() < 0.8)
+				shield->incrementAlpha(SHIELD_STEP);
 		}
 	}
 }
@@ -773,6 +885,48 @@ void WorldDrawer::updateLight()
 	Vector3D aircraftPos = aircraft->GetPosition();
 	light_s1->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, -radius / 3)));
 	light_s2->SetPosition(&(aircraftPos + Vector3D(radius / 3, -radius / 4, radius / 3)));
+}
+
+// Draw laser between two points
+void WorldDrawer::drawLaser(Vector3D pos1, Vector3D pos2)
+{
+	glLineWidth(5);
+
+	glBegin(GL_LINES);
+
+	glColor3f(0, 1, 1);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(Vector4D(0.f, 1.f, 1.f, 1.f)).Array());
+	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+	glVertex3fv(pos1.Array());
+	glVertex3fv(pos2.Array());
+	glEnd();
+}
+
+// functie pentru output text
+void WorldDrawer::output(GLfloat x, GLfloat y, char *format,...)
+{
+	va_list args;
+
+	char buffer[1024],*p;
+
+	va_start(args,format);
+
+	vsprintf(buffer, format, args);
+
+	va_end(args);
+
+	glPushMatrix();
+	
+	glTranslatef(x,y,-15);
+
+	//glRotatef(180,0,1,0);
+
+	glScalef(0.035, 0.035, 0.0); /* 0.1 to 0.001 as required */
+
+	for (p = buffer; *p; p++)
+		glutStrokeCharacter(GLUT_STROKE_MONO_ROMAN, *p);
+
+	glPopMatrix();
 }
 
 // Draw main axis
