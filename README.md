@@ -1,4 +1,4 @@
-EGC-teme
+Computer Graphics (EGC) Assignments
 ========
 
-EGC-teme
+This repo contains all the assignments for the EGC class.
